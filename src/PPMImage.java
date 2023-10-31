@@ -7,23 +7,32 @@ public class PPMImage extends AbstractImage {
 
   @Override
   public void loadImage(String imagePath, String imageName) {
-    try {
-      Scanner scanner = new Scanner(new FileInputStream(imagePath));
-      StringBuilder content = new StringBuilder();
+    int[][][] imageRGBData = readImageRGBData(imagePath);
+    ImageContent image = new ImageContent(imageName, convertToPPMFormat(imageRGBData));
+    imageMap.put(imageName, image);
+    rgbDataMap.put(imageName, imageRGBData);
+    System.out.println("Loaded image: " + imageName);
+  }
 
-      while (scanner.hasNextLine()) {
-        content.append(scanner.nextLine()).append("\n");
+  private String convertToPPMFormat(int[][][] imageRGBData) {
+    StringBuilder ppmContent = new StringBuilder();
+    int height = imageRGBData.length;
+    int width = imageRGBData[0].length;
+
+    ppmContent.append("P3\n");
+    ppmContent.append(width + " " + height + "\n");
+    ppmContent.append("255\n");
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        ppmContent.append(imageRGBData[i][j][0] + " "); // Red component
+        ppmContent.append(imageRGBData[i][j][1] + " "); // Green component
+        ppmContent.append(imageRGBData[i][j][2] + " "); // Blue component
       }
-      // Implement the logic to load an image from imagePath and name it imageName
-      int[][][] imageRGBData = readImageRGBData(imagePath);
-      ImageContent image = new ImageContent(imageName, content.toString());
-      imageMap.put(imageName, image);
-      rgbDataMap.put(imageName, imageRGBData); // Store the RGB data in another map
-      System.out.println("Loaded image: " + imageName);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      System.out.println("Failed to load the image from: " + imagePath);
+      ppmContent.append("\n");
     }
+
+    return ppmContent.toString();
   }
 
   private static int[][][] readImageRGBData(String filename) {
@@ -31,25 +40,21 @@ public class PPMImage extends AbstractImage {
 
     try {
       sc = new Scanner(new FileInputStream(filename));
+    } catch (FileNotFoundException e) {
+      System.out.println("File " + filename + " not found!");
     }
-    catch (FileNotFoundException e) {
-      System.out.println("File "+filename+ " not found!");
-    }
+
     StringBuilder builder = new StringBuilder();
-    //read the file line by line, and populate a string. This will throw away any comment lines
     while (sc.hasNextLine()) {
       String s = sc.nextLine();
-      if (s.charAt(0)!='#') {
-        builder.append(s+System.lineSeparator());
+      if (s.charAt(0) != '#') {
+        builder.append(s).append(System.lineSeparator());
       }
     }
 
-    //now set up the scanner to read from the string we just built
     sc = new Scanner(builder.toString());
 
-    String token;
-
-    token = sc.next();
+    String token = sc.next();
     if (!token.equals("P3")) {
       System.out.println("Invalid PPM file: plain RAW file should begin with P3");
     }
@@ -57,11 +62,13 @@ public class PPMImage extends AbstractImage {
     int height = sc.nextInt();
 
     int[][][] imageRGBData = new int[height][width][3];
-    for (int i=0;i<height;i++) {
-      for (int j=0;j<width;j++) {
+    int maxValue = sc.nextInt(); // Read the maximum color value
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
         imageRGBData[i][j][0] = sc.nextInt(); // Red component
-        imageRGBData[i][j][1] = sc.nextInt();  // Green component
-        imageRGBData[i][j][2] = sc.nextInt();       // Blue component
+        imageRGBData[i][j][1] = sc.nextInt(); // Green component
+        imageRGBData[i][j][2] = sc.nextInt(); // Blue component
       }
     }
     return imageRGBData;
@@ -490,6 +497,7 @@ public class PPMImage extends AbstractImage {
   }
 
 
+  @Override
   public void extractComponent(String sourceName, String destName, String component) {
     ImageContent sourceImage = imageMap.get(sourceName);
 
@@ -505,47 +513,58 @@ public class PPMImage extends AbstractImage {
 
         for (int y = 0; y < height; y++) {
           for (int x = 0; x < width; x++) {
-            int rgb; // Initialize with the red component
+            int r = sourceRGBData[y][x][0];
+            int g = sourceRGBData[y][x][1];
+            int b = sourceRGBData[y][x][2];
 
             switch (component) {
               case "red":
-                rgb = sourceRGBData[y][x][0];
+                // Set the red component to the extracted value, keep green and blue
+                r = r;
+                g = 0;
+                b = 0;
                 break;
               case "green":
-                rgb = sourceRGBData[y][x][1];
+                // Set the green component to the extracted value, keep red and blue
+                r = 0;
+                g = g;
+                b = 0;
                 break;
               case "blue":
-                rgb = sourceRGBData[y][x][2];
+                // Set the blue component to the extracted value, keep red and green
+                r = 0;
+                g = 0;
+                b = b;
                 break;
               case "luma":
                 // Calculate luma from RGB (standard BT.709 formula)
-                int r = sourceRGBData[y][x][0];
-                int g = sourceRGBData[y][x][1];
-                int b = sourceRGBData[y][x][2];
-                rgb = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                r = luma;
+                g = luma;
+                b = luma;
                 break;
               case "intensity":
                 // Calculate intensity from RGB (average of RGB components)
-                int red = sourceRGBData[y][x][0];
-                int green = sourceRGBData[y][x][1];
-                int blue = sourceRGBData[y][x][2];
-                rgb = (red + green + blue) / 3;
+                int intensity = (r + g + b) / 3;
+                r = intensity;
+                g = intensity;
+                b = intensity;
                 break;
               case "value":
                 // Extract value (brightness) from RGB (maximum of RGB components)
-                int rValue = sourceRGBData[y][x][0];
-                int gValue = sourceRGBData[y][x][1];
-                int bValue = sourceRGBData[y][x][2];
-                rgb = Math.max(rValue, Math.max(gValue, bValue));
+                int value = Math.max(r, Math.max(g, b));
+                r = value;
+                g = value;
+                b = value;
                 break;
               default:
                 System.out.println("Invalid component parameter: " + component);
                 return;
             }
 
-            extractedRGBData[y][x][0] = rgb;
-            extractedRGBData[y][x][1] = rgb;
-            extractedRGBData[y][x][2] = rgb;
+            extractedRGBData[y][x][0] = r;
+            extractedRGBData[y][x][1] = g;
+            extractedRGBData[y][x][2] = b;
           }
         }
 
