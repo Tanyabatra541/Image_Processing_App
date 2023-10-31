@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Model implements IModel {
@@ -80,13 +81,17 @@ public class Model implements IModel {
     String arg1 = parts[1];
     String arg2 = parts.length > 2 ? parts[2] : null;
     String extension = identifyFileFormat(arg1);
-    if(extension != null) {
-      if ((extension.equalsIgnoreCase("png") || (extension.equalsIgnoreCase("jpg")) || (extension.equalsIgnoreCase("jpeg")))) {
-        imageObj = new PNGJPGImage();
-      } else if (extension.equalsIgnoreCase("ppm")) {
-        imageObj = new PPMImage();
-      } else {
-        throw new IllegalArgumentException("Unsupported image format");
+
+    if(!Objects.equals(parts[0], "run")) {
+
+      if (extension != null) {
+        if ((extension.equalsIgnoreCase("png") || (extension.equalsIgnoreCase("jpg")) || (extension.equalsIgnoreCase("jpeg")))) {
+          imageObj = new PNGJPGImage();
+        } else if (extension.equalsIgnoreCase("ppm")) {
+          imageObj = new PPMImage();
+        } else {
+          throw new IllegalArgumentException("Unsupported image format");
+        }
       }
     }
 
@@ -208,6 +213,11 @@ public class Model implements IModel {
           String destImageName = parts[2];
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
+        break;
+
+      case "run":
+        String scriptFilename = parts[1];
+        executeScriptFromFile(scriptFilename);
         break;
     }
   }
