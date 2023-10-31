@@ -526,5 +526,13 @@ public abstract class AbstractImage implements ImageOperations{
       System.out.println("Source image not found: " + sourceName);
     }
   }
+  public Map<String, ImageContent> getImageMap(){
+    return imageMap;
+  }
+
+  public Map<String, int[][][]> getRgbDataMap(){
+    return rgbDataMap;
+  }
+
 
 }
