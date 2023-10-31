@@ -3,13 +3,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
-
 import javax.imageio.ImageIO;
 
 public class PNGJPGImage extends AbstractImage {
 
-
-  // Modify this function to work with `int[][][]` data directly
   private static String serializeImageData(int[][][] imageData) {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     for (int y = 0; y < imageData.length; y++) {
@@ -119,3 +116,6 @@ public class PNGJPGImage extends AbstractImage {
     }
   }
 }
+
+
+//need to check extractComponent, rgb-split and combine

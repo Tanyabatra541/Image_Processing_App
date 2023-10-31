@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Controller implements ActionListener {
   private final IModel model;
@@ -60,7 +61,16 @@ public class Controller implements ActionListener {
         }
         break;
       case "Exit Button":
-        System.exit(0);
+        view.closeOrDispose();
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+          System.out.print("Enter a command (or type 'exit' to quit): ");
+          String command = scanner.nextLine();
+          if (command.equals("exit")) {
+            break;
+          }
+          model.processFileContents(command);
+        }
         break;
     }
   }

@@ -30,4 +30,6 @@ public interface IView {
    * Display this view.
    */
   void display();
+
+  void closeOrDispose();
 }

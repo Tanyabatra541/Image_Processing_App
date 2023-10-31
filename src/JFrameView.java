@@ -14,8 +14,6 @@ public class JFrameView extends JFrame implements IView {
     setSize(500, 300);
     setLocation(200, 200);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //this.setResizable(false);
-//		this.setMinimumSize(new Dimension(300,300));
 
 
     this.setLayout(new FlowLayout());
@@ -25,17 +23,17 @@ public class JFrameView extends JFrame implements IView {
 
     this.add(display);
 
-    //the textfield
+    //the textField
     input = new JTextField(10);
     this.add(input);
 
     //echobutton
-    echoButton = new JButton("Execute");
+    echoButton = new JButton("Run script File");
     echoButton.setActionCommand("Execute Button");
     this.add(echoButton);
 
     //exit button
-    exitButton = new JButton("Exit");
+    exitButton = new JButton("Go to Command Prompt");
     exitButton.setActionCommand("Exit Button");
     this.add(exitButton);
 
@@ -45,6 +43,12 @@ public class JFrameView extends JFrame implements IView {
   @Override
   public void display() {
     setVisible(true);
+  }
+
+  @Override
+  public void closeOrDispose() {
+    setVisible(false);
+    dispose();
   }
 
 
