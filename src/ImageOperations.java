@@ -3,7 +3,7 @@ import java.io.IOException;
 public interface ImageOperations {
 
   void loadImage(String imagePath, String imageName) throws IOException;
-  void saveImage(String imagePath, String imageName);
+  void saveImage(String imagePath, String imageName) throws IOException;
 
   void horizontalFlipImage(String sourceImageName, String destImageName);
 
