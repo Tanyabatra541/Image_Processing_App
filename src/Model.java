@@ -1,4 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Model implements IModel {
   private String input;
@@ -21,23 +24,28 @@ public class Model implements IModel {
     return input;
   }
 
-  public void processFileContents(String fileContents) {
-    // Split file contents into lines
-    String[] lines = fileContents.split("\n");
-    StringBuilder processedResult = new StringBuilder();
 
-    for (String line : lines) {
-      // Process each line using the parseAndExecute method
-      try {
-        parseAndExecute(line);
-        processedResult.append("Processed: ").append(line).append("\n");
-      } catch (IOException e) {
-        processedResult.append("Error: ").append(e.getMessage()).append("\n");
+  public void executeScriptFromFile(String scriptFilename){
+    try {
+      File scriptFile = new File(scriptFilename);
+      if (!scriptFile.exists()) {
+        System.out.println("Script file not found: " + scriptFilename);
+        return;
       }
-    }
 
-    // Store the final result
-    result = processedResult.toString();
+      Scanner sc = new Scanner(scriptFile);
+      while (sc.hasNextLine()) {
+        String line = sc.nextLine().trim();
+        if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
+          parseAndExecute(line);
+        }
+      }
+      sc.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("Error reading script file: " + e.getMessage());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public String getResult() {
@@ -61,7 +69,7 @@ public class Model implements IModel {
   }
 
   // You may need to adjust this method's signature to handle exceptions
-  protected void parseAndExecute(String command) throws IOException {
+  public void parseAndExecute(String command) throws IOException {
     String[] parts = command.split(" ");
     if (parts.length < 2) {
       System.out.println("Invalid command: " + command);
@@ -201,9 +209,6 @@ public class Model implements IModel {
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
-
-      default:
-        System.out.println("Unknown command: " + command);
     }
   }
 }

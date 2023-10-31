@@ -5,7 +5,10 @@ public interface IModel {
 
   String getString();
 
-  void processFileContents(String fileContents);
+//  void processFileContents(String fileContents);
+
+  void parseAndExecute(String command) throws IOException;
+  void executeScriptFromFile(String scriptFilename);
   String getResult();
 
 }

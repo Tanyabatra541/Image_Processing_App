@@ -38,11 +38,10 @@ public class Controller implements ActionListener {
             }
 
             // Pass the file contents to the model for processing
-            model.processFileContents(fileContents.toString());
+            model.executeScriptFromFile(inputText);
 
             // Display any output or result from the model in the view
             String result = model.getResult(); // This method depends on your model structure
-            System.out.println(result);
             view.setEchoOutput(result);
           } catch (IOException ex) {
             // Handle any exceptions that occur during file reading
@@ -69,7 +68,11 @@ public class Controller implements ActionListener {
           if (command.equals("exit")) {
             break;
           }
-          model.processFileContents(command);
+          try {
+            model.parseAndExecute(command);
+          } catch (IOException ex) {
+            throw new RuntimeException(ex);
+          }
         }
         break;
     }
