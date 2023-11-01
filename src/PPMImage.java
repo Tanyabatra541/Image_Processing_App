@@ -3,6 +3,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import javax.imageio.ImageIO;
+
 public class PPMImage extends AbstractImage {
 
   @Override
@@ -78,6 +80,10 @@ public class PPMImage extends AbstractImage {
   @Override
   public void saveImage(String imagePath, String imageName) {
     ImageContent image = imageMap.get(imageName);
+    // Check if the filename is valid
+    if (!isValidFileName(imageName)) {
+      throw new IllegalArgumentException("Invalid filename: " + imageName);
+    }
 
     if (image != null) {
       String content = image.getContent();
@@ -85,6 +91,10 @@ public class PPMImage extends AbstractImage {
       try {
         // Create a file and write the image content to it
         File file = new File(imagePath);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+          throw new IllegalArgumentException("Invalid path: " + imagePath);
+        }
+
         java.io.FileWriter fileWriter = new java.io.FileWriter(file);
         fileWriter.write(content);
         fileWriter.close();

@@ -663,9 +663,10 @@ public class PNGImageTest {
     pngJpgImage.saveImage(invalidPath, imageName);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testSaveImageWithInvalidFilename() throws IOException {
-    String invalidFilename = "file/with/invalid_name.png";
-    pngJpgImage.saveImage(imagePath, invalidFilename);
+    String invalidFilename = "bac#";
+    PNGImage img = new PNGImage();
+    img.saveImage(imagePath, invalidFilename);
   }
 }

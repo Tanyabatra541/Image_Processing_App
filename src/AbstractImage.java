@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public abstract class AbstractImage implements ImageOperations{
 
@@ -309,8 +310,8 @@ public abstract class AbstractImage implements ImageOperations{
     ImageContent blueImage = imageMap.get(blueName);
 
     if (redImage == null || greenImage == null || blueImage == null) {
-      System.out.println("One or more source images not found.");
-      return;
+      throw new IllegalArgumentException("One or more source images not found.");
+
     }
 
     // Get the RGB data for the source images
@@ -324,8 +325,8 @@ public abstract class AbstractImage implements ImageOperations{
 
     if (height != greenRGBData.length || height != blueRGBData.length ||
             width != greenRGBData[0].length || width != blueRGBData[0].length) {
-      System.out.println("Source images have different dimensions.");
-      return;
+      throw new IllegalArgumentException("Source images have different dimensions.");
+      
     }
 
     // Create a new RGB data array for the combined image
@@ -528,10 +529,11 @@ public abstract class AbstractImage implements ImageOperations{
     return rgbDataMap;
   }
 
-  protected boolean isValidFilename(String filename) {
-    // Implement your filename validation logic here
-    // For example, you can check for illegal characters or other criteria
-    return filename.matches("[a-zA-Z0-9_\\-]+\\.png");
+  protected static boolean isValidFileName(String input)
+  {
+    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
+    final Pattern pattern = Pattern.compile(re);
+    return pattern.matcher(input).matches();
   }
 
 
