@@ -463,21 +463,18 @@ public abstract class AbstractImage implements ImageOperations{
             switch (component) {
               case "red":
                 // Set the red component to the extracted value, keep green and blue
-                r = r;
                 g = 0;
                 b = 0;
                 break;
               case "green":
                 // Set the green component to the extracted value, keep red and blue
                 r = 0;
-                g = g;
                 b = 0;
                 break;
               case "blue":
                 // Set the blue component to the extracted value, keep red and green
                 r = 0;
                 g = 0;
-                b = b;
                 break;
               case "luma":
                 // Calculate luma from RGB (standard BT.709 formula)

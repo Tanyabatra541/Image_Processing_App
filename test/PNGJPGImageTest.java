@@ -12,18 +12,13 @@ import static org.junit.Assert.assertTrue;
 
 public class PNGJPGImageTest {
   private static PNGJPGImage pngJpgImage;
-  private static final String imageName = "output";
-  private static final String imagePath = "output.png";
+  private static String imageName = "output";
+  private static String imagePath = "output.png";
 
   int[][][] rgbMatrix = {
-          {{255, 0, 0},
-                  {0, 255, 0}},
-          {{0, 0, 255},
-                  {255, 255, 255}}
+          { {255, 0, 0}, {0, 255, 0} },
+          { {0, 0, 255}, {255, 255, 255} }
   };
-
-  //private PNGJPGImage pngJpgImage;
-
   @Before
   public void setUp() {
     pngJpgImage = new PNGJPGImage();
@@ -32,6 +27,7 @@ public class PNGJPGImageTest {
 
   @Test
   public void testLoadImageAndPrintRGB() throws IOException {
+
     // Load the image
     pngJpgImage.loadImage(imagePath, imageName);
 
@@ -40,6 +36,7 @@ public class PNGJPGImageTest {
 
     // Get the RGB data
     int[][][] rgbData = pngJpgImage.getRgbDataMap().get(imageName);
+
 
     // Print the RGB data
     for (int y = 0; y < rgbData.length; y++) {
@@ -55,8 +52,8 @@ public class PNGJPGImageTest {
     }
   }
 
-
   public static void createAndSavePNG(int[][][] rgbMatrix, String filePath) {
+
     int width = rgbMatrix[0].length;
     int height = rgbMatrix.length;
 
@@ -82,7 +79,7 @@ public class PNGJPGImageTest {
       File output = new File(filePath);
       ImageIO.write(image, "png", output);
       System.out.println("Image saved as " + filePath);
-      pngJpgImage.loadImage(imagePath,imageName);
+      pngJpgImage.loadImage(imagePath, imageName);
     } catch (IOException e) {
       e.printStackTrace();
       System.out.println("Failed to save the image as " + filePath);
@@ -91,40 +88,16 @@ public class PNGJPGImageTest {
 
 
   @Test
-  public void testHorizontalFlipImage() throws IOException {
-    // Perform a horizontal flip
-    pngJpgImage.horizontalFlipImage(imageName, "horizontal-img");
-
-    // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-img");
-
-    // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData = new int[2][2][3];
-    expectedFlippedImageData[0][0] = new int[]{0, 255, 0};
-    expectedFlippedImageData[0][1] = new int[]{255, 0, 0};
-    expectedFlippedImageData[1][0] = new int[]{255, 255, 255};
-    expectedFlippedImageData[1][1] = new int[]{0, 0, 255};
-
-
-    for (int y = 0; y < expectedFlippedImageData.length; y++) {
-      for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
-        for (int c = 0; c < 3; c++) {
-          assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
-        }
-      }
-    }
-  }
-
-  @Test
   public void testVerticalFlipImage() throws IOException {
-    // Perform a vertical flip
-    pngJpgImage.verticalFlipImage(imageName, "vertical-img");
+
+    // Perform vertical-flip on the image
+    pngJpgImage.verticalFlipImage(imageName, "vertical-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-flip-img");
 
     // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData = new int[2][2][3];
+    int[][][] expectedFlippedImageData  = new int[2][2][3];
     expectedFlippedImageData[0][0] = new int[]{0, 0, 255};
     expectedFlippedImageData[0][1] = new int[]{255, 255, 255};
     expectedFlippedImageData[1][0] = new int[]{255, 0, 0};
@@ -133,6 +106,7 @@ public class PNGJPGImageTest {
     for (int y = 0; y < expectedFlippedImageData.length; y++) {
       for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
+
           assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
         }
       }
@@ -141,11 +115,11 @@ public class PNGJPGImageTest {
 
   @Test
   public void testBrightenImage() throws IOException {
-    // Perform a brightness adjustment
-    pngJpgImage.brightenImage(imageName, "brightened-img", 50); // Increase brightness by 50 (you can adjust the increment)
 
-    // Get the brightened image data
-    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brightened-img");
+
+    pngJpgImage.brightenImage(imageName, "brighten-img", 50); // Increase brightness by 50 (you can adjust the increment)
+
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brighten-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -155,9 +129,11 @@ public class PNGJPGImageTest {
     expectedBrightenedImageData[1][0] = new int[]{50, 50, 255};
     expectedBrightenedImageData[1][1] = new int[]{255, 255, 255};
 
+
     for (int y = 0; y < expectedBrightenedImageData.length; y++) {
       for (int x = 0; x < expectedBrightenedImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
+          System.out.println("Expected: " + expectedBrightenedImageData[y][x][c] + " Actual: " + brightenedImageData[y][x][c]);
           assertEquals(expectedBrightenedImageData[y][x][c], brightenedImageData[y][x][c]);
         }
       }
@@ -189,6 +165,38 @@ public class PNGJPGImageTest {
       }
     }
   }
+
+  @Test
+  public void testHorizontalFlipImage() throws IOException {
+
+
+    // Perform a horizontal flip
+    pngJpgImage.horizontalFlipImage(imageName, "horizontal-flip-img");
+
+    // Get the flipped image data
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-flip-img");
+
+    // Check if the flipped image matches the expected result
+    int[][][] expectedFlippedImageData  = new int[2][2][3];
+    expectedFlippedImageData[0][0] = new int[]{0, 255, 0};
+    expectedFlippedImageData[0][1] = new int[]{255, 0, 0};
+    expectedFlippedImageData[1][0] = new int[]{255, 255, 255};
+    expectedFlippedImageData[1][1] = new int[]{0, 0, 255};
+
+
+
+
+    for (int y = 0; y < expectedFlippedImageData.length; y++) {
+      for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+          //System.out.println(flippedImageData[y][x][c]);
+          assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
+
+        }
+      }
+    }
+  }
+
 
   @Test
   public void testSharpenImage() throws IOException {
@@ -248,16 +256,8 @@ public class PNGJPGImageTest {
         }
       }
     }
-
-    for (int y = 0; y < expectedBlurredImageData.length; y++) {
-      for (int x = 0; x < expectedBlurredImageData[y].length; x++) {
-        for (int c = 0; c < 3; c++) {
-          System.out.println(blurredImageData[y][x][c]);
-          //assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
-        }
-      }
-    }
   }
+
 
   @Test
   public void testSepiaImage() {

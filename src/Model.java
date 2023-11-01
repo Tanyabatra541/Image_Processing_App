@@ -85,11 +85,14 @@ public class Model implements IModel {
     if(!Objects.equals(parts[0], "run")) {
 
       if (extension != null) {
-        if ((extension.equalsIgnoreCase("png") || (extension.equalsIgnoreCase("jpg")) || (extension.equalsIgnoreCase("jpeg")))) {
+        if ((extension.equalsIgnoreCase("png"))) {
           imageObj = new PNGJPGImage();
         } else if (extension.equalsIgnoreCase("ppm")) {
           imageObj = new PPMImage();
-        } else {
+        } else if (extension.equalsIgnoreCase("jpg") || (extension.equalsIgnoreCase("jpeg"))){
+          imageObj = new JPGImage();
+        }
+        else {
           throw new IllegalArgumentException("Unsupported image format");
         }
       }
