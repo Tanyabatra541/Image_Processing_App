@@ -659,14 +659,14 @@ public class PPMImageTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testSaveImageWithInvalidPath() throws IOException {
-    String invalidPath = "invalid_path/invalid_file.png";
+    String invalidPath = "invalid_path/invalid_file.ppm";
     ppmImage.saveImage(invalidPath, imageName);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testSaveImageWithInvalidFilename() throws IOException {
     String invalidFilename = "bac#";
-    PNGImage img = new PNGImage();
+    PPMImage img = new PPMImage();
     img.saveImage(imagePath, invalidFilename);
   }
 }
