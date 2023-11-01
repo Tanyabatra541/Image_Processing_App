@@ -15,14 +15,32 @@ public class PNGJPGImageTest {
   private static String imageName = "output";
   private static String imagePath = "output.png";
 
+  private static String image2Name = "output2";
+  private static String image2Path = "output2.png";
+
   int[][][] rgbMatrix = {
           { {255, 0, 0}, {0, 255, 0} },
           { {0, 0, 255}, {255, 255, 255} }
   };
+
+  int[][][] rgbMatrix2 = {
+          {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
+          {{96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
+          {{32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}, {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
+          {{160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}},
+          {{64, 128, 96}, {255, 160, 192}, {96, 96, 128}, {192, 32, 128}, {32, 192, 255}, {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
+          {{192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
+          {{96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}},
+          {{224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}},
+          {{128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}},
+          {{192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 255, 128}}
+  };
+
   @Before
   public void setUp() {
     pngJpgImage = new PNGJPGImage();
-    createAndSavePNG(rgbMatrix, imagePath);
+    createAndSavePNG(rgbMatrix, imageName, imagePath);
+    createAndSavePNG(rgbMatrix2,image2Name,image2Path);
   }
 
   @Test
@@ -52,19 +70,19 @@ public class PNGJPGImageTest {
     }
   }
 
-  public static void createAndSavePNG(int[][][] rgbMatrix, String filePath) {
+  public static void createAndSavePNG(int[][][] matrix,String fileName, String filePath) {
 
-    int width = rgbMatrix[0].length;
-    int height = rgbMatrix.length;
+    int width = matrix[0].length;
+    int height = matrix.length;
 
     // Create a BufferedImage with the specified width and height
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        int r = rgbMatrix[y][x][0];
-        int g = rgbMatrix[y][x][1];
-        int b = rgbMatrix[y][x][2];
+        int r = matrix[y][x][0];
+        int g = matrix[y][x][1];
+        int b = matrix[y][x][2];
 
         // Create an RGB color from the values
         int rgb = (r << 16) | (g << 8) | b;
@@ -79,7 +97,7 @@ public class PNGJPGImageTest {
       File output = new File(filePath);
       ImageIO.write(image, "png", output);
       System.out.println("Image saved as " + filePath);
-      pngJpgImage.loadImage(imagePath, imageName);
+      pngJpgImage.loadImage(filePath, fileName);
     } catch (IOException e) {
       e.printStackTrace();
       System.out.println("Failed to save the image as " + filePath);
@@ -200,59 +218,67 @@ public class PNGJPGImageTest {
 
   @Test
   public void testSharpenImage() throws IOException {
+
     // Perform sharpening on the image
-    pngJpgImage.sharpenImage(imageName, "sharp-img");
+    pngJpgImage.sharpenImage(image2Name, "sharp-img");
 
     // Get the sharpened image data
     int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap().get("sharp-img");
 
-    // Check if the sharpened image matches the expected result
-    int[][][] expectedSharpenedImageData = new int[2][2][3];
-
     // Define the expected RGB values for the sharpened image
-    expectedSharpenedImageData[0][0] = new int[]{110, 110, 110};
-    expectedSharpenedImageData[0][1] = new int[]{110, 110, 110};
-    expectedSharpenedImageData[1][0] = new int[]{110, 110, 110};
-    expectedSharpenedImageData[1][1] = new int[]{110, 110, 110};
+    int[][][] expectedSharpenedImageData = {
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {180, 75, 40}, {220, 167, 0}, {160, 255, 251}, {163, 136, 180}, {195, 175, 0}, {68, 179, 84}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {223, 12, 52}, {132, 96, 163}, {116, 148, 239}, {143, 255, 191}, {179, 255, 0}, {155, 255, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {179, 75, 92}, {196, 31, 83}, {8, 152, 255}, {71, 88, 239}, {203, 135, 0}, {68, 155, 104}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {191, 135, 112}, {168, 64, 103}, {80, 108, 199}, {0, 220, 163}, {136, 12, 188}, {171, 0, 131}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {180, 108, 136}, {172, 192, 88}, {56, 255, 80}, {64, 255, 64}, {232, 198, 8}, {255, 51, 108}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {184, 124, 112}, {56, 255, 160}, {116, 255, 32}, {204, 255, 0}, {255, 115, 88}, {255, 132, 68}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
 
-    for (int y = 0; y < expectedSharpenedImageData.length; y++) {
-      for (int x = 0; x < expectedSharpenedImageData[y].length; x++) {
+    for (int y = 0; y < sharpenedImageData.length; y++) {
+      for (int x = 0; x < sharpenedImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-          System.out.println(sharpenedImageData[y][x][c]);
-         // assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
+          //System.out.print(sharpenedImageData[y][x][c]+ " ");
+          assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
         }
       }
+      System.out.println(" ");
     }
   }
 
   @Test
   public void testBlurImage() {
     // Perform blurring on the image
-    pngJpgImage.blurImage(imageName, "blurred-img");
+    pngJpgImage.blurImage(image2Name, "blurred-img");
 
     // Get the blurred image data
     int[][][] blurredImageData = pngJpgImage.getRgbDataMap().get("blurred-img");
 
     // Check if the blurred image matches the expected result
-    int[][][] expectedBlurredImageData = new int[2][2][3];
+    int[][][] expectedBlurredImageData = {
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {135, 161, 106}, {143, 151, 103}, {159, 127, 135}, {165, 122, 147}, {135, 125, 145}, {135, 113, 138}, {135, 107, 123}, {126, 132, 139}, {0, 0, 0}},
+            {{0, 0, 0}, {124, 135, 134}, {152, 117, 108}, {159, 135, 119}, {153, 156, 155}, {143, 144, 145}, {147, 139, 110}, {127, 141, 119}, {125, 123, 155}, {0, 0, 0}},
+            {{0, 0, 0}, {141, 131, 140}, {157, 109, 114}, {148, 122, 127}, {134, 152, 163}, {139, 154, 143}, {151, 171, 88}, {135, 171, 103}, {147, 119, 151}, {0, 0, 0}},
+            {{0, 0, 0}, {157, 129, 146}, {157, 119, 124}, {148, 109, 129}, {118, 136, 163}, {119, 142, 149}, {147, 139, 110}, {127, 141, 119}, {125, 123, 155}, {0, 0, 0}},
+            {{0, 0, 0}, {159, 115, 140}, {153, 131, 124}, {154, 129, 115}, {120, 150, 137}, {105, 157, 133}, {141, 123, 126}, {147, 105, 129}, {131, 132, 139}, {0, 0, 0}},
+            {{0, 0, 0}, {164, 123, 112}, {158, 141, 118}, {150, 161, 116}, {128, 185, 108}, {126, 193, 94}, {165, 149, 106}, {189, 113, 118}, {155, 136, 119}, {0, 0, 0}},
+            {{0, 0, 0}, {164, 137, 110}, {150, 160, 122}, {134, 189, 112}, {138, 203, 88}, {169, 181, 84}, {197, 143, 102}, {177, 131, 116}, {131, 126, 134}, {0, 0, 0}},
+            {{0, 0, 0}, {150, 160, 122}, {134, 189, 112}, {138, 203, 88}, {169, 181, 84}, {197, 143, 102}, {177, 131, 116}, {131, 126, 134}, {117, 103, 154}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
 
-    // Define the expected RGB values for the blurred image
-    // For a simple example, you can set the expected values to the average of nearby pixels
-    for (int y = 0; y < 2; y++) {
-      for (int x = 0; x < 2; x++) {
+    for (int y = 0; y < blurredImageData.length; y++) {
+      for (int x = 0; x < blurredImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-          // Calculate the average of nearby pixels for a simple blur
-          int sum = 0;
-          int count = 0;
-          for (int ky = -1; ky <= 1; ky++) {
-            for (int kx = -1; kx <= 1; kx++) {
-              if (y + ky >= 0 && y + ky < 2 && x + kx >= 0 && x + kx < 2) {
-                sum += rgbMatrix[y + ky][x + kx][c];
-                count++;
-              }
-            }
-          }
-          expectedBlurredImageData[y][x][c] = sum / count;
+          //System.out.print(blurredImageData[y][x][c] + " ");
+          assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
         }
       }
     }
