@@ -1,13 +1,16 @@
+package Model;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import javax.imageio.ImageIO;
+import Model.AbstractImage;
+import Model.ImageContent;
 
 
 /**
- * A class representing images in the PPM format. This class extends the `AbstractImage` class,
+ * A class representing images in the PPM format. This class extends the `Model.AbstractImage` class,
  * providing functionality to load and save PPM images.
  */
 public class PPMImage extends AbstractImage {

@@ -1,3 +1,5 @@
+package View;
+
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 
@@ -7,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * This class is an implementation of the `IView` interface that provides a graphical user
+ * This class is an implementation of the `View.IView` interface that provides a graphical user
  * interface (GUI) based on the `JFrame` window. It allows users to input text, display output,
  * and interact with buttons.
  */
@@ -18,7 +20,7 @@ public class JFrameView extends JFrame implements IView {
   private final JTextField input;
 
   /**
-   * Constructs a `JFrameView` with the specified caption for the window.
+   * Constructs a `View.JFrameView` with the specified caption for the window.
    *
    * @param caption The caption or title of the window.
    */
@@ -55,7 +57,7 @@ public class JFrameView extends JFrame implements IView {
   }
 
   /**
-   * Displays the `JFrameView`, making it visible to the user.
+   * Displays the `View.JFrameView`, making it visible to the user.
    */
   @Override
   public void display() {
@@ -63,7 +65,7 @@ public class JFrameView extends JFrame implements IView {
   }
 
   /**
-   * Closes or disposes of the `JFrameView`, typically for closing the view window.
+   * Closes or disposes of the `View.JFrameView`, typically for closing the view window.
    */
   @Override
   public void closeOrDispose() {

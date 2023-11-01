@@ -1,3 +1,5 @@
+package Model;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -6,8 +8,11 @@ import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
+import Model.AbstractImage;
+import Model.ImageContent;
+
 /**
- * The `PNGImage` class extends `AbstractImage` and provides specific functionality for working
+ * The `Model.PNGImage` class extends `Model.AbstractImage` and provides specific functionality for working
  * with PNG image files. It includes methods for loading PNG images and saving images in the
  * PNG format.
  */

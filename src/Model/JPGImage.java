@@ -1,11 +1,15 @@
+package Model;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Model.PNGImage;
+
 /**
- * The `JPGImage` class extends the `PNGImage` class and provides functionality to save an image
+ * The `Model.JPGImage` class extends the `Model.PNGImage` class and provides functionality to save an image
  * in the JPG format. It converts RGB image data to a JPG image and saves it to a specified file.
  */
 public class JPGImage extends PNGImage {

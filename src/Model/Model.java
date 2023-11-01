@@ -1,3 +1,5 @@
+package Model;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -5,8 +7,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * The `Model` class represents the application's model. The model interacts with
- * various image operations through the `ImageOperations` interface to perform image-related tasks.
+ * The `Model.Model` class represents the application's model. The model interacts with
+ * various image operations through the `Model.ImageOperations` interface to perform image-related tasks.
  */
 public class Model implements IModel {
   private String input;

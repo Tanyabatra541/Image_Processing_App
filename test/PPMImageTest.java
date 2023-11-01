@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import Model.PPMImage;
+
 import static org.junit.Assert.*;
 public class PPMImageTest {
 

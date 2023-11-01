@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Model.JPGImage;
+
 import static org.junit.Assert.*;
 
 public class JPGImageTest {
