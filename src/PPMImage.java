@@ -3,8 +3,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+/**
+ * A class representing images in the PPM format. This class extends the `AbstractImage` class,
+ * providing functionality to load and save PPM images.
+ */
 public class PPMImage extends AbstractImage {
 
+  /**
+   * Loads a PPM image from the specified file and adds it to the image map.
+   *
+   * @param imagePath The file path of the PPM image to load.
+   * @param imageName The name to associate with the loaded image.
+   */
   @Override
   public void loadImage(String imagePath, String imageName) {
     int[][][] imageRGBData = readImageRGBData(imagePath);
@@ -75,6 +85,12 @@ public class PPMImage extends AbstractImage {
   }
 
 
+  /**
+   * Saves the specified PPM image content to a file with the given name and path.
+   *
+   * @param imagePath The file path where the PPM image should be saved.
+   * @param imageName The name of the image to be saved.
+   */
   @Override
   public void saveImage(String imagePath, String imageName) {
     ImageContent image = imageMap.get(imageName);

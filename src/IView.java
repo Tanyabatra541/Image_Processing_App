@@ -1,7 +1,7 @@
 import java.awt.event.ActionListener;
 
 /**
- * The interface for our view class
+ * The interface for our view class.
  */
 public interface IView {
   /**
@@ -10,7 +10,7 @@ public interface IView {
   void setEchoOutput(String s);
 
   /**
-   * Get the string from the text field and return it
+   * Get the string from the text field and return it.
    */
   String getInputString();
 
@@ -31,5 +31,8 @@ public interface IView {
    */
   void display();
 
+  /**
+   * Close this view.
+   */
   void closeOrDispose();
 }

@@ -20,28 +20,38 @@ public class PNGImageTest {
   private static String image2Path = "output2.png";
 
   int[][][] rgbMatrix = {
-          { {255, 0, 0}, {0, 255, 0} },
-          { {0, 0, 255}, {255, 255, 255} }
+          {{255, 0, 0}, {0, 255, 0}},
+          {{0, 0, 255}, {255, 255, 255}}
   };
 
   int[][][] rgbMatrix2 = {
-          {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
-          {{96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
-          {{32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}, {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
-          {{160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}},
-          {{64, 128, 96}, {255, 160, 192}, {96, 96, 128}, {192, 32, 128}, {32, 192, 255}, {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
-          {{192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
-          {{96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}},
-          {{224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}},
-          {{128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}},
-          {{192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 255, 128}}
+          {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128},
+                  {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
+          {{96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96},
+                  {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
+          {{32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255},
+                  {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
+          {{160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96},
+                  {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}},
+          {{64, 128, 96}, {255, 160, 192}, {96, 96, 128}, {192, 32, 128}, {32, 192, 255},
+                  {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
+          {{192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160},
+                  {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
+          {{96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160},
+                  {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}},
+          {{224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64},
+                  {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}},
+          {{128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32},
+                  {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}},
+          {{192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160},
+                  {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 255, 128}}
   };
 
   @Before
   public void setUp() {
     pngJpgImage = new PNGImage();
     createAndSavePNG(rgbMatrix, imageName, imagePath);
-    createAndSavePNG(rgbMatrix2,image2Name,image2Path);
+    createAndSavePNG(rgbMatrix2, image2Name, image2Path);
   }
 
   @Test
@@ -71,7 +81,7 @@ public class PNGImageTest {
     }
   }
 
-  public static void createAndSavePNG(int[][][] matrix,String fileName, String filePath) {
+  public static void createAndSavePNG(int[][][] matrix, String fileName, String filePath) {
 
     int width = matrix[0].length;
     int height = matrix.length;
@@ -116,7 +126,7 @@ public class PNGImageTest {
     int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-flip-img");
 
     // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData  = new int[2][2][3];
+    int[][][] expectedFlippedImageData = new int[2][2][3];
     expectedFlippedImageData[0][0] = new int[]{0, 0, 255};
     expectedFlippedImageData[0][1] = new int[]{255, 255, 255};
     expectedFlippedImageData[1][0] = new int[]{255, 0, 0};
@@ -136,7 +146,7 @@ public class PNGImageTest {
   public void testBrightenImage() throws IOException {
 
 
-    pngJpgImage.brightenImage(imageName, "brighten-img", 50); // Increase brightness by 50 (you can adjust the increment)
+    pngJpgImage.brightenImage(imageName, "brighten-img", 50);
 
     int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brighten-img");
 
@@ -162,7 +172,7 @@ public class PNGImageTest {
   @Test
   public void testDarkenImage() throws IOException {
     // Perform a brightness adjustment
-    pngJpgImage.brightenImage(imageName, "darken-img", -50); // Increase brightness by 50 (you can adjust the increment)
+    pngJpgImage.brightenImage(imageName, "darken-img", -50);
 
     // Get the brightened image data
     int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("darken-img");
@@ -196,13 +206,11 @@ public class PNGImageTest {
     int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData  = new int[2][2][3];
+    int[][][] expectedFlippedImageData = new int[2][2][3];
     expectedFlippedImageData[0][0] = new int[]{0, 255, 0};
     expectedFlippedImageData[0][1] = new int[]{255, 0, 0};
     expectedFlippedImageData[1][0] = new int[]{255, 255, 255};
     expectedFlippedImageData[1][1] = new int[]{0, 0, 255};
-
-
 
 
     for (int y = 0; y < expectedFlippedImageData.length; y++) {
@@ -222,19 +230,18 @@ public class PNGImageTest {
     pngJpgImage.horizontalFlipImage(imageName, "horizontal-flip-img");
 
     // Perform a horizontal flip
-    pngJpgImage.verticalFlipImage("horizontal-flip-img", "horizontal-vertical-flip-img");
+    pngJpgImage.verticalFlipImage("horizontal-flip-img",
+            "horizontal-vertical-flip-img");
 
     // Get the flipped image data
     int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-vertical-flip-img");
 
     // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData  = new int[2][2][3];
+    int[][][] expectedFlippedImageData = new int[2][2][3];
     expectedFlippedImageData[0][0] = new int[]{255, 255, 255};
     expectedFlippedImageData[0][1] = new int[]{0, 0, 255};
     expectedFlippedImageData[1][0] = new int[]{0, 255, 0};
     expectedFlippedImageData[1][1] = new int[]{255, 0, 0};
-
-
 
 
     for (int y = 0; y < expectedFlippedImageData.length; y++) {
@@ -254,19 +261,18 @@ public class PNGImageTest {
     pngJpgImage.verticalFlipImage(imageName, "vertical-flip-img");
 
     // Perform a horizontal flip
-    pngJpgImage.horizontalFlipImage("vertical-flip-img", "vertical-horizontal-flip-img");
+    pngJpgImage.horizontalFlipImage("vertical-flip-img",
+            "vertical-horizontal-flip-img");
 
     // Get the flipped image data
     int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData  = new int[2][2][3];
+    int[][][] expectedFlippedImageData = new int[2][2][3];
     expectedFlippedImageData[0][0] = new int[]{255, 255, 255};
     expectedFlippedImageData[0][1] = new int[]{0, 0, 255};
     expectedFlippedImageData[1][0] = new int[]{0, 255, 0};
     expectedFlippedImageData[1][1] = new int[]{255, 0, 0};
-
-
 
 
     for (int y = 0; y < expectedFlippedImageData.length; y++) {
@@ -292,16 +298,26 @@ public class PNGImageTest {
 
     // Define the expected RGB values for the sharpened image
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {180, 75, 40}, {220, 167, 0}, {160, 255, 251}, {163, 136, 180}, {195, 175, 0}, {68, 179, 84}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {223, 12, 52}, {132, 96, 163}, {116, 148, 239}, {143, 255, 191}, {179, 255, 0}, {155, 255, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {179, 75, 92}, {196, 31, 83}, {8, 152, 255}, {71, 88, 239}, {203, 135, 0}, {68, 155, 104}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {191, 135, 112}, {168, 64, 103}, {80, 108, 199}, {0, 220, 163}, {136, 12, 188}, {171, 0, 131}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {180, 108, 136}, {172, 192, 88}, {56, 255, 80}, {64, 255, 64}, {232, 198, 8}, {255, 51, 108}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {184, 124, 112}, {56, 255, 160}, {116, 255, 32}, {204, 255, 0}, {255, 115, 88}, {255, 132, 68}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {180, 75, 40}, {220, 167, 0}, {160, 255, 251}, {163, 136, 180},
+                    {195, 175, 0}, {68, 179, 84}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {223, 12, 52}, {132, 96, 163}, {116, 148, 239}, {143, 255, 191},
+                    {179, 255, 0}, {155, 255, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {179, 75, 92}, {196, 31, 83}, {8, 152, 255}, {71, 88, 239},
+                    {203, 135, 0}, {68, 155, 104}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {191, 135, 112}, {168, 64, 103}, {80, 108, 199}, {0, 220, 163},
+                    {136, 12, 188}, {171, 0, 131}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {180, 108, 136}, {172, 192, 88}, {56, 255, 80}, {64, 255, 64},
+                    {232, 198, 8}, {255, 51, 108}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {184, 124, 112}, {56, 255, 160}, {116, 255, 32}, {204, 255, 0},
+                    {255, 115, 88}, {255, 132, 68}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
     };
 
     for (int y = 0; y < sharpenedImageData.length; y++) {
@@ -325,18 +341,30 @@ public class PNGImageTest {
 
     // Check if the blurred image matches the expected result
     int[][][] expectedBlurredImageData = {
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {135, 161, 106}, {143, 151, 103}, {159, 127, 135}, {165, 122, 147}, {135, 125, 145}, {135, 113, 138}, {135, 107, 123}, {126, 132, 139}, {0, 0, 0}},
-            {{0, 0, 0}, {124, 135, 134}, {152, 117, 108}, {159, 135, 119}, {153, 156, 155}, {143, 144, 145}, {147, 139, 110}, {127, 141, 119}, {125, 123, 155}, {0, 0, 0}},
-            {{0, 0, 0}, {141, 131, 140}, {157, 109, 114}, {148, 122, 127}, {134, 152, 163}, {139, 154, 143}, {151, 171, 88}, {135, 171, 103}, {147, 119, 151}, {0, 0, 0}},
-            {{0, 0, 0}, {157, 129, 146}, {157, 119, 124}, {148, 109, 129}, {118, 136, 163}, {119, 142, 149}, {147, 139, 110}, {127, 141, 119}, {125, 123, 155}, {0, 0, 0}},
-            {{0, 0, 0}, {159, 115, 140}, {153, 131, 124}, {154, 129, 115}, {120, 150, 137}, {105, 157, 133}, {141, 123, 126}, {147, 105, 129}, {131, 132, 139}, {0, 0, 0}},
-            {{0, 0, 0}, {164, 123, 112}, {158, 141, 118}, {150, 161, 116}, {128, 185, 108}, {126, 193, 94}, {165, 149, 106}, {189, 113, 118}, {155, 136, 119}, {0, 0, 0}},
-            {{0, 0, 0}, {164, 137, 110}, {150, 160, 122}, {134, 189, 112}, {138, 203, 88}, {169, 181, 84}, {197, 143, 102}, {177, 131, 116}, {131, 126, 134}, {0, 0, 0}},
-            {{0, 0, 0}, {150, 160, 122}, {134, 189, 112}, {138, 203, 88}, {169, 181, 84}, {197, 143, 102}, {177, 131, 116}, {131, 126, 134}, {117, 103, 154}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
-            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {135, 161, 106}, {143, 151, 103}, {159, 127, 135}, {165, 122, 147},
+                    {135, 125, 145}, {135, 113, 138}, {135, 107, 123}, {126, 132, 139}, {0, 0, 0}},
+            {{0, 0, 0}, {124, 135, 134}, {152, 117, 108}, {159, 135, 119}, {153, 156, 155},
+                    {143, 144, 145}, {147, 139, 110}, {127, 141, 119}, {125, 123, 155}, {0, 0, 0}},
+            {{0, 0, 0}, {141, 131, 140}, {157, 109, 114}, {148, 122, 127}, {134, 152, 163},
+                    {139, 154, 143}, {151, 171, 88}, {135, 171, 103}, {147, 119, 151}, {0, 0, 0}},
+            {{0, 0, 0}, {157, 129, 146}, {157, 119, 124}, {148, 109, 129}, {118, 136, 163},
+                    {119, 142, 149}, {147, 139, 110}, {127, 141, 119}, {125, 123, 155}, {0, 0, 0}},
+            {{0, 0, 0}, {159, 115, 140}, {153, 131, 124}, {154, 129, 115}, {120, 150, 137},
+                    {105, 157, 133}, {141, 123, 126}, {147, 105, 129}, {131, 132, 139}, {0, 0, 0}},
+            {{0, 0, 0}, {164, 123, 112}, {158, 141, 118}, {150, 161, 116}, {128, 185, 108},
+                    {126, 193, 94}, {165, 149, 106}, {189, 113, 118}, {155, 136, 119}, {0, 0, 0}},
+            {{0, 0, 0}, {164, 137, 110}, {150, 160, 122}, {134, 189, 112}, {138, 203, 88},
+                    {169, 181, 84}, {197, 143, 102}, {177, 131, 116}, {131, 126, 134}, {0, 0, 0}},
+            {{0, 0, 0}, {150, 160, 122}, {134, 189, 112}, {138, 203, 88}, {169, 181, 84},
+                    {197, 143, 102}, {177, 131, 116}, {131, 126, 134}, {117, 103, 154}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0},
+                    {0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
     };
 
     for (int y = 0; y < blurredImageData.length; y++) {
@@ -382,9 +410,9 @@ public class PNGImageTest {
   public void testExtractRedComponent() {
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
-    int[][][] expectedRedComponent =  {
-            { {255, 0, 0}, {0, 0, 0} },
-            { {0, 0, 0}, {255, 0, 0} }
+    int[][][] expectedRedComponent = {
+            {{255, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {255, 0, 0}}
     };
 
 
@@ -409,9 +437,9 @@ public class PNGImageTest {
   public void testExtractGreenComponent() {
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
-    int[][][] expectedGreenComponent =  {
-      { {0, 0, 0}, {0, 255, 0} },
-      { {0, 0, 0}, {0, 255, 0} }
+    int[][][] expectedGreenComponent = {
+            {{0, 0, 0}, {0, 255, 0}},
+            {{0, 0, 0}, {0, 255, 0}}
     };
 
 
@@ -436,8 +464,8 @@ public class PNGImageTest {
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedBlueComponent = {
-            { {0, 0, 0}, {0, 0, 0} },
-            { {0, 0, 255}, {0, 0, 255} }
+            {{0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 255}, {0, 0, 255}}
     };
 
 
@@ -462,8 +490,8 @@ public class PNGImageTest {
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedValueComponent = {
-            { {255, 255, 255}, {255, 255, 255} },
-            { {255, 255, 255}, {255, 255, 255} }
+            {{255, 255, 255}, {255, 255, 255}},
+            {{255, 255, 255}, {255, 255, 255}}
     };
 
 
@@ -489,8 +517,8 @@ public class PNGImageTest {
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedLumaComponent = {
-            { {54, 54, 54}, {182, 182, 182} },
-            { {18, 18, 18}, {254, 254, 254} }
+            {{54, 54, 54}, {182, 182, 182}},
+            {{18, 18, 18}, {254, 254, 254}}
     };
 
 
@@ -516,8 +544,8 @@ public class PNGImageTest {
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedIntensityComponent = {
-            { {85, 85, 85}, {85, 85, 85} },
-            { {85, 85, 85}, {255, 255, 255} }
+            {{85, 85, 85}, {85, 85, 85}},
+            {{85, 85, 85}, {255, 255, 255}}
     };
 
 
@@ -541,7 +569,8 @@ public class PNGImageTest {
   @Test
   public void testRGBSplit() {
     // Perform RGB splitting on the image
-    pngJpgImage.rgbSplitImage(imageName, "red-component-img","green-component-img","blue-component-img");
+    pngJpgImage.rgbSplitImage(imageName, "red-component-img",
+            "green-component-img", "blue-component-img");
 
     // Get the split RGB components
     int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
@@ -563,19 +592,19 @@ public class PNGImageTest {
     assertEquals(rgbMatrix.length, extractedBlueComponent.length);
     assertEquals(rgbMatrix[0].length, extractedBlueComponent[0].length);
 
-    int[][][] expectedRedComponent =  {
-            { {255, 0, 0}, {0, 0, 0} },
-            { {0, 0, 0}, {255, 0, 0} }
+    int[][][] expectedRedComponent = {
+            {{255, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {255, 0, 0}}
     };
 
-    int[][][] expectedGreenComponent =  {
-            { {0, 0, 0}, {0, 255, 0} },
-            { {0, 0, 0}, {0, 255, 0} }
+    int[][][] expectedGreenComponent = {
+            {{0, 0, 0}, {0, 255, 0}},
+            {{0, 0, 0}, {0, 255, 0}}
     };
 
     int[][][] expectedBlueComponent = {
-            { {0, 0, 0}, {0, 0, 0} },
-            { {0, 0, 255}, {0, 0, 255} }
+            {{0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 255}, {0, 0, 255}}
     };
 
     // Compare the extracted components with the original image
@@ -598,7 +627,8 @@ public class PNGImageTest {
     pngJpgImage.extractComponent(imageName, "blue-component-img2", "blue");
 
     // Perform RGB combining on the separated components
-    pngJpgImage.combineRGBImages("combined-img","red-component-img2", "green-component-img2", "blue-component-img2");
+    pngJpgImage.combineRGBImages("combined-img", "red-component-img2",
+            "green-component-img2", "blue-component-img2");
 
     // Get the combined RGB data
     int[][][] combinedRGBData = pngJpgImage.getRgbDataMap().get("combined-img");
@@ -644,17 +674,20 @@ public class PNGImageTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testExtractComponentWithInvalidSourceName() {
-    pngJpgImage.extractComponent("nonExistentImage", "destName", "red");
+    pngJpgImage.extractComponent("nonExistentImage", "destName",
+            "red");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testCombineRGBImagesWithMismatchedDimensions() {
-    pngJpgImage.combineRGBImages("combinedName", "redName", "greenName", "blueName");
+    pngJpgImage.combineRGBImages("combinedName", "redName",
+            "greenName", "blueName");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testRGBSplitImageWithInvalidSourceName() {
-    pngJpgImage.rgbSplitImage("nonExistentImage", "destNameRed", "destNameGreen", "destNameBlue");
+    pngJpgImage.rgbSplitImage("nonExistentImage", "destNameRed",
+            "destNameGreen", "destNameBlue");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -663,7 +696,7 @@ public class PNGImageTest {
     pngJpgImage.saveImage(invalidPath, imageName);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testSaveImageWithInvalidFilename() throws IOException {
     String invalidFilename = "file/with/invalid_name.png";
     pngJpgImage.saveImage(imagePath, invalidFilename);

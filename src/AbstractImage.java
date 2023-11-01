@@ -1,11 +1,13 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
-public abstract class AbstractImage implements ImageOperations{
+/**
+ * This abstract class defines a set of image manipulation operations and provides common
+ * functionality for image processing. Subclass implements methods for loading and saving
+ * images in specific formats.
+ */
+public abstract class AbstractImage implements ImageOperations {
 
 
   static final Map<String, ImageContent> imageMap = new HashMap<>();
@@ -15,7 +17,6 @@ public abstract class AbstractImage implements ImageOperations{
 
   static ImageOperations imageObj = null;
 
-  // Define the sharpening kernel
   float[] sharpeningKernel = {
           -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
           -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
@@ -24,19 +25,38 @@ public abstract class AbstractImage implements ImageOperations{
           -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
   };
 
-  // Define the Gaussian blur kernel
+
   float[] gaussianKernel = {
           1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
           1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
           1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
   };
 
-
+  /**
+   * Load an image from a file and store it in the image map and RGB data map.
+   *
+   * @param imagePath The file path of the image to load.
+   * @param imageName The name to associate with the loaded image.
+   * @throws IOException If an error occurs while loading the image.
+   */
   public abstract void loadImage(String imagePath, String imageName) throws IOException;
 
+  /**
+   * Save an image to a file using a specific format.
+   *
+   * @param imagePath The file path to save the image.
+   * @param imageName The name of the image to be saved.
+   * @throws IOException If an error occurs while saving the image.
+   */
   public abstract void saveImage(String imagePath, String imageName) throws IOException;
 
 
+  /**
+   * Flip an image horizontally and save it as a new image with the given name.
+   *
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination image.
+   */
   @Override
   public void horizontalFlipImage(String sourceImageName, String destImageName) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
@@ -48,27 +68,23 @@ public abstract class AbstractImage implements ImageOperations{
         int width = sourceRGBData[0].length;
         int height = sourceRGBData.length;
 
-        // Create a new RGB data array for the horizontally flipped image
         int[][][] flippedRGBData = new int[height][width][3];
 
-        // Iterate over the source RGB data and flip it horizontally in the new array
         for (int y = 0; y < height; y++) {
           for (int x = 0; x < width; x++) {
             flippedRGBData[y][x] = sourceRGBData[y][width - x - 1];
           }
         }
 
-        // Create a new content string for the flipped image using createPPMContent function
         StringBuilder flippedContent = createPPMContent(width, height, flippedRGBData);
 
-        // Store the horizontally flipped image in the image map
         ImageContent flippedImage = new ImageContent(destImageName, flippedContent.toString());
         imageMap.put(destImageName, flippedImage);
 
-        // Also save the flipped RGB data in the rgbDataMap
         rgbDataMap.put(destImageName, flippedRGBData);
 
-        System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '" + destImageName + "'.");
+        System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '"
+                + destImageName + "'.");
       } else {
         System.out.println("Failed to flip the source image; invalid RGB data.");
       }
@@ -78,33 +94,32 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
+  /**
+   * Flip an image vertically and save it as a new image with the given name.
+   *
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination image.
+   */
   @Override
   public void verticalFlipImage(String sourceImageName, String destImageName) {
-    // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceImageName);
-
     }
 
-    // Get the RGB data for the source image
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
 
-    // Create a new RGB data array for the flipped image
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] flippedRGBData = new int[height][width][3];
 
-    // Perform the vertical flip by reversing the order of rows
     for (int y = 0; y < height; y++) {
-      int newY = height - 1 - y; // Calculate the new Y coordinate for the flipped image
-      flippedRGBData[newY] = sourceRGBData[y]; // Copy the row to the flipped position
+      int newY = height - 1 - y;
+      flippedRGBData[newY] = sourceRGBData[y];
     }
 
-    // Create a new content string for the flipped image using createPPMContent function
     StringBuilder flippedContent = createPPMContent(width, height, flippedRGBData);
 
-    // Store the flipped image in the image map
     ImageContent flippedImage = new ImageContent(destImageName, flippedContent.toString());
     imageMap.put(destImageName, flippedImage);
     rgbDataMap.put(destImageName, flippedRGBData);
@@ -113,24 +128,28 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
+  /**
+   * Applies a sharpening kernel to the source image, creating a sharpened image with the given
+   * name.
+   *
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination sharpened image.
+   * @throws IllegalArgumentException If the source image is not found or the destination name
+   *                                  is invalid.
+   */
   @Override
   public void sharpenImage(String sourceImageName, String destImageName) {
-    // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceImageName);
 
     }
-
-    // Get the RGB data for the source image
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
 
-    // Create a new RGB data array for the sharpened image
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] sharpenedRGBData = new int[height][width][3];
 
-    // Perform the sharpening operation
     for (int y = 2; y < height - 2; y++) {
       for (int x = 2; x < width - 2; x++) {
         for (int channel = 0; channel < 3; channel++) {
@@ -142,16 +161,14 @@ public abstract class AbstractImage implements ImageOperations{
               sum += kernelValue * pixelValue;
             }
           }
-          int newValue = Math.min(255, Math.max(0, (int) sum)); // Ensure the value is in the 0-255 range
+          int newValue = Math.min(255, Math.max(0, (int) sum));
           sharpenedRGBData[y][x][channel] = newValue;
         }
       }
     }
 
-    // Create a new content string for the sharpened image using createPPMContent function
     StringBuilder sharpenedContent = createPPMContent(width, height, sharpenedRGBData);
 
-    // Store the sharpened image in the image map
     ImageContent sharpenedImage = new ImageContent(destImageName, sharpenedContent.toString());
     imageMap.put(destImageName, sharpenedImage);
     rgbDataMap.put(destImageName, sharpenedRGBData);
@@ -160,25 +177,29 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
-
+  /**
+   * Applies a blurring effect to the source image, creating a blurred version with the given name.
+   * This method uses a Gaussian blurring kernel.
+   *
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination blurred image.
+   * @throws IllegalArgumentException If the source image is not found or the destination name
+   *                                  is invalid.
+   */
   @Override
   public void blurImage(String sourceImageName, String destImageName) {
-    // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceImageName);
 
     }
 
-    // Get the RGB data for the source image
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
 
-    // Create a new RGB data array for the blurred image
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] blurredRGBData = new int[height][width][3];
 
-    // Perform the blurring operation
     for (int y = 1; y < height - 1; y++) {
       for (int x = 1; x < width - 1; x++) {
         for (int channel = 0; channel < 3; channel++) {
@@ -192,16 +213,14 @@ public abstract class AbstractImage implements ImageOperations{
               kernelIndex++;
             }
           }
-          int newValue = Math.min(255, Math.max(0, (int) sum)); // Ensure the value is in the 0-255 range
+          int newValue = Math.min(255, Math.max(0, (int) sum));
           blurredRGBData[y][x][channel] = newValue;
         }
       }
     }
 
-    // Create a new content string for the blurred image using createPPMContent function
     StringBuilder blurredContent = createPPMContent(width, height, blurredRGBData);
 
-    // Store the blurred image in the image map
     ImageContent blurredImage = new ImageContent(destImageName, blurredContent.toString());
     imageMap.put(destImageName, blurredImage);
     rgbDataMap.put(destImageName, blurredRGBData);
@@ -210,39 +229,43 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
-
+  /**
+   * Brighten the colors of the source image by a specified increment and save the brightened
+   * image with the given name.
+   *
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination brightened image.
+   * @param increment       The amount by which to increment the color values. Positive values
+   *                        brighten, negative values darken.
+   * @throws IllegalArgumentException If the source image is not found or the destination
+   *                                  name is invalid.
+   */
   @Override
   public void brightenImage(String sourceImageName, String destImageName, int increment) {
-    // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceImageName);
     }
 
-    // Get the RGB data for the source image
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
 
-    // Create a new RGB data array for the brightened image
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] brightenedRGBData = new int[height][width][3];
 
-    // Perform the brightening by incrementing the color values
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         for (int channel = 0; channel < 3; channel++) {
           int originalValue = sourceRGBData[y][x][channel];
           int newValue = originalValue + increment;
-          newValue = Math.min(255, Math.max(0, newValue)); // Ensure the value is in the 0-255 range
+          newValue = Math.min(255, Math.max(0, newValue));
           brightenedRGBData[y][x][channel] = newValue;
         }
       }
     }
 
-    // Create a new content string for the brightened image using createPPMContent function
     StringBuilder brightenedContent = createPPMContent(width, height, brightenedRGBData);
 
-    // Store the brightened image in the image map
     ImageContent brightenedImage = new ImageContent(destImageName, brightenedContent.toString());
     imageMap.put(destImageName, brightenedImage);
     rgbDataMap.put(destImageName, brightenedRGBData);
@@ -251,23 +274,26 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
+  /**
+   * Applies a sepia filter to the source image and save the sepia-toned image with the given name.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination sepia-toned image.
+   * @throws IllegalArgumentException If the source image is not found.
+   */
   @Override
   public void sepiaImage(String sourceName, String destName) {
-    // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
 
-    // Get the RGB data for the source image
     int[][][] sourceRGBData = rgbDataMap.get(sourceName);
 
-    // Create a new RGB data array for the sepia-toned image
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] sepiaRGBData = new int[height][width][3];
 
-    // Apply the sepia filter to each pixel
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         int r = sourceRGBData[y][x][0];
@@ -278,7 +304,6 @@ public abstract class AbstractImage implements ImageOperations{
         int tg = (int) (0.349 * r + 0.686 * g + 0.168 * b);
         int tb = (int) (0.272 * r + 0.534 * g + 0.131 * b);
 
-        // Ensure color values are in the 0-255 range
         tr = Math.min(255, Math.max(0, tr));
         tg = Math.min(255, Math.max(0, tg));
         tb = Math.min(255, Math.max(0, tb));
@@ -289,10 +314,8 @@ public abstract class AbstractImage implements ImageOperations{
       }
     }
 
-    // Create a new content string for the sepia-toned image using createPPMContent function
     StringBuilder sepiaContent = createPPMContent(width, height, sepiaRGBData);
 
-    // Store the sepia-toned image in the image map
     ImageContent sepiaImage = new ImageContent(destName, sepiaContent.toString());
     imageMap.put(destName, sepiaImage);
     rgbDataMap.put(destName, sepiaRGBData);
@@ -301,9 +324,20 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
+  /**
+   * Combine three source images representing the red, green, and blue channels into a single
+   * image.
+   * The combined image is saved with the given name.
+   *
+   * @param combinedName The name of the combined RGB image.
+   * @param redName      The name of the source image for the red channel.
+   * @param greenName    The name of the source image for the green channel.
+   * @param blueName     The name of the source image for the blue channel.
+   * @throws IllegalArgumentException If one or more of the source images are not found.
+   */
   @Override
-  public void combineRGBImages(String combinedName, String redName, String greenName, String blueName) {
-    // Check if the source images exist
+  public void combineRGBImages(String combinedName, String redName, String greenName,
+                               String blueName) {
     ImageContent redImage = imageMap.get(redName);
     ImageContent greenImage = imageMap.get(greenName);
     ImageContent blueImage = imageMap.get(blueName);
@@ -313,25 +347,21 @@ public abstract class AbstractImage implements ImageOperations{
       return;
     }
 
-    // Get the RGB data for the source images
     int[][][] redRGBData = rgbDataMap.get(redName);
     int[][][] greenRGBData = rgbDataMap.get(greenName);
     int[][][] blueRGBData = rgbDataMap.get(blueName);
 
-    // Check if the dimensions of the images match
     int height = redRGBData.length;
     int width = redRGBData[0].length;
 
-    if (height != greenRGBData.length || height != blueRGBData.length ||
-            width != greenRGBData[0].length || width != blueRGBData[0].length) {
+    if (height != greenRGBData.length || height != blueRGBData.length
+            || width != greenRGBData[0].length || width != blueRGBData[0].length) {
       System.out.println("Source images have different dimensions.");
       return;
     }
 
-    // Create a new RGB data array for the combined image
     int[][][] combinedRGBData = new int[height][width][3];
 
-    // Combine the RGB channels into a single image
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         combinedRGBData[y][x][0] = redRGBData[y][x][0];
@@ -340,10 +370,8 @@ public abstract class AbstractImage implements ImageOperations{
       }
     }
 
-    // Create a new content string for the combined image using createPPMContent function
     StringBuilder combinedContent = createPPMContent(width, height, combinedRGBData);
 
-    // Store the combined image in the image map
     ImageContent combinedImage = new ImageContent(combinedName, combinedContent.toString());
     imageMap.put(combinedName, combinedImage);
     rgbDataMap.put(combinedName, combinedRGBData);
@@ -352,55 +380,58 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
-
+  /**
+   * Split the RGB components of a source image into separate images representing the red, green,
+   * and blue channels.
+   * The resulting images are saved with the specified names.
+   *
+   * @param sourceName    The name of the source image to split into RGB channels.
+   * @param destNameRed   The name of the resulting image representing the red channel.
+   * @param destNameGreen The name of the resulting image representing the green channel.
+   * @param destNameBlue  The name of the resulting image representing the blue channel.
+   * @throws IllegalArgumentException If the source image is not found or the dimensions of
+   *                                  the source image are incompatible.
+   */
   @Override
-  public void rgbSplitImage(String sourceName, String destNameRed, String destNameGreen, String destNameBlue) {
-    // Check if the source image exists
+  public void rgbSplitImage(String sourceName, String destNameRed, String destNameGreen,
+                            String destNameBlue) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
 
-    // Get the RGB data for the source image
     int[][][] sourceRGBData = rgbDataMap.get(sourceName);
 
-    // Create new RGB data arrays for the red, green, and blue channels
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] redRGBData = new int[height][width][3];
     int[][][] greenRGBData = new int[height][width][3];
     int[][][] blueRGBData = new int[height][width][3];
 
-    // Split the RGB channels into separate images
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         int r = sourceRGBData[y][x][0];
         int g = sourceRGBData[y][x][1];
         int b = sourceRGBData[y][x][2];
 
-        // Red channel image
         redRGBData[y][x][0] = r;
         redRGBData[y][x][1] = 0;
         redRGBData[y][x][2] = 0;
 
-        // Green channel image
         greenRGBData[y][x][0] = 0;
         greenRGBData[y][x][1] = g;
         greenRGBData[y][x][2] = 0;
 
-        // Blue channel image
         blueRGBData[y][x][0] = 0;
         blueRGBData[y][x][1] = 0;
         blueRGBData[y][x][2] = b;
       }
     }
 
-    // Create content strings for the red, green, and blue channel images using createPPMContent function
     StringBuilder redContent = createPPMContent(width, height, redRGBData);
     StringBuilder greenContent = createPPMContent(width, height, greenRGBData);
     StringBuilder blueContent = createPPMContent(width, height, blueRGBData);
 
-    // Store the red, green, and blue channel images in the image map
     ImageContent redImage = new ImageContent(destNameRed, redContent.toString());
     ImageContent greenImage = new ImageContent(destNameGreen, greenContent.toString());
     ImageContent blueImage = new ImageContent(destNameBlue, blueContent.toString());
@@ -413,15 +444,15 @@ public abstract class AbstractImage implements ImageOperations{
     rgbDataMap.put(destNameGreen, greenRGBData);
     rgbDataMap.put(destNameBlue, blueRGBData);
 
-    System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen + ", " + destNameBlue);
+    System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
+            + ", " + destNameBlue);
   }
 
-  // Helper method to create PPM content for a given RGB data
   private StringBuilder createPPMContent(int width, int height, int[][][] rgbData) {
     StringBuilder content = new StringBuilder();
     content.append("P3\n");
     content.append(width).append(" ").append(height).append("\n");
-    content.append("255\n"); // Maximum color component value
+    content.append("255\n");
 
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
@@ -437,6 +468,22 @@ public abstract class AbstractImage implements ImageOperations{
   }
 
 
+  /**
+   * Extract a specific component from a source image and save it as a separate image.
+   *
+   * @param sourceName The name of the source image from which to extract the component.
+   * @param destName   The name of the resulting image that will contain the extracted component.
+   * @param component  The component to extract, which can be one of the following:
+   *                   - "red": Extract the red channel.
+   *                   - "green": Extract the green channel.
+   *                   - "blue": Extract the blue channel.
+   *                   - "luma": Convert the image to grayscale using luminance.
+   *                   - "intensity": Convert the image to grayscale using intensity.
+   *                   - "value": Extract the value (brightness) component of an image.
+   * @throws IllegalArgumentException If the source image is not found, the component
+   *                                  parameter is invalid,
+   *                                  or the source image's RGB data is invalid.
+   */
   @Override
   public void extractComponent(String sourceName, String destName, String component) {
     ImageContent sourceImage = imageMap.get(sourceName);
@@ -448,7 +495,6 @@ public abstract class AbstractImage implements ImageOperations{
         int height = sourceRGBData.length;
         int width = sourceRGBData[0].length;
 
-        // Create a new RGB data array for the extracted component
         int[][][] extractedRGBData = new int[height][width][3];
 
         for (int y = 0; y < height; y++) {
@@ -459,36 +505,30 @@ public abstract class AbstractImage implements ImageOperations{
 
             switch (component) {
               case "red":
-                // Set the red component to the extracted value, keep green and blue
                 g = 0;
                 b = 0;
                 break;
               case "green":
-                // Set the green component to the extracted value, keep red and blue
                 r = 0;
                 b = 0;
                 break;
               case "blue":
-                // Set the blue component to the extracted value, keep red and green
                 r = 0;
                 g = 0;
                 break;
               case "luma":
-                // Calculate luma from RGB (standard BT.709 formula)
                 int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
                 r = luma;
                 g = luma;
                 b = luma;
                 break;
               case "intensity":
-                // Calculate intensity from RGB (average of RGB components)
                 int intensity = (r + g + b) / 3;
                 r = intensity;
                 g = intensity;
                 b = intensity;
                 break;
               case "value":
-                // Extract value (brightness) from RGB (maximum of RGB components)
                 int value = Math.max(r, Math.max(g, b));
                 r = value;
                 g = value;
@@ -498,21 +538,19 @@ public abstract class AbstractImage implements ImageOperations{
                 throw new IllegalArgumentException("Invalid component parameter: " + component);
 
             }
-
             extractedRGBData[y][x][0] = r;
             extractedRGBData[y][x][1] = g;
             extractedRGBData[y][x][2] = b;
           }
         }
 
-        // Create a new content string for the extracted component
         StringBuilder extractedContent = createPPMContent(width, height, extractedRGBData);
 
-        // Store the extracted component image in the image map
         ImageContent destImage = new ImageContent(destName, extractedContent.toString());
         imageMap.put(destName, destImage);
         rgbDataMap.put(destName, extractedRGBData);
-        System.out.println(component + " component image created from '" + sourceName + "' and saved as '" + destName + "'");
+        System.out.println(component + " component image created from '" + sourceName
+                + "' and saved as '" + destName + "'");
       } else {
         System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
       }
@@ -520,17 +558,27 @@ public abstract class AbstractImage implements ImageOperations{
       throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
   }
-  public Map<String, ImageContent> getImageMap(){
+
+  /**
+   * Get a map of image names to their corresponding ImageContent objects.
+   *
+   * @return A map where keys are image names and values are the corresponding ImageContent objects.
+   */
+  public Map<String, ImageContent> getImageMap() {
     return imageMap;
   }
 
-  public Map<String, int[][][]> getRgbDataMap(){
+  /**
+   * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
+   *
+   * @return A map where keys are image names, and values are the corresponding RGB data represented
+   * as a 3D integer array.
+   */
+  public Map<String, int[][][]> getRgbDataMap() {
     return rgbDataMap;
   }
 
   protected boolean isValidFilename(String filename) {
-    // Implement your filename validation logic here
-    // For example, you can check for illegal characters or other criteria
     return filename.matches("[a-zA-Z0-9_\\-]+\\.png");
   }
 

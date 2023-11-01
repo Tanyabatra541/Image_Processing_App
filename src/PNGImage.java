@@ -6,6 +6,11 @@ import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
+/**
+ * The `PNGImage` class extends `AbstractImage` and provides specific functionality for working
+ * with PNG image files. It includes methods for loading PNG images and saving images in the
+ * PNG format.
+ */
 public class PNGImage extends AbstractImage {
 
   private static String serializeImageData(int[][][] imageData) {
@@ -23,6 +28,12 @@ public class PNGImage extends AbstractImage {
   }
 
 
+  /**
+   * Converts RGB image data represented as a three-dimensional array into a `BufferedImage`.
+   *
+   * @param rgbData The three-dimensional array representing the RGB image data.
+   * @return A `BufferedImage` object containing the image data.
+   */
   public static BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
     int height = rgbData.length;
     int width = rgbData[0].length;
@@ -45,6 +56,13 @@ public class PNGImage extends AbstractImage {
   }
 
 
+  /**
+   * Loads a PNG image from the specified file path and stores it in the image map and RGB data map.
+   *
+   * @param imagePath The file path of the PNG image to load.
+   * @param imageName The name to associate with the loaded image.
+   * @throws IOException If an I/O error occurs during the loading process.
+   */
   @Override
   public void loadImage(String imagePath, String imageName) throws IOException {
     int[][][] imageRGBData = null;
@@ -98,6 +116,13 @@ public class PNGImage extends AbstractImage {
     }
   }
 
+  /**
+   * Saves an image as a PNG file to the specified file path.
+   *
+   * @param imagePath The file path where the PNG image should be saved.
+   * @param imageName The name of the image to be saved.
+   * @throws IOException If an I/O error occurs during the saving process.
+   */
   @Override
   public void saveImage(String imagePath, String imageName) throws IOException {
     int[][][] rgbData = rgbDataMap.get(imageName);
