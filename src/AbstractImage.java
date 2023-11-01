@@ -73,7 +73,7 @@ public abstract class AbstractImage implements ImageOperations{
         System.out.println("Failed to flip the source image; invalid RGB data.");
       }
     } else {
-      System.out.println("Source image not found: " + sourceImageName);
+      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
     }
   }
 
@@ -83,8 +83,8 @@ public abstract class AbstractImage implements ImageOperations{
     // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-      return;
+      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+
     }
 
     // Get the RGB data for the source image
@@ -118,8 +118,8 @@ public abstract class AbstractImage implements ImageOperations{
     // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-      return;
+      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+
     }
 
     // Get the RGB data for the source image
@@ -166,8 +166,8 @@ public abstract class AbstractImage implements ImageOperations{
     // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-      return;
+      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+
     }
 
     // Get the RGB data for the source image
@@ -216,8 +216,7 @@ public abstract class AbstractImage implements ImageOperations{
     // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-      return;
+      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
     }
 
     // Get the RGB data for the source image
@@ -257,8 +256,7 @@ public abstract class AbstractImage implements ImageOperations{
     // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceName);
-      return;
+      throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
 
     // Get the RGB data for the source image
@@ -360,8 +358,7 @@ public abstract class AbstractImage implements ImageOperations{
     // Check if the source image exists
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceName);
-      return;
+      throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
 
     // Get the RGB data for the source image
@@ -498,8 +495,8 @@ public abstract class AbstractImage implements ImageOperations{
                 b = value;
                 break;
               default:
-                System.out.println("Invalid component parameter: " + component);
-                return;
+                throw new IllegalArgumentException("Invalid component parameter: " + component);
+
             }
 
             extractedRGBData[y][x][0] = r;
@@ -520,7 +517,7 @@ public abstract class AbstractImage implements ImageOperations{
         System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
       }
     } else {
-      System.out.println("Source image not found: " + sourceName);
+      throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
   }
   public Map<String, ImageContent> getImageMap(){
@@ -529,6 +526,12 @@ public abstract class AbstractImage implements ImageOperations{
 
   public Map<String, int[][][]> getRgbDataMap(){
     return rgbDataMap;
+  }
+
+  protected boolean isValidFilename(String filename) {
+    // Implement your filename validation logic here
+    // For example, you can check for illegal characters or other criteria
+    return filename.matches("[a-zA-Z0-9_\\-]+\\.png");
   }
 
 

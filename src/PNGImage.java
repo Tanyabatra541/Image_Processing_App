@@ -6,7 +6,7 @@ import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
-public class PNGJPGImage extends AbstractImage {
+public class PNGImage extends AbstractImage {
 
   private static String serializeImageData(int[][][] imageData) {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -102,13 +102,30 @@ public class PNGJPGImage extends AbstractImage {
   public void saveImage(String imagePath, String imageName) throws IOException {
     int[][][] rgbData = rgbDataMap.get(imageName);
 
+
+
     if (rgbData != null) {
       BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
 
       //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
 
-      // Check if the format is "png" before saving as PN
+      // Check if the format is "png" before saving as PNG
       File output = new File(imagePath);
+
+
+      // Check if the filename is valid
+      if (!isValidFilename(imageName)) {
+        throw new IllegalArgumentException("Invalid filename: " + imageName);
+      }
+
+      if (output.getParentFile() != null && !output.getParentFile().exists()) {
+        throw new IllegalArgumentException("Invalid path: " + imagePath);
+      }
+
+      if (!ImageIO.write(bufferedImage, "png", output)) {
+        throw new IllegalArgumentException("Failed to save the image as " + imagePath);
+      }
+
       ImageIO.write(bufferedImage, "png", output);
       System.out.println("Image saved as " + imagePath + " in the png format");
     }

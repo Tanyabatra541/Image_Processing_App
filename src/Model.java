@@ -86,7 +86,7 @@ public class Model implements IModel {
 
       if (extension != null) {
         if ((extension.equalsIgnoreCase("png"))) {
-          imageObj = new PNGJPGImage();
+          imageObj = new PNGImage();
         } else if (extension.equalsIgnoreCase("ppm")) {
           imageObj = new PPMImage();
         } else if (extension.equalsIgnoreCase("jpg") || (extension.equalsIgnoreCase("jpeg"))){

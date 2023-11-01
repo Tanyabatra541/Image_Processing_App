@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class JPGImage extends PNGJPGImage{
+public class JPGImage extends PNGImage {
 
   @Override
   public void saveImage(String imagePath, String imageName) throws IOException {
