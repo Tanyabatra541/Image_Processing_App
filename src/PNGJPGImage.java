@@ -3,6 +3,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+
 import javax.imageio.ImageIO;
 
 public class PNGJPGImage extends AbstractImage {
@@ -22,7 +23,7 @@ public class PNGJPGImage extends AbstractImage {
   }
 
 
-  private static BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
+  public static BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
     int height = rgbData.length;
     int width = rgbData[0].length;
 
@@ -104,18 +105,12 @@ public class PNGJPGImage extends AbstractImage {
     if (rgbData != null) {
       BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
 
-      if (bufferedImage != null) {
-        // Determine the image format based on the file extension (e.g., "png")
-        String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
+      //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
 
-        // Check if the format is "png" before saving as PN
-        File output = new File(imagePath);
-        ImageIO.write(bufferedImage, format, output);
-        System.out.println("Image saved as " + imagePath);
-      }
+      // Check if the format is "png" before saving as PN
+      File output = new File(imagePath);
+      ImageIO.write(bufferedImage, "png", output);
+      System.out.println("Image saved as " + imagePath + " in the png format");
     }
   }
 }
-
-
-//need to check extractComponent, rgb-split and combine
