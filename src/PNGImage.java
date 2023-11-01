@@ -128,6 +128,10 @@ public class PNGImage extends AbstractImage {
     int[][][] rgbData = rgbDataMap.get(imageName);
 
 
+    // Check if the filename is valid
+    if (!isValidFileName(imageName)) {
+      throw new IllegalArgumentException("Invalid filename: " + imageName);
+    }
 
     if (rgbData != null) {
       BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
@@ -138,20 +142,17 @@ public class PNGImage extends AbstractImage {
       File output = new File(imagePath);
 
 
-      // Check if the filename is valid
-      if (!isValidFilename(imageName)) {
-        throw new IllegalArgumentException("Invalid filename: " + imageName);
-      }
 
       if (output.getParentFile() != null && !output.getParentFile().exists()) {
         throw new IllegalArgumentException("Invalid path: " + imagePath);
       }
 
+
       if (!ImageIO.write(bufferedImage, "png", output)) {
         throw new IllegalArgumentException("Failed to save the image as " + imagePath);
       }
 
-      ImageIO.write(bufferedImage, "png", output);
+      //ImageIO.write(bufferedImage, "png", output);
       System.out.println("Image saved as " + imagePath + " in the png format");
     }
   }
