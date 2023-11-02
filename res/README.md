@@ -1,7 +1,7 @@
 # Assignment4_MVC
 
-1. model.model.ImageContent:
-   The `model.model.ImageContent` class is a simple data class used to store the name and content of images.
+1. ImageContent:
+   The `ImageContent` class is a simple data class used to store the name and content of images.
 2. model.model.AbstractImage:
    Manipulation operations for images are based on `model.model.AbstractImage` class, which serves as an
    abstract foundation. For image operations, a set of abstract methods is defined which are
@@ -44,6 +44,14 @@ file that it interprets.
 
 Implementing the model.model.ImageOperations interface are three classes: model.PPMImage, model.model.JPGImage, and PNGJPGImage,
 each with their unique image manipulation abilities.
+
+**How to run**:
+1. Run the main method in the `Main` class.
+2. Enter the file path of the script file in the text field and click execute or click the button 
+   Go to command prompt to enter the commands manually.
+3. The resulting images will be saved in the specified file mentioned in the script.
+4. Make sure to change the file path in the script file to the path of the file you want to save 
+   the images in.
 
 **Overall Flow**:
 

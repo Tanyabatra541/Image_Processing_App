@@ -156,7 +156,7 @@ public class Controller implements ActionListener {
           imageObj.horizontalFlipImage(sourceImageName, destImageName);
         }
         break;
-      case "verti=cal-flip":
+      case "vertical-flip":
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
