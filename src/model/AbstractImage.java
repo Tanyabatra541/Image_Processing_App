@@ -21,11 +21,12 @@ public abstract class AbstractImage implements ImageOperations {
 
   float[] sharpeningKernel = {
           -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, 1.0f / 4.0f, 1.0f, 1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+          -1.0f / 8.0f,  1.0f / 4.0f,  1.0f / 4.0f,  1.0f / 4.0f, -1.0f / 8.0f,
+          -1.0f / 8.0f,  1.0f / 4.0f,  1.0f,       1.0f / 4.0f, -1.0f / 8.0f,
+          -1.0f / 8.0f,  1.0f / 4.0f,  1.0f / 4.0f,  1.0f / 4.0f, -1.0f / 8.0f,
           -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
   };
+
 
 
   float[] gaussianKernel = {
@@ -33,6 +34,7 @@ public abstract class AbstractImage implements ImageOperations {
           1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
           1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
   };
+
 
 
   /**
@@ -358,8 +360,8 @@ public abstract class AbstractImage implements ImageOperations {
     int width = redRGBData[0].length;
 
 
-    if (height != greenRGBData.length || height != blueRGBData.length ||
-            width != greenRGBData[0].length || width != blueRGBData[0].length) {
+    if (height != greenRGBData.length || height != blueRGBData.length
+            || width != greenRGBData[0].length || width != blueRGBData[0].length) {
       throw new IllegalArgumentException("Source images have different dimensions.");
 
     }
@@ -566,8 +568,10 @@ public abstract class AbstractImage implements ImageOperations {
   /**
    * Get a map of image names to their corresponding ImageContent objects.
    *
-   * @return A map where keys are image names and values are the corresponding ImageContent objects.
+   * @return A map where keys are image names and values are the corresponding
+   * ImageContent objects.
    */
+
   public Map<String, ImageContent> getImageMap() {
     return imageMap;
   }

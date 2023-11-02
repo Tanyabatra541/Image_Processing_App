@@ -68,7 +68,7 @@ public class PPMImageTest {
    * @param fileName The name of the image file.
    * @param filePath The path where the image should be saved.
    */
-  public static void createAndSavePPM(int[][][] matrix, String fileName, String filePath) {
+  private static void createAndSavePPM(int[][][] matrix, String fileName, String filePath) {
     int width = matrix[0].length;
     int height = matrix.length;
 
