@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
+import model.IModel;
+import view.IView;
+
 /**
  * The `controller.Controller.controller.Controller` class serves as the controller in the MVC architectural pattern.
  * It handles user interactions from the view, processes user input, and communicates with the
