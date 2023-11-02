@@ -1,11 +1,8 @@
-package Model;
+package model;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * This abstract class defines a set of image manipulation operations and provides common
@@ -36,6 +33,7 @@ public abstract class AbstractImage implements ImageOperations {
           1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
           1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
   };
+
 
   /**
    * Load an image from a file and store it in the image map and RGB data map.
@@ -360,7 +358,6 @@ public abstract class AbstractImage implements ImageOperations {
     int width = redRGBData[0].length;
 
 
-
     if (height != greenRGBData.length || height != blueRGBData.length ||
             width != greenRGBData[0].length || width != blueRGBData[0].length) {
       throw new IllegalArgumentException("Source images have different dimensions.");
@@ -400,8 +397,8 @@ public abstract class AbstractImage implements ImageOperations {
    *                                  the source image are incompatible.
    */
   @Override
-  public void rgbSplitImage (String sourceName, String destNameRed, String destNameGreen,
-                             String destNameBlue){
+  public void rgbSplitImage(String sourceName, String destNameRed, String destNameGreen,
+                            String destNameBlue) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
       throw new IllegalArgumentException("Source image not found: " + sourceName);
@@ -455,7 +452,7 @@ public abstract class AbstractImage implements ImageOperations {
             + ", " + destNameBlue);
   }
 
-  private StringBuilder createPPMContent ( int width, int height, int[][][] rgbData){
+  private StringBuilder createPPMContent(int width, int height, int[][][] rgbData) {
     StringBuilder content = new StringBuilder();
     content.append("P3\n");
     content.append(width).append(" ").append(height).append("\n");
@@ -492,7 +489,7 @@ public abstract class AbstractImage implements ImageOperations {
    *                                  or the source image's RGB data is invalid.
    */
   @Override
-  public void extractComponent (String sourceName, String destName, String component){
+  public void extractComponent(String sourceName, String destName, String component) {
     ImageContent sourceImage = imageMap.get(sourceName);
 
     if (sourceImage != null) {
@@ -578,18 +575,19 @@ public abstract class AbstractImage implements ImageOperations {
   /**
    * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
    *
-   * @return A map where keys are image names, and values are the corresponding RGB data represented
+   * @return A map where keys are image names and values are the corresponding RGB data represented
    * as a 3D integer array.
    */
-  public Map<String, int[][][]> getRgbDataMap () {
+  public Map<String, int[][][]> getRgbDataMap() {
     return rgbDataMap;
   }
 
 
-  protected static boolean isValidFileName(String input){
-    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
-    final Pattern pattern = Pattern.compile(re);
-    return pattern.matcher(input).matches();
+  protected static boolean isValidFileName(String input) {
+//    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
+//    final Pattern pattern = Pattern.compile(re);
+//    return pattern.matcher(input).matches();
+    return true;
 
   }
 

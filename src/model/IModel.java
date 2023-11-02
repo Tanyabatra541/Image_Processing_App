@@ -1,9 +1,9 @@
-package Model;
+package model;
 
 import java.io.IOException;
 
 /**
- * The `IModel` interface defines the contract for the model component of the application,
+ * The `Model.Model.IModel` interface defines the contract for the model component of the application,
  * responsible for handling and processing data and commands.
  */
 public interface IModel {

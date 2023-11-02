@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,11 +6,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import Model.PNGImage;
-
 /**
- * The `Model.JPGImage` class extends the `Model.PNGImage` class and provides functionality to save an image
- * in the JPG format. It converts RGB image data to a JPG image and saves it to a specified file.
+ * The `Model.Model.Model.Model.JPGImage` class extends the `Model.Model.Model.PNGImage` class and provides functionality to save
+ * an image in the JPG format. It converts RGB image data to a JPG image and saves it to a
+ * specified file.
  */
 public class JPGImage extends PNGImage {
 
@@ -32,7 +31,7 @@ public class JPGImage extends PNGImage {
     }
 
     if (rgbData != null) {
-      BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
+      BufferedImage bufferedImage = PNGImage.convertRGBDataToBufferedImage(rgbData);
 
       //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
 

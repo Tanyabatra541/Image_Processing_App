@@ -7,12 +7,15 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import Model.PNGImage;
+import model.PNGImage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * The `PNGImageTest` class contains JUnit tests for the `Model.PNGImage` class.
+ */
 public class PNGImageTest {
   private static PNGImage pngJpgImage;
   private static String imageName = "output";
@@ -49,6 +52,9 @@ public class PNGImageTest {
                   {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 255, 128}}
   };
 
+  /**
+   * Sets up the test fixture. Called before every test case method.
+   */
   @Before
   public void setUp() {
     pngJpgImage = new PNGImage();
@@ -56,6 +62,9 @@ public class PNGImageTest {
     createAndSavePNG(rgbMatrix2, image2Name, image2Path);
   }
 
+  /**
+   * Tests the `loadImage` method by loading an image and printing the RGB data.
+   */
   @Test
   public void testLoadImageAndPrintRGB() throws IOException {
 
@@ -164,7 +173,8 @@ public class PNGImageTest {
     for (int y = 0; y < expectedBrightenedImageData.length; y++) {
       for (int x = 0; x < expectedBrightenedImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-          System.out.println("Expected: " + expectedBrightenedImageData[y][x][c] + " Actual: " + brightenedImageData[y][x][c]);
+          System.out.println("Expected: " + expectedBrightenedImageData[y][x][c] + " Actual: "
+                  + brightenedImageData[y][x][c]);
           assertEquals(expectedBrightenedImageData[y][x][c], brightenedImageData[y][x][c]);
         }
       }
@@ -552,10 +562,12 @@ public class PNGImageTest {
 
 
     // Perform the extraction of the "red" component
-    pngJpgImage.extractComponent(imageName, "intensity-component-img", "intensity");
+    pngJpgImage.extractComponent(imageName, "intensity-component-img",
+            "intensity");
 
     // Get the extracted red component data
-    int[][][] extractedIntensityComponent = pngJpgImage.getRgbDataMap().get("intensity-component-img");
+    int[][][] extractedIntensityComponent =
+            pngJpgImage.getRgbDataMap().get("intensity-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedIntensityComponent.length; y++) {

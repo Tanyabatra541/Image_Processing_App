@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,12 +9,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
-import Model.IModel;
-import View.IView;
-
 /**
- * The `Controller.Controller` class serves as the controller in the Model.Model-View-Controller.Controller (MVC)
- * architectural pattern.
+ * The `controller.Controller.controller.Controller` class serves as the controller in the MVC architectural pattern.
  * It handles user interactions from the view, processes user input, and communicates with the
  * model and view components.
  */
@@ -23,7 +19,7 @@ public class Controller implements ActionListener {
   private final IView view;
 
   /**
-   * Constructs a new Controller.Controller instance.
+   * Constructs a new controller.Controller.controller.Controller instance.
    *
    * @param m The model to work with.
    * @param v The view to interact with.

@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,8 +7,9 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * The `Model.Model` class represents the application's model. The model interacts with
- * various image operations through the `Model.ImageOperations` interface to perform image-related tasks.
+ * The `Model.Model.Model.Model` class represents the application's model. The model interacts with
+ * various image operations through the `Model.Model.Model.Model.ImageOperations` interface to perform image-related
+ * tasks.
  */
 public class Model implements IModel {
   private String input;
@@ -147,8 +148,8 @@ public class Model implements IModel {
         break;
       case "horizontal-flip":
         if (parts.length < 3) {
-          System.out.println("Invalid 'horizontal-flip' command: Usage is 'horizontal-flip " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'horizontal-flip' command: Usage is 'horizontal-flip "
+                  + "source-image-name dest-image-name'");
         } else {
           String sourceImageName = parts[1];
           String destImageName = parts[2];

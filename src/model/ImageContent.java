@@ -1,7 +1,7 @@
-package Model;
+package model;
 
 /**
- * The `Model.ImageContent` class represents an image with its associated name and content.
+ * The `Model.Model.Model.Model.ImageContent` class represents an image with its associated name and content.
  * This class is used to store image data within the application.
  */
 class ImageContent {
@@ -9,7 +9,7 @@ class ImageContent {
   private final String content;
 
   /**
-   * Constructs an `Model.ImageContent` instance with the specified name and content.
+   * Constructs an `Model.Model.Model.Model.ImageContent` instance with the specified name and content.
    *
    * @param name    The name or identifier of the image.
    * @param content The content data of the image.
