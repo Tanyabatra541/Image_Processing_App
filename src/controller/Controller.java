@@ -23,7 +23,7 @@ import view.IView;
  */
 public class Controller implements ActionListener {
 
-  static ImageOperations imageObj = null;
+  private static ImageOperations imageObj = null;
   private static IModel model = null;
   private final IView view;
 

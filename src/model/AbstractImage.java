@@ -13,14 +13,12 @@ import java.util.Map;
 public abstract class AbstractImage implements ImageOperations {
 
 
-  static final Map<String, ImageContent> imageMap = new HashMap<>();
+  protected static final Map<String, ImageContent> imageMap = new HashMap<>();
 
-  static final Map<String, int[][][]> rgbDataMap = new HashMap<>();
+  protected static final Map<String, int[][][]> rgbDataMap = new HashMap<>();
 
 
-  static ImageOperations imageObj = null;
-
-  float[] sharpeningKernel = {
+  protected float[] sharpeningKernel = {
       -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
       -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
       -1.0f / 8.0f, 1.0f / 4.0f, 1.0f, 1.0f / 4.0f, -1.0f / 8.0f,
@@ -30,7 +28,7 @@ public abstract class AbstractImage implements ImageOperations {
 
 
 
-  float[] gaussianKernel = {
+  protected float[] gaussianKernel = {
       1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
       1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
       1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
@@ -95,7 +93,7 @@ public abstract class AbstractImage implements ImageOperations {
         System.out.println("Failed to flip the source image; invalid RGB data.");
       }
     } else {
-      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+      System.out.println("Source image not found: " + sourceImageName);
     }
   }
 
@@ -110,7 +108,7 @@ public abstract class AbstractImage implements ImageOperations {
   public void verticalFlipImage(String sourceImageName, String destImageName) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+      System.out.println("Source image not found: " + sourceImageName);
     }
 
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
@@ -140,14 +138,12 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceImageName The name of the source image.
    * @param destImageName   The name of the destination sharpened image.
-   * @throws IllegalArgumentException If the source image is not found or the destination name
-   *                                  is invalid.
    */
   @Override
   public void sharpenImage(String sourceImageName, String destImageName) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+      System.out.println("Source image not found: " + sourceImageName);
 
     }
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
@@ -189,14 +185,12 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceImageName The name of the source image.
    * @param destImageName   The name of the destination blurred image.
-   * @throws IllegalArgumentException If the source image is not found or the destination name
-   *                                  is invalid.
    */
   @Override
   public void blurImage(String sourceImageName, String destImageName) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+      System.out.println("Source image not found: " + sourceImageName);
 
     }
 
@@ -243,14 +237,12 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destImageName   The name of the destination brightened image.
    * @param increment       The amount by which to increment the color values. Positive values
    *                        brighten, negative values darken.
-   * @throws IllegalArgumentException If the source image is not found or the destination
-   *                                  name is invalid.
    */
   @Override
   public void brightenImage(String sourceImageName, String destImageName, int increment) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
-      throw new IllegalArgumentException("Source image not found: " + sourceImageName);
+      System.out.println("Source image not found: " + sourceImageName);
     }
 
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
@@ -285,13 +277,12 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sepia-toned image.
-   * @throws IllegalArgumentException If the source image is not found.
    */
   @Override
   public void sepiaImage(String sourceName, String destName) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
-      throw new IllegalArgumentException("Source image not found: " + sourceName);
+      System.out.println("Source image not found: " + sourceName);
     }
 
     int[][][] sourceRGBData = rgbDataMap.get(sourceName);
@@ -339,7 +330,6 @@ public abstract class AbstractImage implements ImageOperations {
    * @param redName      The name of the source image for the red channel.
    * @param greenName    The name of the source image for the green channel.
    * @param blueName     The name of the source image for the blue channel.
-   * @throws IllegalArgumentException If one or more of the source images are not found.
    */
   @Override
   public void combineRGBImages(String combinedName, String redName, String greenName,
@@ -397,8 +387,6 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destNameRed   The name of the resulting image representing the red channel.
    * @param destNameGreen The name of the resulting image representing the green channel.
    * @param destNameBlue  The name of the resulting image representing the blue channel.
-   * @throws IllegalArgumentException If the source image is not found or the dimensions of
-   *                                  the source image are incompatible.
    */
   @Override
   public void rgbSplitImage(String sourceName, String destNameRed, String destNameGreen,
@@ -489,9 +477,6 @@ public abstract class AbstractImage implements ImageOperations {
    *                   - "luma": Convert the image to grayscale using luminance.
    *                   - "intensity": Convert the image to grayscale using intensity.
    *                   - "value": Extract the value (brightness) component of an image.
-   * @throws IllegalArgumentException If the source image is not found, the component
-   *                                  parameter is invalid,
-   *                                  or the source image's RGB data is invalid.
    */
   @Override
   public void extractComponent(String sourceName, String destName, String component) {

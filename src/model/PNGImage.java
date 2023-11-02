@@ -36,7 +36,7 @@ public class PNGImage extends AbstractImage {
    * @param rgbData The three-dimensional array representing the RGB image data.
    * @return A `BufferedImage` object containing the image data.
    */
-  public static BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
+  protected static BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
     int height = rgbData.length;
     int width = rgbData[0].length;
 
