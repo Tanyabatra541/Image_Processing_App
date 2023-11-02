@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
+import Model.IModel;
 import View.IView;
 
 /**
@@ -98,6 +99,5 @@ public class Controller implements ActionListener {
     }
   }
 }
-
 
 

@@ -361,238 +361,237 @@ public abstract class AbstractImage implements ImageOperations {
 
 
 
-      if (height != greenRGBData.length || height != blueRGBData.length ||
-              width != greenRGBData[0].length || width != blueRGBData[0].length) {
-        throw new IllegalArgumentException("Source images have different dimensions.");
+    if (height != greenRGBData.length || height != blueRGBData.length ||
+            width != greenRGBData[0].length || width != blueRGBData[0].length) {
+      throw new IllegalArgumentException("Source images have different dimensions.");
 
-      }
-
-      int[][][] combinedRGBData = new int[height][width][3];
-
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          combinedRGBData[y][x][0] = redRGBData[y][x][0];
-          combinedRGBData[y][x][1] = greenRGBData[y][x][1];
-          combinedRGBData[y][x][2] = blueRGBData[y][x][2];
-        }
-      }
-
-      StringBuilder combinedContent = createPPMContent(width, height, combinedRGBData);
-
-      ImageContent combinedImage = new ImageContent(combinedName, combinedContent.toString());
-      imageMap.put(combinedName, combinedImage);
-      rgbDataMap.put(combinedName, combinedRGBData);
-
-      System.out.println("RGB channels combined. Combined image saved as " + combinedName);
     }
 
+    int[][][] combinedRGBData = new int[height][width][3];
 
-    /**
-     * Split the RGB components of a source image into separate images representing the red, green,
-     * and blue channels.
-     * The resulting images are saved with the specified names.
-     *
-     * @param sourceName    The name of the source image to split into RGB channels.
-     * @param destNameRed   The name of the resulting image representing the red channel.
-     * @param destNameGreen The name of the resulting image representing the green channel.
-     * @param destNameBlue  The name of the resulting image representing the blue channel.
-     * @throws IllegalArgumentException If the source image is not found or the dimensions of
-     *                                  the source image are incompatible.
-     */
-    @Override
-    public void rgbSplitImage (String sourceName, String destNameRed, String destNameGreen,
-            String destNameBlue){
-      ImageContent sourceImage = imageMap.get(sourceName);
-      if (sourceImage == null) {
-        throw new IllegalArgumentException("Source image not found: " + sourceName);
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        combinedRGBData[y][x][0] = redRGBData[y][x][0];
+        combinedRGBData[y][x][1] = greenRGBData[y][x][1];
+        combinedRGBData[y][x][2] = blueRGBData[y][x][2];
       }
+    }
 
+    StringBuilder combinedContent = createPPMContent(width, height, combinedRGBData);
+
+    ImageContent combinedImage = new ImageContent(combinedName, combinedContent.toString());
+    imageMap.put(combinedName, combinedImage);
+    rgbDataMap.put(combinedName, combinedRGBData);
+
+    System.out.println("RGB channels combined. Combined image saved as " + combinedName);
+  }
+
+
+  /**
+   * Split the RGB components of a source image into separate images representing the red, green,
+   * and blue channels.
+   * The resulting images are saved with the specified names.
+   *
+   * @param sourceName    The name of the source image to split into RGB channels.
+   * @param destNameRed   The name of the resulting image representing the red channel.
+   * @param destNameGreen The name of the resulting image representing the green channel.
+   * @param destNameBlue  The name of the resulting image representing the blue channel.
+   * @throws IllegalArgumentException If the source image is not found or the dimensions of
+   *                                  the source image are incompatible.
+   */
+  @Override
+  public void rgbSplitImage (String sourceName, String destNameRed, String destNameGreen,
+                             String destNameBlue){
+    ImageContent sourceImage = imageMap.get(sourceName);
+    if (sourceImage == null) {
+      throw new IllegalArgumentException("Source image not found: " + sourceName);
+    }
+
+    int[][][] sourceRGBData = rgbDataMap.get(sourceName);
+
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
+    int[][][] redRGBData = new int[height][width][3];
+    int[][][] greenRGBData = new int[height][width][3];
+    int[][][] blueRGBData = new int[height][width][3];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int r = sourceRGBData[y][x][0];
+        int g = sourceRGBData[y][x][1];
+        int b = sourceRGBData[y][x][2];
+
+        redRGBData[y][x][0] = r;
+        redRGBData[y][x][1] = 0;
+        redRGBData[y][x][2] = 0;
+
+        greenRGBData[y][x][0] = 0;
+        greenRGBData[y][x][1] = g;
+        greenRGBData[y][x][2] = 0;
+
+        blueRGBData[y][x][0] = 0;
+        blueRGBData[y][x][1] = 0;
+        blueRGBData[y][x][2] = b;
+      }
+    }
+
+    StringBuilder redContent = createPPMContent(width, height, redRGBData);
+    StringBuilder greenContent = createPPMContent(width, height, greenRGBData);
+    StringBuilder blueContent = createPPMContent(width, height, blueRGBData);
+
+    ImageContent redImage = new ImageContent(destNameRed, redContent.toString());
+    ImageContent greenImage = new ImageContent(destNameGreen, greenContent.toString());
+    ImageContent blueImage = new ImageContent(destNameBlue, blueContent.toString());
+
+    imageMap.put(destNameRed, redImage);
+    imageMap.put(destNameGreen, greenImage);
+    imageMap.put(destNameBlue, blueImage);
+
+    rgbDataMap.put(destNameRed, redRGBData);
+    rgbDataMap.put(destNameGreen, greenRGBData);
+    rgbDataMap.put(destNameBlue, blueRGBData);
+
+    System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
+            + ", " + destNameBlue);
+  }
+
+  private StringBuilder createPPMContent ( int width, int height, int[][][] rgbData){
+    StringBuilder content = new StringBuilder();
+    content.append("P3\n");
+    content.append(width).append(" ").append(height).append("\n");
+    content.append("255\n");
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        int r = rgbData[i][j][0];
+        int g = rgbData[i][j][1];
+        int b = rgbData[i][j][2];
+        content.append(r).append(" ").append(g).append(" ").append(b).append(" ");
+      }
+      content.append("\n");
+    }
+
+    return content;
+  }
+
+
+  /**
+   * Extract a specific component from a source image and save it as a separate image.
+   *
+   * @param sourceName The name of the source image from which to extract the component.
+   * @param destName   The name of the resulting image that will contain the extracted component.
+   * @param component  The component to extract, which can be one of the following:
+   *                   - "red": Extract the red channel.
+   *                   - "green": Extract the green channel.
+   *                   - "blue": Extract the blue channel.
+   *                   - "luma": Convert the image to grayscale using luminance.
+   *                   - "intensity": Convert the image to grayscale using intensity.
+   *                   - "value": Extract the value (brightness) component of an image.
+   * @throws IllegalArgumentException If the source image is not found, the component
+   *                                  parameter is invalid,
+   *                                  or the source image's RGB data is invalid.
+   */
+  @Override
+  public void extractComponent (String sourceName, String destName, String component){
+    ImageContent sourceImage = imageMap.get(sourceName);
+
+    if (sourceImage != null) {
       int[][][] sourceRGBData = rgbDataMap.get(sourceName);
 
-      int height = sourceRGBData.length;
-      int width = sourceRGBData[0].length;
-      int[][][] redRGBData = new int[height][width][3];
-      int[][][] greenRGBData = new int[height][width][3];
-      int[][][] blueRGBData = new int[height][width][3];
+      if (sourceRGBData != null) {
+        int height = sourceRGBData.length;
+        int width = sourceRGBData[0].length;
 
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          int r = sourceRGBData[y][x][0];
-          int g = sourceRGBData[y][x][1];
-          int b = sourceRGBData[y][x][2];
+        int[][][] extractedRGBData = new int[height][width][3];
 
-          redRGBData[y][x][0] = r;
-          redRGBData[y][x][1] = 0;
-          redRGBData[y][x][2] = 0;
+        for (int y = 0; y < height; y++) {
+          for (int x = 0; x < width; x++) {
+            int r = sourceRGBData[y][x][0];
+            int g = sourceRGBData[y][x][1];
+            int b = sourceRGBData[y][x][2];
 
-          greenRGBData[y][x][0] = 0;
-          greenRGBData[y][x][1] = g;
-          greenRGBData[y][x][2] = 0;
+            switch (component) {
+              case "red":
+                g = 0;
+                b = 0;
+                break;
+              case "green":
+                r = 0;
+                b = 0;
+                break;
+              case "blue":
+                r = 0;
+                g = 0;
+                break;
+              case "luma":
+                int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                r = luma;
+                g = luma;
+                b = luma;
+                break;
+              case "intensity":
+                int intensity = (r + g + b) / 3;
+                r = intensity;
+                g = intensity;
+                b = intensity;
+                break;
+              case "value":
+                int value = Math.max(r, Math.max(g, b));
+                r = value;
+                g = value;
+                b = value;
+                break;
+              default:
+                throw new IllegalArgumentException("Invalid component parameter: " + component);
 
-          blueRGBData[y][x][0] = 0;
-          blueRGBData[y][x][1] = 0;
-          blueRGBData[y][x][2] = b;
-        }
-      }
-
-      StringBuilder redContent = createPPMContent(width, height, redRGBData);
-      StringBuilder greenContent = createPPMContent(width, height, greenRGBData);
-      StringBuilder blueContent = createPPMContent(width, height, blueRGBData);
-
-      ImageContent redImage = new ImageContent(destNameRed, redContent.toString());
-      ImageContent greenImage = new ImageContent(destNameGreen, greenContent.toString());
-      ImageContent blueImage = new ImageContent(destNameBlue, blueContent.toString());
-
-      imageMap.put(destNameRed, redImage);
-      imageMap.put(destNameGreen, greenImage);
-      imageMap.put(destNameBlue, blueImage);
-
-      rgbDataMap.put(destNameRed, redRGBData);
-      rgbDataMap.put(destNameGreen, greenRGBData);
-      rgbDataMap.put(destNameBlue, blueRGBData);
-
-      System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
-              + ", " + destNameBlue);
-    }
-
-    private StringBuilder createPPMContent ( int width, int height, int[][][] rgbData){
-      StringBuilder content = new StringBuilder();
-      content.append("P3\n");
-      content.append(width).append(" ").append(height).append("\n");
-      content.append("255\n");
-
-      for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-          int r = rgbData[i][j][0];
-          int g = rgbData[i][j][1];
-          int b = rgbData[i][j][2];
-          content.append(r).append(" ").append(g).append(" ").append(b).append(" ");
-        }
-        content.append("\n");
-      }
-
-      return content;
-    }
-
-
-    /**
-     * Extract a specific component from a source image and save it as a separate image.
-     *
-     * @param sourceName The name of the source image from which to extract the component.
-     * @param destName   The name of the resulting image that will contain the extracted component.
-     * @param component  The component to extract, which can be one of the following:
-     *                   - "red": Extract the red channel.
-     *                   - "green": Extract the green channel.
-     *                   - "blue": Extract the blue channel.
-     *                   - "luma": Convert the image to grayscale using luminance.
-     *                   - "intensity": Convert the image to grayscale using intensity.
-     *                   - "value": Extract the value (brightness) component of an image.
-     * @throws IllegalArgumentException If the source image is not found, the component
-     *                                  parameter is invalid,
-     *                                  or the source image's RGB data is invalid.
-     */
-    @Override
-    public void extractComponent (String sourceName, String destName, String component){
-      ImageContent sourceImage = imageMap.get(sourceName);
-
-      if (sourceImage != null) {
-        int[][][] sourceRGBData = rgbDataMap.get(sourceName);
-
-        if (sourceRGBData != null) {
-          int height = sourceRGBData.length;
-          int width = sourceRGBData[0].length;
-
-          int[][][] extractedRGBData = new int[height][width][3];
-
-          for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-              int r = sourceRGBData[y][x][0];
-              int g = sourceRGBData[y][x][1];
-              int b = sourceRGBData[y][x][2];
-
-              switch (component) {
-                case "red":
-                  g = 0;
-                  b = 0;
-                  break;
-                case "green":
-                  r = 0;
-                  b = 0;
-                  break;
-                case "blue":
-                  r = 0;
-                  g = 0;
-                  break;
-                case "luma":
-                  int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
-                  r = luma;
-                  g = luma;
-                  b = luma;
-                  break;
-                case "intensity":
-                  int intensity = (r + g + b) / 3;
-                  r = intensity;
-                  g = intensity;
-                  b = intensity;
-                  break;
-                case "value":
-                  int value = Math.max(r, Math.max(g, b));
-                  r = value;
-                  g = value;
-                  b = value;
-                  break;
-                default:
-                  throw new IllegalArgumentException("Invalid component parameter: " + component);
-
-              }
-              extractedRGBData[y][x][0] = r;
-              extractedRGBData[y][x][1] = g;
-              extractedRGBData[y][x][2] = b;
             }
+            extractedRGBData[y][x][0] = r;
+            extractedRGBData[y][x][1] = g;
+            extractedRGBData[y][x][2] = b;
           }
-
-          StringBuilder extractedContent = createPPMContent(width, height, extractedRGBData);
-
-          ImageContent destImage = new ImageContent(destName, extractedContent.toString());
-          imageMap.put(destName, destImage);
-          rgbDataMap.put(destName, extractedRGBData);
-          System.out.println(component + " component image created from '" + sourceName
-                  + "' and saved as '" + destName + "'");
-        } else {
-          System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
         }
+
+        StringBuilder extractedContent = createPPMContent(width, height, extractedRGBData);
+
+        ImageContent destImage = new ImageContent(destName, extractedContent.toString());
+        imageMap.put(destName, destImage);
+        rgbDataMap.put(destName, extractedRGBData);
+        System.out.println(component + " component image created from '" + sourceName
+                + "' and saved as '" + destName + "'");
       } else {
-        throw new IllegalArgumentException("Source image not found: " + sourceName);
+        System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
       }
+    } else {
+      throw new IllegalArgumentException("Source image not found: " + sourceName);
     }
+  }
 
-    /**
-     * Get a map of image names to their corresponding ImageContent objects.
-     *
-     * @return A map where keys are image names and values are the corresponding ImageContent objects.
-     */
-    public Map<String, ImageContent> getImageMap() {
-      return imageMap;
-    }
+  /**
+   * Get a map of image names to their corresponding ImageContent objects.
+   *
+   * @return A map where keys are image names and values are the corresponding ImageContent objects.
+   */
+  public Map<String, ImageContent> getImageMap() {
+    return imageMap;
+  }
 
-    /**
-     * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
-     *
-     * @return A map where keys are image names, and values are the corresponding RGB data represented
-     * as a 3D integer array.
-     */
-    public Map<String, int[][][]> getRgbDataMap () {
-      return rgbDataMap;
-    }
+  /**
+   * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
+   *
+   * @return A map where keys are image names, and values are the corresponding RGB data represented
+   * as a 3D integer array.
+   */
+  public Map<String, int[][][]> getRgbDataMap () {
+    return rgbDataMap;
+  }
 
 
-    protected static boolean isValidFileName(String input){
-      final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
-      final Pattern pattern = Pattern.compile(re);
-      return pattern.matcher(input).matches();
-
-    }
-
+  protected static boolean isValidFileName(String input){
+    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
+    final Pattern pattern = Pattern.compile(re);
+    return pattern.matcher(input).matches();
 
   }
 
+
+}

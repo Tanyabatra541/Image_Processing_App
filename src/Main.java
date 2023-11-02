@@ -2,6 +2,7 @@ import Controller.Controller;
 import Model.Model;
 import View.IView;
 import View.JFrameView;
+import Model.IModel;
 
 /**
  * The `Main` class represents the entry point of the application. It initializes the Model.Model,
