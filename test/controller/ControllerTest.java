@@ -42,13 +42,6 @@ public class ControllerTest {
 
   @Test
   public void testLoad() throws IOException {
-    // Simulate the view's input text and action command
-   // view.setEchoOutput("C:/Users/Lenovo/Documents/CS5010_PDP/Assignmnet4/script/scriptFile.txt");
-
-    ActionEvent actionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Execute Button");
-    System.out.println(model.getResult()+"ggggggg");
-    // Call actionPerformed with the action event
-    //controller.actionPerformed(actionEvent);
     controller.parseAndExecute("load C:/Users/Lenovo/Documents/CS5010_PDP/Assignmnet4/script/png/manhattan-dark.png img");
     assertTrue(pngJpgImage.getImageMap().containsKey("img"));
 
