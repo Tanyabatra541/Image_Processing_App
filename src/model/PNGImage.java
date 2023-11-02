@@ -123,17 +123,11 @@ public class PNGImage extends AbstractImage {
    *
    * @param imagePath The file path where the PNG image should be saved.
    * @param imageName The name of the image to be saved.
-   * @throws IOException If an I/O error occurs during the saving process.
    */
   @Override
-  public void saveImage(String imagePath, String imageName) throws IOException {
+  public void saveImage(String imagePath, String imageName)  {
     int[][][] rgbData = rgbDataMap.get(imageName);
 
-
-    // Check if the filename is valid
-    if (!isValidFileName(imageName)) {
-      throw new IllegalArgumentException("Invalid filename: " + imageName);
-    }
 
     if (rgbData != null) {
       BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
@@ -145,17 +139,17 @@ public class PNGImage extends AbstractImage {
 
 
 
-      if (output.getParentFile() != null && !output.getParentFile().exists()) {
-        throw new IllegalArgumentException("Invalid path: " + imagePath);
+      try {
+        ImageIO.write(bufferedImage, "png", output);
+        System.out.println("Image saved as " + imagePath + " in the png format");
+
+      } catch (Exception e) {
+        System.out.println("Error in saving File");
       }
 
-
-      if (!ImageIO.write(bufferedImage, "png", output)) {
-        throw new IllegalArgumentException("Failed to save the image as " + imagePath);
-      }
 
       //ImageIO.write(bufferedImage, "png", output);
-      System.out.println("Image saved as " + imagePath + " in the png format");
+
     }
   }
 }

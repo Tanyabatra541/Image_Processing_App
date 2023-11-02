@@ -1,9 +1,12 @@
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import model.PPMImage;
 
@@ -15,6 +18,9 @@ import static org.junit.Assert.assertTrue;
  * The `PPMImageTest` class contains JUnit tests for the `Model.PPMImage` class.
  */
 public class PPMImageTest {
+
+  private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+  private final PrintStream originalOut = System.out;
 
   private static PPMImage ppmImage;
   private static String imageName = "outputPPM";
@@ -56,7 +62,13 @@ public class PPMImageTest {
     ppmImage = new PPMImage();
     createAndSavePPM(rgbMatrix, imageName, imagePath);
     createAndSavePPM(rgbMatrix2, image2Name, image2Path);
+    System.setOut(new PrintStream(outContent));
 
+  }
+
+  @After
+  public void restoreStreams() {
+    System.setOut(originalOut);
   }
 
 
@@ -685,38 +697,81 @@ public class PPMImageTest {
     savedFile.delete();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtractComponentWithInvalidComponent() {
 
     ppmImage.extractComponent(imageName, "destName", "invalidComponent");
+
+    String expectedErrorMessage = "Invalid component parameter."
+            + "Invalid component parameter.Invalid component parameter."
+            + "Invalid component parameter.";
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtractComponentWithInvalidSourceName() {
     ppmImage.extractComponent("nonExistentImage", "destName", "red");
+
+
+    String expectedErrorMessage = "Source image not found: nonExistentImage";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCombineRGBImagesWithMismatchedDimensions() {
-    ppmImage.combineRGBImages("combinedName", "redName", "greenName", "blueName");
+    ppmImage.extractComponent(imageName, "red-component-img2", "red");
+    ppmImage.extractComponent(imageName, "green-component-img2", "green");
+    ppmImage.extractComponent(image2Name, "blue-component-img2", "blue");
+    ppmImage.combineRGBImages("combinedName", "red-component-img2",
+            "green-component-img2", "blue-component-img2");
+    String expectedErrorMessage = "red component image created from 'outputPPM' and "
+            + "saved as 'red-component-img2'green component image created from "
+            + "'outputPPM' and saved "
+            + "as 'green-component-img2'blue component image created from "
+            + "'output2PPM' and saved as "
+            + "'blue-component-img2'Source images have different dimensions."
+            + "RGB channels combined. "
+            + "Combined image saved as combinedName";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRGBSplitImageWithInvalidSourceName() {
-    ppmImage.rgbSplitImage("nonExistentImage", "destNameRed", "destNameGreen", "destNameBlue");
+    ppmImage.rgbSplitImage("ghy", "destNameRed", "destNameGreen", "destNameBlue");
+
+    String expectedErrorMessage = "Source image not found: ghy";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testSaveImageWithInvalidPath() throws IOException {
+
+  @Test
+  public void testSaveImageWithInvalidPath()  {
     String invalidPath = "invalid_path/invalid_file.ppm";
     ppmImage.saveImage(invalidPath, imageName);
+
+    String expectedErrorMessage = "Error in saving File";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testSaveImageWithInvalidFilename() throws IOException {
+  @Test
+  public void testSaveImageWithInvalidFilename()  {
     String invalidFilename = "bac#";
     PPMImage img = new PPMImage();
     img.saveImage(imagePath, invalidFilename);
+
+    String expectedErrorMessage = "Image not found: bac#";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 }
 

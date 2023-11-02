@@ -3,6 +3,7 @@ package model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -97,30 +98,27 @@ public class PPMImage extends AbstractImage {
   @Override
   public void saveImage(String imagePath, String imageName) {
     ImageContent image = imageMap.get(imageName);
-    // Check if the filename is valid
-    if (!isValidFileName(imageName)) {
-      throw new IllegalArgumentException("Invalid filename: " + imageName);
-    }
+
 
     if (image != null) {
       String content = image.getContent();
 
-      try {
-        // Create a file and write the image content to it
-        File file = new File(imagePath);
-        if (file.getParentFile() != null && !file.getParentFile().exists()) {
-          throw new IllegalArgumentException("Invalid path: " + imagePath);
-        }
+      // Create a file and write the image content to it
+      File file = new File(imagePath);
 
+      try {
         java.io.FileWriter fileWriter = new java.io.FileWriter(file);
         fileWriter.write(content);
+        fileWriter.write(content);
         fileWriter.close();
-
         System.out.println("Image saved as " + imagePath + " in the ppm format");
-      } catch (java.io.IOException e) {
-        e.printStackTrace();
-        System.out.println("Failed to save the image as " + imagePath);
+
+
+      } catch (IOException e) {
+        System.out.println("Error in saving File");
       }
+
+
     } else {
       System.out.println("Image not found: " + imageName);
     }

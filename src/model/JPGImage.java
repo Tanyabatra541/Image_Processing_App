@@ -22,17 +22,12 @@ public class JPGImage extends PNGImage {
    * @throws IOException If an I/O error occurs while saving the image.
    */
   @Override
-  public void saveImage(String imagePath, String imageName) throws IOException {
+  public void saveImage(String imagePath, String imageName)  {
     int[][][] rgbData = rgbDataMap.get(imageName);
 
 
-    // Check if the filename is valid
-    if (!isValidFileName(imageName)) {
-      throw new IllegalArgumentException("Invalid filename: " + imageName);
-    }
-
     if (rgbData != null) {
-      BufferedImage bufferedImage = PNGImage.convertRGBDataToBufferedImage(rgbData);
+      BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
 
       //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
 
@@ -41,17 +36,17 @@ public class JPGImage extends PNGImage {
 
 
 
-      if (output.getParentFile() != null && !output.getParentFile().exists()) {
-        throw new IllegalArgumentException("Invalid path: " + imagePath);
+      try {
+        ImageIO.write(bufferedImage, "jpg", output);
+        System.out.println("Image saved as " + imagePath + " in the png format");
+
+      } catch (Exception e) {
+        System.out.println("Error in saving File");
       }
 
-
-      if (!ImageIO.write(bufferedImage, "jpg", output)) {
-        throw new IllegalArgumentException("Failed to save the image as " + imagePath);
-      }
 
       //ImageIO.write(bufferedImage, "png", output);
-      System.out.println("Image saved as " + imagePath + " in the png format");
+
     }
   }
 }

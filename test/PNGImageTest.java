@@ -2,12 +2,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import javax.imageio.ImageIO;
 
 import model.PNGImage;
+import model.PPMImage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,6 +20,9 @@ import static org.junit.Assert.assertNotNull;
  * The `PNGImageTest` class contains JUnit tests for the `Model.PNGImage` class.
  */
 public class PNGImageTest {
+
+  private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+  private final PrintStream originalOut = System.out;
   private static PNGImage pngJpgImage;
   private static String imageName = "output";
   private static String imagePath = "output.png";
@@ -60,6 +66,7 @@ public class PNGImageTest {
     pngJpgImage = new PNGImage();
     createAndSavePNG(rgbMatrix, imageName, imagePath);
     createAndSavePNG(rgbMatrix2, image2Name, image2Path);
+    System.setOut(new PrintStream(outContent));
   }
 
   /**
@@ -688,40 +695,79 @@ public class PNGImageTest {
     savedFile.delete();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtractComponentWithInvalidComponent() {
 
     pngJpgImage.extractComponent(imageName, "destName", "invalidComponent");
+
+    String expectedErrorMessage = "Invalid component parameter."
+            + "Invalid component parameter.Invalid component parameter."
+            + "Invalid component parameter.";
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtractComponentWithInvalidSourceName() {
-    pngJpgImage.extractComponent("nonExistentImage", "destName",
-            "red");
+    pngJpgImage.extractComponent("nonExistentImage", "destName", "red");
+
+
+    String expectedErrorMessage = "Source image not found: nonExistentImage";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCombineRGBImagesWithMismatchedDimensions() {
-    pngJpgImage.combineRGBImages("combinedName", "redName",
-            "greenName", "blueName");
+    pngJpgImage.extractComponent(imageName, "red-component-img2", "red");
+    pngJpgImage.extractComponent(imageName, "green-component-img2", "green");
+    pngJpgImage.extractComponent(image2Name, "blue-component-img2", "blue");
+    pngJpgImage.combineRGBImages("combinedName", "red-component-img2",
+            "green-component-img2", "blue-component-img2");
+    String expectedErrorMessage = "red component image created from 'output' and saved as "
+            + "'red-component-img2'green component image created from 'output' and saved as "
+            + "'green-component-img2'blue component image created from 'output2' and saved as "
+            + "'blue-component-img2'Source images have different dimensions.RGB channels combined. "
+            + "Combined image saved as combinedName";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+
+  @Test
   public void testRGBSplitImageWithInvalidSourceName() {
-    pngJpgImage.rgbSplitImage("nonExistentImage", "destNameRed",
-            "destNameGreen", "destNameBlue");
+    pngJpgImage.rgbSplitImage("ghy", "destNameRed", "destNameGreen", "destNameBlue");
+
+    String expectedErrorMessage = "Source image not found: ghy";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+
+  @Test
   public void testSaveImageWithInvalidPath() throws IOException {
-    String invalidPath = "invalid_path/invalid_file.png";
+    String invalidPath = "invalid_path/invalid_file.ppm";
     pngJpgImage.saveImage(invalidPath, imageName);
+
+    String expectedErrorMessage = "Error in saving File";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testSaveImageWithInvalidFilename() throws IOException {
+  @Test
+  public void testSaveImageWithInvalidFilename()  {
     String invalidFilename = "bac#";
-    PNGImage img = new PNGImage();
+    PPMImage img = new PPMImage();
     img.saveImage(imagePath, invalidFilename);
+
+    String expectedErrorMessage = "Image not found: bac#";
+
+
+    assertEquals(expectedErrorMessage, outContent.toString().trim());
   }
+
 }

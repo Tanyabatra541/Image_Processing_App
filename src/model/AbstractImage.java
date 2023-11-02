@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * This abstract class defines a set of image manipulation operations and provides common
  * functionality for image processing. Subclass implements methods for loading and saving
@@ -348,41 +349,42 @@ public abstract class AbstractImage implements ImageOperations {
     ImageContent blueImage = imageMap.get(blueName);
 
     if (redImage == null || greenImage == null || blueImage == null) {
-      throw new IllegalArgumentException("One or more source images not found.");
+      System.out.print("One or more source images not found.");
 
-    }
+    } else {
 
-    int[][][] redRGBData = rgbDataMap.get(redName);
-    int[][][] greenRGBData = rgbDataMap.get(greenName);
-    int[][][] blueRGBData = rgbDataMap.get(blueName);
+      int[][][] redRGBData = rgbDataMap.get(redName);
+      int[][][] greenRGBData = rgbDataMap.get(greenName);
+      int[][][] blueRGBData = rgbDataMap.get(blueName);
 
-    int height = redRGBData.length;
-    int width = redRGBData[0].length;
+      int height = redRGBData.length;
+      int width = redRGBData[0].length;
 
 
-    if (height != greenRGBData.length || height != blueRGBData.length
-            || width != greenRGBData[0].length || width != blueRGBData[0].length) {
-      throw new IllegalArgumentException("Source images have different dimensions.");
+      if (height != greenRGBData.length || height != blueRGBData.length
+              || width != greenRGBData[0].length || width != blueRGBData[0].length) {
+        System.out.print("Source images have different dimensions.");
 
-    }
-
-    int[][][] combinedRGBData = new int[height][width][3];
-
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        combinedRGBData[y][x][0] = redRGBData[y][x][0];
-        combinedRGBData[y][x][1] = greenRGBData[y][x][1];
-        combinedRGBData[y][x][2] = blueRGBData[y][x][2];
       }
+
+      int[][][] combinedRGBData = new int[height][width][3];
+
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          combinedRGBData[y][x][0] = redRGBData[y][x][0];
+          combinedRGBData[y][x][1] = greenRGBData[y][x][1];
+          combinedRGBData[y][x][2] = blueRGBData[y][x][2];
+        }
+      }
+
+      StringBuilder combinedContent = createPPMContent(width, height, combinedRGBData);
+
+      ImageContent combinedImage = new ImageContent(combinedName, combinedContent.toString());
+      imageMap.put(combinedName, combinedImage);
+      rgbDataMap.put(combinedName, combinedRGBData);
+
+      System.out.print("RGB channels combined. Combined image saved as " + combinedName);
     }
-
-    StringBuilder combinedContent = createPPMContent(width, height, combinedRGBData);
-
-    ImageContent combinedImage = new ImageContent(combinedName, combinedContent.toString());
-    imageMap.put(combinedName, combinedImage);
-    rgbDataMap.put(combinedName, combinedRGBData);
-
-    System.out.println("RGB channels combined. Combined image saved as " + combinedName);
   }
 
 
@@ -403,55 +405,56 @@ public abstract class AbstractImage implements ImageOperations {
                             String destNameBlue) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
-      throw new IllegalArgumentException("Source image not found: " + sourceName);
-    }
+      System.out.println("Source image not found: " + sourceName);
+    } else {
 
-    int[][][] sourceRGBData = rgbDataMap.get(sourceName);
+      int[][][] sourceRGBData = rgbDataMap.get(sourceName);
 
-    int height = sourceRGBData.length;
-    int width = sourceRGBData[0].length;
-    int[][][] redRGBData = new int[height][width][3];
-    int[][][] greenRGBData = new int[height][width][3];
-    int[][][] blueRGBData = new int[height][width][3];
+      int height = sourceRGBData.length;
+      int width = sourceRGBData[0].length;
+      int[][][] redRGBData = new int[height][width][3];
+      int[][][] greenRGBData = new int[height][width][3];
+      int[][][] blueRGBData = new int[height][width][3];
 
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        int r = sourceRGBData[y][x][0];
-        int g = sourceRGBData[y][x][1];
-        int b = sourceRGBData[y][x][2];
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int r = sourceRGBData[y][x][0];
+          int g = sourceRGBData[y][x][1];
+          int b = sourceRGBData[y][x][2];
 
-        redRGBData[y][x][0] = r;
-        redRGBData[y][x][1] = 0;
-        redRGBData[y][x][2] = 0;
+          redRGBData[y][x][0] = r;
+          redRGBData[y][x][1] = 0;
+          redRGBData[y][x][2] = 0;
 
-        greenRGBData[y][x][0] = 0;
-        greenRGBData[y][x][1] = g;
-        greenRGBData[y][x][2] = 0;
+          greenRGBData[y][x][0] = 0;
+          greenRGBData[y][x][1] = g;
+          greenRGBData[y][x][2] = 0;
 
-        blueRGBData[y][x][0] = 0;
-        blueRGBData[y][x][1] = 0;
-        blueRGBData[y][x][2] = b;
+          blueRGBData[y][x][0] = 0;
+          blueRGBData[y][x][1] = 0;
+          blueRGBData[y][x][2] = b;
+        }
       }
+
+      StringBuilder redContent = createPPMContent(width, height, redRGBData);
+      StringBuilder greenContent = createPPMContent(width, height, greenRGBData);
+      StringBuilder blueContent = createPPMContent(width, height, blueRGBData);
+
+      ImageContent redImage = new ImageContent(destNameRed, redContent.toString());
+      ImageContent greenImage = new ImageContent(destNameGreen, greenContent.toString());
+      ImageContent blueImage = new ImageContent(destNameBlue, blueContent.toString());
+
+      imageMap.put(destNameRed, redImage);
+      imageMap.put(destNameGreen, greenImage);
+      imageMap.put(destNameBlue, blueImage);
+
+      rgbDataMap.put(destNameRed, redRGBData);
+      rgbDataMap.put(destNameGreen, greenRGBData);
+      rgbDataMap.put(destNameBlue, blueRGBData);
+
+      System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
+              + ", " + destNameBlue);
     }
-
-    StringBuilder redContent = createPPMContent(width, height, redRGBData);
-    StringBuilder greenContent = createPPMContent(width, height, greenRGBData);
-    StringBuilder blueContent = createPPMContent(width, height, blueRGBData);
-
-    ImageContent redImage = new ImageContent(destNameRed, redContent.toString());
-    ImageContent greenImage = new ImageContent(destNameGreen, greenContent.toString());
-    ImageContent blueImage = new ImageContent(destNameBlue, blueContent.toString());
-
-    imageMap.put(destNameRed, redImage);
-    imageMap.put(destNameGreen, greenImage);
-    imageMap.put(destNameBlue, blueImage);
-
-    rgbDataMap.put(destNameRed, redRGBData);
-    rgbDataMap.put(destNameGreen, greenRGBData);
-    rgbDataMap.put(destNameBlue, blueRGBData);
-
-    System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
-            + ", " + destNameBlue);
   }
 
   private StringBuilder createPPMContent(int width, int height, int[][][] rgbData) {
@@ -493,6 +496,7 @@ public abstract class AbstractImage implements ImageOperations {
   @Override
   public void extractComponent(String sourceName, String destName, String component) {
     ImageContent sourceImage = imageMap.get(sourceName);
+    boolean flag = true;
 
     if (sourceImage != null) {
       int[][][] sourceRGBData = rgbDataMap.get(sourceName);
@@ -541,7 +545,8 @@ public abstract class AbstractImage implements ImageOperations {
                 b = value;
                 break;
               default:
-                throw new IllegalArgumentException("Invalid component parameter: " + component);
+                flag = false;
+                System.out.print("Invalid component parameter.");
 
             }
             extractedRGBData[y][x][0] = r;
@@ -549,19 +554,23 @@ public abstract class AbstractImage implements ImageOperations {
             extractedRGBData[y][x][2] = b;
           }
         }
+        if (flag) {
+          StringBuilder extractedContent = createPPMContent(width, height, extractedRGBData);
 
-        StringBuilder extractedContent = createPPMContent(width, height, extractedRGBData);
+          ImageContent destImage = new ImageContent(destName, extractedContent.toString());
+          imageMap.put(destName, destImage);
+          rgbDataMap.put(destName, extractedRGBData);
+          System.out.print(component + " component image created from '" + sourceName
+                  + "' and saved as '" + destName + "'");
 
-        ImageContent destImage = new ImageContent(destName, extractedContent.toString());
-        imageMap.put(destName, destImage);
-        rgbDataMap.put(destName, extractedRGBData);
-        System.out.println(component + " component image created from '" + sourceName
-                + "' and saved as '" + destName + "'");
+        }
+
+
       } else {
         System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
       }
     } else {
-      throw new IllegalArgumentException("Source image not found: " + sourceName);
+      System.out.println("Source image not found: " + sourceName);
     }
   }
 
@@ -585,13 +594,8 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
-  protected static boolean isValidFileName(String input) {
-    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
-    final Pattern pattern = Pattern.compile(re);
-    return pattern.matcher(input).matches();
-    return true;
 
-  }
+
 
 
 }
