@@ -1,6 +1,5 @@
 package model;
 
-import java.io.IOException;
 
 /**
  * The `Model.Model.IModel` interface defines the contract for the model
@@ -22,14 +21,6 @@ public interface IModel {
    * @return The stored input string.
    */
   String getString();
-
-//  /**
-//   * Parses and executes a command provided as a string.
-//   *
-//   * @param command The command to be parsed and executed.
-//   * @throws IOException If an I/O error occurs during command execution.
-//   */
-//  void parseAndExecute(String command) throws IOException;
 
   /**
    * Executes a script from a file specified by the script filename.

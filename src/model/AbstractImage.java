@@ -20,19 +20,19 @@ public abstract class AbstractImage implements ImageOperations {
   static ImageOperations imageObj = null;
 
   float[] sharpeningKernel = {
-          -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f,  1.0f / 4.0f,  1.0f / 4.0f,  1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f,  1.0f / 4.0f,  1.0f,       1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f,  1.0f / 4.0f,  1.0f / 4.0f,  1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
+      -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
+      -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+      -1.0f / 8.0f, 1.0f / 4.0f, 1.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+      -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+      -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
   };
 
 
 
   float[] gaussianKernel = {
-          1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
-          1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
-          1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
+      1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
+      1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
+      1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
   };
 
 
@@ -568,19 +568,17 @@ public abstract class AbstractImage implements ImageOperations {
   /**
    * Get a map of image names to their corresponding ImageContent objects.
    *
-   * @return A map where keys are image names and values are the corresponding
-   * ImageContent objects.
+   * @return A map where keys are image names and values are the corresponding ImageContent objects.
    */
-
   public Map<String, ImageContent> getImageMap() {
     return imageMap;
   }
 
+
   /**
    * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
    *
-   * @return A map where keys are image names and values are the corresponding RGB data represented
-   * as a 3D integer array.
+   * @return A map where keys are image names and values are the corresponding RGB data.
    */
   public Map<String, int[][][]> getRgbDataMap() {
     return rgbDataMap;
@@ -588,9 +586,9 @@ public abstract class AbstractImage implements ImageOperations {
 
 
   protected static boolean isValidFileName(String input) {
-//    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
-//    final Pattern pattern = Pattern.compile(re);
-//    return pattern.matcher(input).matches();
+    final String re = "[A-Za-z0-9_]+\\.[A-Za-z0-9]+";
+    final Pattern pattern = Pattern.compile(re);
+    return pattern.matcher(input).matches();
     return true;
 
   }

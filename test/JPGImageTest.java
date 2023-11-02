@@ -520,8 +520,8 @@ public class JPGImageTest {
   @Test
   public void testRGBSplit() {
     // Perform RGB splitting on the image
-    pngJpgImage.rgbSplitImage(imageName, "red-component-img"
-            , "green-component-img", "blue-component-img");
+    pngJpgImage.rgbSplitImage(imageName, "red-component-img",
+            "green-component-img", "blue-component-img");
 
     // Get the split RGB components
     int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
@@ -578,8 +578,8 @@ public class JPGImageTest {
     pngJpgImage.extractComponent(imageName, "blue-component-img2", "blue");
 
     // Perform RGB combining on the separated components
-    pngJpgImage.combineRGBImages("combined-img", "red-component-img2"
-            , "green-component-img2", "blue-component-img2");
+    pngJpgImage.combineRGBImages("combined-img", "red-component-img2",
+            "green-component-img2", "blue-component-img2");
 
     // Get the combined RGB data
     int[][][] combinedRGBData = pngJpgImage.getRgbDataMap().get("combined-img");

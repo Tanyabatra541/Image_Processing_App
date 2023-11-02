@@ -17,15 +17,9 @@ import model.PPMImage;
 import view.IView;
 
 /**
-<<<<<<< HEAD
- * The `controller.Controller.controller.Controller` class serves as the controller in the MVC
- * architectural pattern. It handles user interactions from the view, processes user input, and communicates with the
-=======
- * The `controller.Controller.controller.Controller` class serves as the
- * controller in the MVC architectural pattern.
- * It handles user interactions from the view, processes user input, and communicates with the
->>>>>>> a682220bfa360c464ec0bb757d2e6bcd3a45388e
- * model and view components.
+ * The `Controller` class serves as the controller in the MVC
+ * architectural pattern. It handles user interactions from the view, processes user input, and
+ * communicates with the model and view components.
  */
 public class Controller implements ActionListener {
 
@@ -173,8 +167,8 @@ public class Controller implements ActionListener {
         break;
       case "brighten":
         if (parts.length < 4) {
-          System.out.println("Invalid 'brighten' command: Usage is 'brighten increment " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'brighten' command: Usage is 'brighten increment "
+                  + "source-image-name dest-image-name'");
         } else {
           int increment = Integer.parseInt(parts[1]);
           String sourceImageName = parts[2];
@@ -187,8 +181,8 @@ public class Controller implements ActionListener {
         break;
       case "rgb-combine":
         if (parts.length < 5) {
-          System.out.println("Invalid 'rgb-combine' command: Usage is 'rgb-combine " +
-                  "combined-image red-image green-image blue-image'");
+          System.out.println("Invalid 'rgb-combine' command: Usage is 'rgb-combine "
+                  + "combined-image red-image green-image blue-image'");
         } else {
           String combinedImageName = parts[1];
           String redImageName = parts[2];
@@ -199,8 +193,8 @@ public class Controller implements ActionListener {
         break;
       case "rgb-split":
         if (parts.length < 4) {
-          System.out.println("Invalid 'rgb-split' command: Usage is 'rgb-split image-name " +
-                  "dest-image-name-red dest-image-name-green dest-image-name-blue'");
+          System.out.println("Invalid 'rgb-split' command: Usage is 'rgb-split image-name "
+                  + "dest-image-name-red dest-image-name-green dest-image-name-blue'");
         } else {
           String sourceImageName = parts[1];
           String destImageNameRed = parts[2];
@@ -213,8 +207,8 @@ public class Controller implements ActionListener {
 
       case "red-component":
         if (parts.length < 3) {
-          System.out.println("Invalid 'extract-component' command: Usage is 'red-component " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'extract-component' command: Usage is 'red-component "
+                  + "source-image-name dest-image-name'");
         } else {
           String sourceImageName = parts[1];
           String destImageName = parts[2];
@@ -224,8 +218,8 @@ public class Controller implements ActionListener {
 
       case "green-component":
         if (parts.length < 3) {
-          System.out.println("Invalid 'extract-component' command: Usage is 'green-component " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'extract-component' command: Usage is 'green-component "
+                  + "source-image-name dest-image-name'");
         } else {
           String sourceImageName = parts[1];
           String destImageName = parts[2];
@@ -234,8 +228,8 @@ public class Controller implements ActionListener {
         break;
       case "blue-component":
         if (parts.length < 3) {
-          System.out.println("Invalid 'blue-component' command: Usage is 'blue-component " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'blue-component' command: Usage is 'blue-component "
+                  + "source-image-name dest-image-name'");
         } else {
           String sourceImageName = parts[1];
           String destImageName = parts[2];
@@ -245,8 +239,8 @@ public class Controller implements ActionListener {
 
       case "value-component":
         if (parts.length < 3) {
-          System.out.println("Invalid 'value-component' command: Usage is 'value-component " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'value-component' command: Usage is 'value-component "
+                  + "source-image-name dest-image-name'");
         } else {
           String sourceImageName = parts[1];
           String destImageName = parts[2];
@@ -267,8 +261,8 @@ public class Controller implements ActionListener {
 
       case "luma-component":
         if (parts.length < 3) {
-          System.out.println("Invalid 'luma-component' command: Usage is 'luma-component " +
-                  "source-image-name dest-image-name'");
+          System.out.println("Invalid 'luma-component' command: Usage is 'luma-component "
+                  + "source-image-name dest-image-name'");
         } else {
           String sourceImageName = parts[1];
           String destImageName = parts[2];

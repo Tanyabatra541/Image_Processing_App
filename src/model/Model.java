@@ -3,7 +3,6 @@ package model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Scanner;
 import controller.Controller;
 
@@ -16,7 +15,6 @@ public class Model implements IModel {
   private String input;
   private String result; // Store the result from processing the file
 
-//  static ImageOperations imageObj = null;
 
   /**
    * Initializes the model with default values.
