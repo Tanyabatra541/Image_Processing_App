@@ -7,27 +7,18 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import org.junit.Before;
-import org.junit.Test;
-import java.awt.event.ActionEvent;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.text.View;
 
-import model.IModel;
+
 import model.JPGImage;
 import model.Model;
-import model.PNGImage;
 import view.IView;
 import view.JFrameView;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 
 public class ControllerTest {
@@ -99,6 +90,56 @@ public class ControllerTest {
   @Test
   public void testLoad() throws IOException {
     controller.parseAndExecute("load "+ imagePath + " "+ imageName);
+
+    // Check if the image was loaded successfully
     assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
+    // Get the RGB data
+    int[][][] rgbData = pngJpgImage.getRgbDataMap().get(imageName);
+
+    // Check if the dimensions match
+    assertEquals(rgbMatrix.length, rgbData.length);
+    assertEquals(rgbMatrix[0].length, rgbData[0].length);
+
+    // Print the RGB data
+    for (int y = 0; y < rgbData.length; y++) {
+      for (int x = 0; x < rgbData[y].length; x++) {
+        int r = rgbData[y][x][0];
+        int g = rgbData[y][x][1];
+        int b = rgbData[y][x][2];
+        System.out.println("RGB at (" + x + ", " + y + "): R=" + r + " G=" + g + " B=" + b);
+        assertEquals(rgbMatrix[y][x][0], r);
+        assertEquals(rgbMatrix[y][x][1], g);
+        assertEquals(rgbMatrix[y][x][2], b);
+      }
+    }
   }
+
+
+  @Test
+  public void testVerticalFlipImage() throws IOException {
+    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
+    controller.parseAndExecute("vertical-flip "+ imageName + " vertical-flip-img");
+
+
+    // Get the flipped image data
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-flip-img");
+
+    // Check if the flipped image matches the expected result
+    int[][][] expectedFlippedImageData = new int[2][2][3];
+    expectedFlippedImageData[0][0] = new int[]{53, 49, 50};
+    expectedFlippedImageData[0][1] = new int[]{249, 245, 246};
+    expectedFlippedImageData[1][0] = new int[]{66, 62, 63};
+    expectedFlippedImageData[1][1] = new int[]{167, 163, 164};
+
+    for (int y = 0; y < expectedFlippedImageData.length; y++) {
+      for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
+        }
+      }
+    }
+  }
+
+
 }
