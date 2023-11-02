@@ -22,13 +22,13 @@ public interface IModel {
    */
   String getString();
 
-  /**
-   * Parses and executes a command provided as a string.
-   *
-   * @param command The command to be parsed and executed.
-   * @throws IOException If an I/O error occurs during command execution.
-   */
-  void parseAndExecute(String command) throws IOException;
+//  /**
+//   * Parses and executes a command provided as a string.
+//   *
+//   * @param command The command to be parsed and executed.
+//   * @throws IOException If an I/O error occurs during command execution.
+//   */
+//  void parseAndExecute(String command) throws IOException;
 
   /**
    * Executes a script from a file specified by the script filename.
@@ -43,5 +43,13 @@ public interface IModel {
    * @return The result of the operation or command.
    */
   String getResult();
+
+  /**
+   * Identifies the file format of an image based on its file extension.
+   *
+   * @param filePath The path to the image file.
+   * @return The file format or null if the format is unsupported or not recognized.
+   */
+  String identifyFileFormat(String filePath);
 
 }

@@ -6,7 +6,7 @@ import view.JFrameView;
 
 
 /**
- * The `Main` class represents the entry point of the application. It initializes the Model.Model.Model.Model,
+ * The `Main` class represents the entry point of the application. It initializes the Model,
  * View, and controller.Controller.controller.Controller components and starts the application.
  */
 public class Main {
