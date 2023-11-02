@@ -25,13 +25,33 @@ public class JPGImage extends PNGImage {
   public void saveImage(String imagePath, String imageName) throws IOException {
     int[][][] rgbData = rgbDataMap.get(imageName);
 
+
+    // Check if the filename is valid
+    if (!isValidFileName(imageName)) {
+      throw new IllegalArgumentException("Invalid filename: " + imageName);
+    }
+
     if (rgbData != null) {
       BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
 
-      File output = new File(imagePath);
-      ImageIO.write(bufferedImage, "jpg", output);
+      //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
 
-      System.out.println("Image saved as " + imagePath + " in the jpg format");
+      // Check if the format is "png" before saving as PNG
+      File output = new File(imagePath);
+
+
+
+      if (output.getParentFile() != null && !output.getParentFile().exists()) {
+        throw new IllegalArgumentException("Invalid path: " + imagePath);
+      }
+
+
+      if (!ImageIO.write(bufferedImage, "jpg", output)) {
+        throw new IllegalArgumentException("Failed to save the image as " + imagePath);
+      }
+
+      //ImageIO.write(bufferedImage, "png", output);
+      System.out.println("Image saved as " + imagePath + " in the png format");
     }
   }
 }
