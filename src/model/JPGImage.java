@@ -7,8 +7,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- * The `Model.Model.Model.Model.JPGImage` class extends the `Model.Model.Model.PNGImage` class and provides functionality to save
- * an image in the JPG format. It converts RGB image data to a JPG image and saves it to a
+ * The `Model.JPGImage` class extends the `Model.PNGImage`
+ * class and provides functionality to save an image in the JPG format.
+ * It converts RGB image data to a JPG image and saves it to a
  * specified file.
  */
 public class JPGImage extends PNGImage {

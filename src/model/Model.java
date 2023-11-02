@@ -8,8 +8,8 @@ import java.util.Scanner;
 import controller.Controller;
 
 /**
- * The `Model.Model.Model.Model` class represents the application's model. The model interacts with
- * various image operations through the `Model.Model.Model.Model.ImageOperations` interface to perform image-related
+ * The `Model` class represents the application's model. The model interacts with
+ * various image operations through the `ImageOperations` interface to perform image-related
  * tasks.
  */
 public class Model implements IModel {
@@ -104,6 +104,5 @@ public class Model implements IModel {
       return null;
     }
   }
-
 
 }

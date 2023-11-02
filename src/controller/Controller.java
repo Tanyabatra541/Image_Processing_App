@@ -17,8 +17,14 @@ import model.PPMImage;
 import view.IView;
 
 /**
+<<<<<<< HEAD
  * The `controller.Controller.controller.Controller` class serves as the controller in the MVC
  * architectural pattern. It handles user interactions from the view, processes user input, and communicates with the
+=======
+ * The `controller.Controller.controller.Controller` class serves as the
+ * controller in the MVC architectural pattern.
+ * It handles user interactions from the view, processes user input, and communicates with the
+>>>>>>> a682220bfa360c464ec0bb757d2e6bcd3a45388e
  * model and view components.
  */
 public class Controller implements ActionListener {

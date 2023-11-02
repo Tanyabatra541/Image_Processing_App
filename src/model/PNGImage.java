@@ -9,9 +9,9 @@ import java.util.Base64;
 import javax.imageio.ImageIO;
 
 /**
- * The `Model.Model.Model.PNGImage` class extends `Model.Model.Model.Model.AbstractImage` and provides specific functionality for
- * working with PNG image files. It includes methods for loading PNG images and saving images in the
- * PNG format.
+ * The `PNGImage` class extends `AbstractImage` and provides specific functionality for
+ * working with PNG image files. It includes methods for loading PNG images and saving
+ * images in the PNG format.
  */
 public class PNGImage extends AbstractImage {
 

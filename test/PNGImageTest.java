@@ -92,7 +92,15 @@ public class PNGImageTest {
     }
   }
 
-  public static void createAndSavePNG(int[][][] matrix, String fileName, String filePath) {
+  /**
+   * Creates a PNG image with the specified RGB data and saves it to a file at the specified file
+   * path.
+   *
+   * @param matrix   The RGB data of the image.
+   * @param fileName The name of the image file.
+   * @param filePath The path where the image should be saved.
+   */
+  private static void createAndSavePNG(int[][][] matrix, String fileName, String filePath) {
 
     int width = matrix[0].length;
     int height = matrix.length;

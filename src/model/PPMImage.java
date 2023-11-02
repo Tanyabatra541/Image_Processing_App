@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 
 /**
- * A class representing images in the PPM format. This class extends the Model.Model.Model.Model.AbstractImage class,
+ * A class representing images in the PPM format. This class extends the AbstractImage class,
  * providing functionality to load and save PPM images.
  */
 public class PPMImage extends AbstractImage {

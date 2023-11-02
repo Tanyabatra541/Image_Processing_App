@@ -4,19 +4,15 @@ import org.junit.Test;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-
-
 import model.JPGImage;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-
-
-
-
-import static org.junit.Assert.*;
-
+/**
+ * The `JPGImageTest` class contains JUnit tests for the `JPGImage` class.
+ */
 public class JPGImageTest {
 
   private static JPGImage pngJpgImage;
@@ -32,18 +28,6 @@ public class JPGImageTest {
   };
 
   static int[][][] rgbMatrix = new int[2][2][3];
-  int[][][] rgbMatrix2 = {
-          {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
-          {{96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
-          {{32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}, {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
-          {{160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}},
-          {{64, 128, 96}, {255, 160, 192}, {96, 96, 128}, {192, 32, 128}, {32, 192, 255}, {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
-          {{192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
-          {{96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}},
-          {{224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}},
-          {{128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}},
-          {{192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 255, 128}}
-  };
 
   @Before
   public void setUp() {
@@ -52,7 +36,15 @@ public class JPGImageTest {
     //createAndSaveJPG(rgbMatrix2,image2Name,image2Path);
   }
 
-  public static void createAndSaveJPG(int[][][] matrix, String fileName, String filePath) {
+  /**
+   * Creates a JPG image with the specified RGB data and saves it to a file at the specified file
+   * path.
+   *
+   * @param matrix   The RGB data of the image.
+   * @param fileName The name of the image file.
+   * @param filePath The path where the image should be saved.
+   */
+  private static void createAndSaveJPG(int[][][] matrix, String fileName, String filePath) {
 
     int width = matrix[0].length;
     int height = matrix.length;
@@ -148,8 +140,7 @@ public class JPGImageTest {
   public void testBrightenImage() throws IOException {
 
 
-    pngJpgImage.brightenImage(imageName, "brighten-img", 50); // Increase brightness by 50 (you can adjust the increment)
-
+    pngJpgImage.brightenImage(imageName, "brighten-img", 50);
     int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brighten-img");
 
     // Check if the brightened image matches the expected result
@@ -164,7 +155,8 @@ public class JPGImageTest {
     for (int y = 0; y < expectedBrightenedImageData.length; y++) {
       for (int x = 0; x < expectedBrightenedImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-          System.out.println("Expected: " + expectedBrightenedImageData[y][x][c] + " Actual: " + brightenedImageData[y][x][c]);
+          System.out.println("Expected: " + expectedBrightenedImageData[y][x][c]
+                  + " Actual: " + brightenedImageData[y][x][c]);
           assertEquals(expectedBrightenedImageData[y][x][c], brightenedImageData[y][x][c]);
         }
       }
@@ -174,9 +166,7 @@ public class JPGImageTest {
   @Test
   public void testDarkenImage() throws IOException {
     // Perform a brightness adjustment
-    pngJpgImage.brightenImage(imageName, "darken-img", -50); // Increase brightness by 50 (you can adjust the increment)
-
-    // Get the brightened image data
+    pngJpgImage.brightenImage(imageName, "darken-img", -50);
     int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("darken-img");
 
     // Check if the brightened image matches the expected result
@@ -513,7 +503,8 @@ public class JPGImageTest {
     pngJpgImage.extractComponent(imageName, "intensity-component-img", "intensity");
 
     // Get the extracted red component data
-    int[][][] extractedIntensityComponent = pngJpgImage.getRgbDataMap().get("intensity-component-img");
+    int[][][] extractedIntensityComponent = pngJpgImage.getRgbDataMap()
+            .get("intensity-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedIntensityComponent.length; y++) {
@@ -529,7 +520,8 @@ public class JPGImageTest {
   @Test
   public void testRGBSplit() {
     // Perform RGB splitting on the image
-    pngJpgImage.rgbSplitImage(imageName, "red-component-img", "green-component-img", "blue-component-img");
+    pngJpgImage.rgbSplitImage(imageName, "red-component-img"
+            , "green-component-img", "blue-component-img");
 
     // Get the split RGB components
     int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
@@ -586,7 +578,8 @@ public class JPGImageTest {
     pngJpgImage.extractComponent(imageName, "blue-component-img2", "blue");
 
     // Perform RGB combining on the separated components
-    pngJpgImage.combineRGBImages("combined-img", "red-component-img2", "green-component-img2", "blue-component-img2");
+    pngJpgImage.combineRGBImages("combined-img", "red-component-img2"
+            , "green-component-img2", "blue-component-img2");
 
     // Get the combined RGB data
     int[][][] combinedRGBData = pngJpgImage.getRgbDataMap().get("combined-img");
