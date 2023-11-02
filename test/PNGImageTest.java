@@ -156,7 +156,7 @@ public class PNGImageTest {
     expectedFlippedImageData[0][0] = new int[]{0, 0, 255};
     expectedFlippedImageData[0][1] = new int[]{255, 255, 255};
     expectedFlippedImageData[1][0] = new int[]{255, 0, 0};
-    expectedFlippedImageData[1][1] = new int[]{0, 255, 0};
+    expectedFlippedImageData[1] [1] = new int[]{0, 255, 0};
 
     for (int y = 0; y < expectedFlippedImageData.length; y++) {
       for (int x = 0; x < expectedFlippedImageData[y].length; x++) {

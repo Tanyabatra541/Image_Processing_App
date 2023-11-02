@@ -1,0 +1,116 @@
+#load testImage.png and call it 'testImage'
+load /Users/tanyabatra/Desktop/pdp/test-image.png testImage
+
+#brighten testImage by adding 10  
+brighten 50 testImage testImage-brighter 
+
+#save brightened testImage by adding 10  
+save /Users/tanyabatra/Desktop/pdp/img/testImage-brighter.png testImage-brighter
+
+#darken testImage by adding 10  
+brighten -50 testImage testImage-dark 
+
+#save darkened testImage by adding 10  
+save /Users/tanyabatra/Desktop/pdp/img/testImage-dark.png testImage-dark
+
+#flip testImage vertically
+vertical-flip testImage testImage-vertical
+
+#save flip testImage vertically 
+save /Users/tanyabatra/Desktop/pdp/img/testImage-vertical.png testImage-vertical
+
+#flip testImage horizontally
+horizontal-flip testImage testImage-horizontal
+
+#save flip testImage horizontal
+save /Users/tanyabatra/Desktop/pdp/img/testImage-horizontal.png testImage-horizontal
+
+#flip horizontal testImage vertically 
+vertical-flip testImage-horizontal testImage-horizontal-vertical
+
+#save testImage-horizontal-vertical
+save /Users/tanyabatra/Desktop/pdp/img/testImage-horizontal-vertical.png testImage-horizontal-vertical
+
+#flip vertical testImage horizontally 
+horizontal-flip testImage-vertical testImage-vertical-horizontal
+
+#save testImage-vertical-horizontal
+save /Users/tanyabatra/Desktop/pdp/img/testImage-vertical-horizontal.png testImage-vertical-horizontal
+
+#blur testImage
+blur testImage testImage-blur
+
+#save blurred testImage
+save /Users/tanyabatra/Desktop/pdp/img/testImage-blur.png testImage-blur
+
+#sharpen testImage
+sharpen testImage testImage-sharp
+
+#save sharpened testImage
+save /Users/tanyabatra/Desktop/pdp/img/testImage-sharp.png testImage-sharp
+
+#brighten by 50 testImage
+sharpen testImage testImage-bright
+
+#save brightened testImage
+save /Users/tanyabatra/Desktop/pdp/img/testImage-bright.png testImage-bright
+
+#sepia testImage
+sepia testImage testImage-sepia
+
+#save sepia testImage
+save /Users/tanyabatra/Desktop/pdp/img/testImage-sepia.png testImage-sepia
+
+#red-component testImage
+red-component testImage red-component-testImage
+
+#save red-component testImage
+save /Users/tanyabatra/Desktop/pdp/img/red-component-testImage.png red-component-testImage
+
+#green-component testImage
+green-component testImage green-component-testImage
+
+#save green-component testImage
+save /Users/tanyabatra/Desktop/pdp/img/green-component-testImage.png green-component-testImage
+
+#blue-component testImage
+blue-component testImage blue-component-testImage
+
+#save blue-component testImage
+save /Users/tanyabatra/Desktop/pdp/img/blue-component-testImage.png blue-component-testImage
+
+#value-component testImage
+value-component testImage value-component-testImage
+
+#save value-component-testImage
+save /Users/tanyabatra/Desktop/pdp/img/value-component-testImage.png value-component-testImage
+
+#intensity-component testImage
+intensity-component testImage intensity-component-testImage
+
+#save intensity-component-testImage
+save /Users/tanyabatra/Desktop/pdp/img/intensity-component-testImage.png intensity-component-testImage
+
+#luma-component testImage
+luma-component testImage luma-component-testImage
+
+#save luma-component-testImage
+save /Users/tanyabatra/Desktop/pdp/img/luma-component-testImage.png luma-component-testImage
+
+#rgb-split testImage
+rgb-split testImage red-split-testImage green-split-testImage blue-split-testImage
+
+#save red-split testImage
+save /Users/tanyabatra/Desktop/pdp/img/red-split-testImage.png red-split-testImage
+
+#save green-split testImage
+save /Users/tanyabatra/Desktop/pdp/img/green-split-testImage.png green-split-testImage
+
+#save blue-split testImage
+save /Users/tanyabatra/Desktop/pdp/img/blue-split-testImage.png blue-split-testImage
+
+#rgb-combine testImage
+rgb-combine rgb-combine-testImage red-split-testImage green-split-testImage blue-split-testImage
+
+#save rgb-combine testImage
+save /Users/tanyabatra/Desktop/pdp/img/rgb-combine-testImage.png rgb-combine-testImage
