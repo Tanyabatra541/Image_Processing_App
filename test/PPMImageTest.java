@@ -321,7 +321,7 @@ public class PPMImageTest {
   public void testSharpenImage() throws IOException {
 
     // Perform sharpening on the image
-    ppmImage.sharpenImage(image2Name, "sharp-img");
+    ppmImage.sharpenImage(image2Name, "sharp-img", 0);
 
     // Get the sharpened image data
     int[][][] sharpenedImageData = ppmImage.getRgbDataMap().get("sharp-img");
@@ -364,7 +364,7 @@ public class PPMImageTest {
   @Test
   public void testBlurImage() {
     // Perform blurring on the image
-    ppmImage.blurImage(image2Name, "blurred-img");
+    ppmImage.blurImage(image2Name, "blurred-img", 0);
 
     // Get the blurred image data
     int[][][] blurredImageData = ppmImage.getRgbDataMap().get("blurred-img");
@@ -411,7 +411,7 @@ public class PPMImageTest {
   @Test
   public void testSepiaImage() {
 
-    ppmImage.sepiaImage(imageName, "sepia-img");
+    ppmImage.sepiaImage(imageName, "sepia-img", 0);
 
     // Get the sepia image data
     int[][][] sepiaImageData = ppmImage.getRgbDataMap().get("sepia-img");

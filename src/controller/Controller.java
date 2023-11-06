@@ -160,10 +160,20 @@ public class Controller implements ActionListener {
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
-        imageObj.sharpenImage(arg1, arg2);
+        if (parts.length > 2 && parts[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(parts[4]);
+          imageObj.sharpenImage(arg1, arg2, splitPercentage);
+        } else {
+          imageObj.sharpenImage(arg1, arg2, 0);
+        }
         break;
       case "blur":
-        imageObj.blurImage(arg1, arg2);
+        if (parts.length > 2 && parts[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(parts[4]);
+          imageObj.blurImage(arg1, arg2, splitPercentage);
+        } else {
+          imageObj.blurImage(arg1, arg2, 0);
+        }
         break;
       case "brighten":
         if (parts.length < 4) {
@@ -177,7 +187,12 @@ public class Controller implements ActionListener {
         }
         break;
       case "sepia":
-        imageObj.sepiaImage(arg1, arg2);
+        if (parts.length > 2 && parts[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(parts[4]);
+          imageObj.sepiaImage(arg1, arg2, splitPercentage);
+        } else {
+          imageObj.sepiaImage(arg1, arg2, 0);
+        }
         break;
       case "rgb-combine":
         if (parts.length < 5) {
