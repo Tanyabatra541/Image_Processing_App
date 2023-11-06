@@ -134,7 +134,7 @@ public class Controller implements ActionListener {
                 || (extension.equalsIgnoreCase("jpeg"))) {
           imageObj = new JPGImage();
         } else {
-          throw new IllegalArgumentException("Unsupported image format");
+          System.out.println("Unsupported image format");
         }
       }
     }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import javax.imageio.ImageIO;
+
 import model.JPGImage;
 import model.PPMImage;
 
@@ -649,7 +650,6 @@ public class JPGImageTest {
   }
 
 
-
   @Test
   public void testRGBSplitImageWithInvalidSourceName() {
     pngJpgImage.rgbSplitImage("ghy", "destNameRed", "destNameGreen", "destNameBlue");
@@ -672,7 +672,7 @@ public class JPGImageTest {
   }
 
   @Test
-  public void testSaveImageWithInvalidFilename()  {
+  public void testSaveImageWithInvalidFilename() {
     String invalidFilename = "bac#";
     PPMImage img = new PPMImage();
     img.saveImage(imagePath, invalidFilename);

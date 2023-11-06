@@ -1,4 +1,5 @@
 package controller;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,6 +22,9 @@ import java.io.File;
 import java.io.IOException;
 
 
+/**
+ * The `ControllerTest` class contains JUnit tests for the `Controller` class.
+ */
 public class ControllerTest {
 
   private static JPGImage pngJpgImage;
@@ -30,8 +34,6 @@ public class ControllerTest {
 
   static int[][][] rgbMatrix = new int[2][2][3];
 
-  private Model model;
-  private IView view;
   private Controller controller;
 
   int[][][] originalMatrix = {
@@ -44,8 +46,8 @@ public class ControllerTest {
   public void setUp() {
     pngJpgImage = new JPGImage();
     createAndSaveJPG(originalMatrix, imageName, imagePath);
-    model = new Model();
-    view = new JFrameView(null);
+    Model model = new Model();
+    IView view = new JFrameView(null);
     controller = new Controller(model, view);
   }
 
@@ -89,7 +91,7 @@ public class ControllerTest {
 
   @Test
   public void testLoad() throws IOException {
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
 
     // Check if the image was loaded successfully
     assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
@@ -117,8 +119,8 @@ public class ControllerTest {
 
   @Test
   public void testVerticalFlipImage() throws IOException {
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("vertical-flip "+ imageName + " vertical-flip-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("vertical-flip " + imageName + " vertical-flip-img");
 
 
     // Get the flipped image data
@@ -144,8 +146,8 @@ public class ControllerTest {
   @Test
   public void testHorizontalFlipImage() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("horizontal-flip "+ imageName + " horizontal-flip-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("horizontal-flip " + imageName + " horizontal-flip-img");
 
     // Perform a horizontal flip
 
@@ -175,8 +177,8 @@ public class ControllerTest {
   @Test
   public void testSharpenImage() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("sharpen "+ imageName + " sharp-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("sharpen " + imageName + " sharp-img");
     // Perform sharpening on the image
 
     // Get the sharpened image data
@@ -202,8 +204,8 @@ public class ControllerTest {
   @Test
   public void testBlurImage() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("blur "+ imageName + " blurred-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("blur " + imageName + " blurred-img");
 
     // Perform blurring on the image
 
@@ -230,8 +232,8 @@ public class ControllerTest {
   public void testSepiaImage() throws IOException {
 
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("sepia "+ imageName + " sepia-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("sepia " + imageName + " sepia-img");
     pngJpgImage.sepiaImage(imageName, "sepia-img");
 
     // Get the sepia image data
@@ -260,8 +262,8 @@ public class ControllerTest {
   @Test
   public void testExtractRedComponent() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("red-component "+ imageName + " red-component-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("red-component " + imageName + " red-component-img");
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedRedComponent = {
@@ -290,8 +292,8 @@ public class ControllerTest {
   @Test
   public void testExtractGreenComponent() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("green-component "+ imageName + " green-component-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("green-component " + imageName + " green-component-img");
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedGreenComponent = {
@@ -319,8 +321,8 @@ public class ControllerTest {
   @Test
   public void testExtractBlueComponent() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("blue-component "+ imageName + " blue-component-img");
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("blue-component " + imageName + " blue-component-img");
     // Define the expected result after extracting the red component
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedBlueComponent = {
@@ -329,8 +331,7 @@ public class ControllerTest {
     };
 
 
-    // Perform the extraction of the "red" component
-    pngJpgImage.extractComponent(imageName, "blue-component-img", "blue");
+
 
     // Get the extracted red component data
     int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap().get("blue-component-img");
@@ -348,8 +349,8 @@ public class ControllerTest {
   @Test
   public void testRGBSplit() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("rgb-split "+ imageName + " red-component-img"
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("rgb-split " + imageName + " red-component-img"
             + " green-component-img" + " blue-component-img");
     // Perform RGB splitting on the image
 
@@ -403,8 +404,8 @@ public class ControllerTest {
   @Test
   public void testRGBCombine() throws IOException {
 
-    controller.parseAndExecute("load "+ imagePath + " "+ imageName);
-    controller.parseAndExecute("rgb-split "+ imageName + " red-component-img"
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("rgb-split " + imageName + " red-component-img"
             + " green-component-img" + " blue-component-img");
     controller.parseAndExecute("rgb-combine " + "combined-img" + " red-component-img"
             + " green-component-img" + " blue-component-img");
@@ -428,5 +429,206 @@ public class ControllerTest {
       }
     }
   }
+
+
+  @Test
+  public void testBrightenImage() throws IOException {
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("brighten 50 " + imageName + " brighten-img");
+
+
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brighten-img");
+
+    // Check if the brightened image matches the expected result
+    // You need to define expected RGB values after brightening with an increment of 50.
+    int[][][] expectedBrightenedImageData = new int[2][2][3];
+    expectedBrightenedImageData[0][0] = new int[]{116, 112, 113};
+    expectedBrightenedImageData[0][1] = new int[]{217, 213, 214};
+    expectedBrightenedImageData[1][0] = new int[]{103, 99, 100};
+    expectedBrightenedImageData[1][1] = new int[]{255, 255, 255};
+
+
+    for (int y = 0; y < expectedBrightenedImageData.length; y++) {
+      for (int x = 0; x < expectedBrightenedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+          System.out.println("Expected: " + expectedBrightenedImageData[y][x][c]
+                  + " Actual: " + brightenedImageData[y][x][c]);
+          assertEquals(expectedBrightenedImageData[y][x][c], brightenedImageData[y][x][c]);
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testDarkenImage() throws IOException {
+    // Perform a brightness adjustment
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("brighten -50 " + imageName + " darken-img");
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("darken-img");
+
+    // Check if the brightened image matches the expected result
+    // You need to define expected RGB values after brightening with an increment of 50.
+    int[][][] expectedBrightenedImageData = new int[2][2][3];
+    expectedBrightenedImageData[0][0] = new int[]{16, 12, 13};
+    expectedBrightenedImageData[0][1] = new int[]{117, 113, 114};
+    expectedBrightenedImageData[1][0] = new int[]{3, 0, 0};
+    expectedBrightenedImageData[1][1] = new int[]{199, 195, 196};
+
+    for (int y = 0; y < expectedBrightenedImageData.length; y++) {
+      for (int x = 0; x < expectedBrightenedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedBrightenedImageData[y][x][c], brightenedImageData[y][x][c]);
+        }
+      }
+    }
+  }
+
+
+  @Test
+  public void testHorizontalVerticalFlipImage() throws IOException {
+
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("horizontal-flip " + imageName + " horizontal-img");
+    controller.parseAndExecute("vertical-flip " + "horizontal-img"
+            + " horizontal-vertical-flip-img");
+
+    // Get the flipped image data
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-vertical-flip-img");
+
+    // Check if the flipped image matches the expected result
+    int[][][] expectedFlippedImageData = new int[2][2][3];
+    expectedFlippedImageData[0][0] = new int[]{249, 245, 246};
+    expectedFlippedImageData[0][1] = new int[]{53, 49, 50};
+    expectedFlippedImageData[1][0] = new int[]{167, 163, 164};
+    expectedFlippedImageData[1][1] = new int[]{66, 62, 63};
+
+
+    for (int y = 0; y < expectedFlippedImageData.length; y++) {
+      for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+          // System.out.println(flippedImageData[y][x][c]);
+          assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
+
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testVerticalHorizontalFlipImage() throws IOException {
+
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("vertical-flip " + imageName + " horizontal-img");
+    controller.parseAndExecute("horizontal-flip " + "horizontal-img"
+            + " vertical-horizontal-flip-img");
+
+    // Get the flipped image data
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-horizontal-flip-img");
+
+    // Check if the flipped image matches the expected result
+    int[][][] expectedFlippedImageData = new int[2][2][3];
+    expectedFlippedImageData[0][0] = new int[]{249, 245, 246};
+    expectedFlippedImageData[0][1] = new int[]{53, 49, 50};
+    expectedFlippedImageData[1][0] = new int[]{167, 163, 164};
+    expectedFlippedImageData[1][1] = new int[]{66, 62, 63};
+
+
+    for (int y = 0; y < expectedFlippedImageData.length; y++) {
+      for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
+
+        }
+      }
+    }
+  }
+
+
+  @Test
+  public void testExtractValueComponent() throws IOException {
+    // Define the expected result after extracting the red component
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedValueComponent = {
+            {{66, 66, 66}, {167, 167, 167}},
+            {{53, 53, 53}, {249, 249, 249}}
+    };
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("value-component " + imageName + " value-component-img");
+
+
+    // Get the extracted red component data
+    int[][][] extractedValueComponent = pngJpgImage.getRgbDataMap().get("value-component-img");
+
+    // Check if the extracted red component matches the expected result
+    for (int y = 0; y < expectedValueComponent.length; y++) {
+      for (int x = 0; x < expectedValueComponent[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedValueComponent[y][x][c], extractedValueComponent[y][x][c]);
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testExtractLumaComponent() throws IOException {
+    // Define the expected result after extracting the red component
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedLumaComponent = {
+            {{62, 62, 62}, {163, 163, 163}},
+            {{49, 49, 49}, {245, 245, 245}}
+    };
+
+
+    // Perform the extraction of the "red" component
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("luma-component " + imageName + " luma-component-img");
+
+    // Get the extracted red component data
+    int[][][] extractedLumaComponent = pngJpgImage.getRgbDataMap().get("luma-component-img");
+
+    // Check if the extracted red component matches the expected result
+    for (int y = 0; y < expectedLumaComponent.length; y++) {
+      for (int x = 0; x < expectedLumaComponent[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+          //System.out.println(extractedLumaComponent[y][x][c] + " ");
+          assertEquals(expectedLumaComponent[y][x][c], extractedLumaComponent[y][x][c]);
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testExtractIntensityComponent() throws IOException {
+    // Define the expected result after extracting the red component
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedIntensityComponent = {
+            {{63, 63, 63}, {164, 164, 164}},
+            {{50, 50, 50}, {246, 246, 246}}
+    };
+
+
+    // Perform the extraction of the "red" component
+    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    controller.parseAndExecute("intensity-component " + imageName + " intensity-component-img");
+
+    // Get the extracted red component data
+    int[][][] extractedIntensityComponent = pngJpgImage.getRgbDataMap()
+            .get("intensity-component-img");
+
+    // Check if the extracted red component matches the expected result
+    for (int y = 0; y < expectedIntensityComponent.length; y++) {
+      for (int x = 0; x < expectedIntensityComponent[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+          //System.out.println(extractedIntensityComponent[y][x][c] + " ");
+          assertEquals(expectedIntensityComponent[y][x][c], extractedIntensityComponent[y][x][c]);
+        }
+      }
+    }
+  }
+
+
 
 }
