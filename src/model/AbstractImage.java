@@ -1,8 +1,15 @@
 package model;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 
 /**
@@ -11,6 +18,8 @@ import java.util.Map;
  * images in specific formats.
  */
 public abstract class AbstractImage implements ImageOperations {
+
+
 
 
   protected static final Map<String, ImageContent> imageMap = new HashMap<>();
@@ -615,8 +624,134 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
+  /**
+   * Color-correct the image by aligning the meaningful peaks of its histogram.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination color-corrected image.
+   */
+  @Override
+  public void colorCorrectImage(String sourceName, String destName) {
+    ImageContent sourceImage = imageMap.get(sourceName);
 
+    if (sourceImage != null) {
+      int[][][] sourceRGBData = rgbDataMap.get(sourceName);
 
+      int height = sourceRGBData.length;
+      int width = sourceRGBData[0].length;
 
+      // Create Histogram instance for each channel with the given value range (10 to 245).
+      Histogram histogram = new Histogram(10, 245);
+
+      // Populate the histogram with values from the image data.
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int redValue = sourceRGBData[y][x][0];
+          int greenValue = sourceRGBData[y][x][1];
+          int blueValue = sourceRGBData[y][x][2];
+          histogram.addValue(redValue, greenValue, blueValue);
+        }
+      }
+
+      // Calculate the max count across all channels.
+      histogram.calculateMaxCount();
+
+      // Find the peak values for each channel.
+      int peakR = histogram.findPeakValue(histogram.histogramR);
+      int peakG = histogram.findPeakValue(histogram.histogramG);
+      int peakB = histogram.findPeakValue(histogram.histogramB);
+
+      // Calculate the average value across peaks.
+      int averagePeak = (peakR + peakG + peakB) / 3;
+
+      System.out.println("Average Peak: " + averagePeak);
+
+      // Offset each channel's values so that their histogram peak occurs at the average value.
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int redValue = sourceRGBData[y][x][0];
+          int greenValue = sourceRGBData[y][x][1];
+          int blueValue = sourceRGBData[y][x][2];
+
+          // Offset the values
+          int offsetR = averagePeak - peakR;
+          int offsetG = averagePeak - peakG;
+          int offsetB = averagePeak - peakB;
+
+          // Apply offsets and ensure values stay within the valid range (10 to 245)
+          int correctedRed = Math.min(245, Math.max(10, redValue + offsetR));
+          int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
+          int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
+
+          sourceRGBData[y][x][0] = correctedRed;
+          sourceRGBData[y][x][1] = correctedGreen;
+          sourceRGBData[y][x][2] = correctedBlue;
+        }
+      }
+
+      // Create a StringBuilder for the corrected image content.
+      StringBuilder correctedContent = createPPMContent(width, height, sourceRGBData);
+
+      // Create and store the corrected image.
+      ImageContent correctedImage = new ImageContent(destName, correctedContent.toString());
+      imageMap.put(destName, correctedImage);
+      rgbDataMap.put(destName, sourceRGBData);
+      System.out.println("Color correction completed. Corrected image saved as " + destName);
+    } else {
+      System.out.println("Source image not found: " + sourceName);
+    }
+  }
+
+  public void createHistogram(String sourceName, String destName) {
+    Histogram histogram = new Histogram(10, 245);
+    int[][][] sourceRGBData = rgbDataMap.get(sourceName);
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+
+        int redValue = sourceRGBData[y][x][0];
+        int greenValue = sourceRGBData[y][x][1];
+        int blueValue = sourceRGBData[y][x][2];
+        histogram.addValue(redValue, greenValue, blueValue);
+
+      }
+    }
+    histogram.calculateMaxCount();
+
+    // Calculate the average value across peaks.
+    BufferedImage histogramImage = histogram.createHistogramImage(256, 256);
+    width = histogramImage.getWidth();
+    height = histogramImage.getHeight();
+
+    int[][][] imageRGBData = new int[height][width][3];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int rgb = histogramImage.getRGB(x, y);
+        imageRGBData[y][x][0] = (rgb >> 16) & 0xFF; // Red component
+        imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;  // Green component
+        imageRGBData[y][x][2] = rgb & 0xFF;         // Blue component
+      }
+    }
+    ImageContent image = new ImageContent(destName, serializeImageData(imageRGBData));
+    imageMap.put(destName, image);
+    rgbDataMap.put(destName, imageRGBData);
+    System.out.println("Histogram of the image saved as " + destName);
+  }
+
+  private static String serializeImageData(int[][][] imageData) {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    for (int y = 0; y < imageData.length; y++) {
+      for (int x = 0; x < imageData[y].length; x++) {
+        int rgb = (imageData[y][x][0] << 16) | (imageData[y][x][1] << 8) | imageData[y][x][2];
+        outputStream.write((rgb >> 16) & 0xFF);
+        outputStream.write((rgb >> 8) & 0xFF);
+        outputStream.write(rgb & 0xFF);
+      }
+    }
+    byte[] imageBytes = outputStream.toByteArray();
+    return Base64.getEncoder().encodeToString(imageBytes);
+  }
 
 }

@@ -118,4 +118,8 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+  void colorCorrectImage(String sourceImageName, String destImageName);
+
+  void createHistogram(String sourceName, String destName);
+
 }

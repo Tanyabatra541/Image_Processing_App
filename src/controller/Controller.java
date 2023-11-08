@@ -285,6 +285,28 @@ public class Controller implements ActionListener {
         }
         break;
 
+        case "color-correct":
+          if (parts.length < 3) {
+            System.out.println("Invalid 'color-correct' command: Usage is 'color-correct "
+                    + "source-image-name dest-image-name'");
+          } else {
+            String sourceImageName = parts[1];
+            String destImageName = parts[2];
+            imageObj.colorCorrectImage(sourceImageName, destImageName);
+          }
+          break;
+
+      case "histogram":
+        if (parts.length < 3) {
+          System.out.println("Invalid 'histogram' command: Usage is 'histogram "
+                  + "source-image-name dest-image-name'");
+        } else {
+          String sourceImageName = parts[1];
+          String destImageName = parts[2];
+          imageObj.createHistogram(sourceImageName, destImageName);
+        }
+        break;
+
       case "run":
         String scriptFilename = parts[1];
         model.executeScriptFromFile(scriptFilename);
