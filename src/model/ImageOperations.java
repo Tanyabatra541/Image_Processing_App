@@ -122,4 +122,6 @@ public interface ImageOperations {
 
   void createHistogram(String sourceName, String destName);
 
+  void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName);
+
 }

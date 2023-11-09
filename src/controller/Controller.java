@@ -307,6 +307,20 @@ public class Controller implements ActionListener {
         }
         break;
 
+      case "levels-adjust":
+        if (parts.length < 5) {
+          System.out.println("Invalid 'levels-adjust' command: Usage is 'levels-adjust "
+                  + "b m w source-image-name dest-image-name'");
+        } else {
+          String sourceImageName = parts[4];
+          String destImageName = parts[5];
+          int b = Integer.parseInt(parts[1]);
+          int m = Integer.parseInt(parts[2]);
+          int w = Integer.parseInt(parts[3]);
+          imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName);
+        }
+        break;
+
       case "run":
         String scriptFilename = parts[1];
         model.executeScriptFromFile(scriptFilename);
