@@ -262,7 +262,6 @@ public class Controller implements ActionListener {
           imageObj.extractComponent(sourceImageName, destImageName, "value");
         }
         break;
-
       case "intensity-component":
         if (parts.length < 3) {
           System.out.println("Invalid 'intensity-component' command: Usage is 'intensity-component"
@@ -273,7 +272,6 @@ public class Controller implements ActionListener {
           imageObj.extractComponent(sourceImageName, destImageName, "intensity");
         }
         break;
-
       case "luma-component":
         if (parts.length < 3) {
           System.out.println("Invalid 'luma-component' command: Usage is 'luma-component "
@@ -284,8 +282,7 @@ public class Controller implements ActionListener {
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
-
-        case "color-correct":
+      case "color-correct":
           if (parts.length < 3) {
             System.out.println("Invalid 'color-correct' command: Usage is 'color-correct "
                     + "source-image-name dest-image-name'");
@@ -295,7 +292,6 @@ public class Controller implements ActionListener {
             imageObj.colorCorrectImage(sourceImageName, destImageName);
           }
           break;
-
       case "histogram":
         if (parts.length < 3) {
           System.out.println("Invalid 'histogram' command: Usage is 'histogram "
@@ -321,11 +317,16 @@ public class Controller implements ActionListener {
         }
         break;
 
+      case "compress":
+        String sourceImageName = parts[1];
+        String destImageName = parts[2];
+        imageObj.compress(sourceImageName,80,255);
+        break;
+
       case "run":
         String scriptFilename = parts[1];
         model.executeScriptFromFile(scriptFilename);
         break;
-
       default:
         System.out.println("Invalid command: " + command);
         break;

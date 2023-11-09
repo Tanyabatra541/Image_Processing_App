@@ -30,11 +30,15 @@ public class PNGImageTest {
   private static String image2Name = "output2";
   private static String image2Path = "output2.png";
 
-  int[][][] rgbMatrix = {
+ /* int[][][] rgbMatrix = {
           {{255, 0, 0}, {0, 255, 0}},
           {{0, 0, 255}, {255, 255, 255}}
+  };*/
+  int[][][] rgbMatrix = {
+          {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}},
+         {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}},
+          {{0, 0, 255}, {255, 255, 255}, {255, 255, 255}}
   };
-
   int[][][] rgbMatrix2 = {
           {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128},
                   {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
@@ -768,6 +772,37 @@ public class PNGImageTest {
 
 
     assertEquals(expectedErrorMessage, outContent.toString().trim());
+  }
+
+  @Test
+  public void testCompress() throws IOException {
+
+
+    // Perform a horizontal flip
+    pngJpgImage.compress(imageName, 30,255);
+
+    // Get the flipped image data
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get(imageName);
+
+    // Check if the flipped image matches the expected result
+    int[][][] expectedFlippedImageData = new int[2][2][3];
+    expectedFlippedImageData[0][0] = new int[]{0, 255, 0};
+    expectedFlippedImageData[0][1] = new int[]{255, 0, 0};
+    expectedFlippedImageData[1][0] = new int[]{255, 255, 255};
+    expectedFlippedImageData[1][1] = new int[]{0, 0, 255};
+
+
+    for (int y = 0; y < flippedImageData.length; y++) {
+      for (int x = 0; x < flippedImageData[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+          System.out.print(flippedImageData[y][x][c]+",");
+          //assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
+
+        }
+      }
+    }
+    //System.out.println("img "+outContent.toString().trim());
+    assertEquals(flippedImageData, outContent.toString().trim());
   }
 
 }

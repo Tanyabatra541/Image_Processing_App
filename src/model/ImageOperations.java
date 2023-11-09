@@ -118,10 +118,14 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+
+  void compress(String imageName, double compressionThreshold, int maxValue);
+
   void colorCorrectImage(String sourceImageName, String destImageName);
 
   void createHistogram(String sourceName, String destName);
 
   void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName);
+
 
 }
