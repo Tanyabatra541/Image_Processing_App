@@ -322,7 +322,7 @@ public class PNGImageTest {
   public void testSharpenImage() throws IOException {
 
     // Perform sharpening on the image
-    pngJpgImage.sharpenImage(image2Name, "sharp-img");
+    pngJpgImage.sharpenImage(image2Name, "sharp-img", 0);
 
     // Get the sharpened image data
     int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap().get("sharp-img");
@@ -365,7 +365,7 @@ public class PNGImageTest {
   @Test
   public void testBlurImage() {
     // Perform blurring on the image
-    pngJpgImage.blurImage(image2Name, "blurred-img");
+    pngJpgImage.blurImage(image2Name, "blurred-img", 0);
 
     // Get the blurred image data
     int[][][] blurredImageData = pngJpgImage.getRgbDataMap().get("blurred-img");
@@ -412,7 +412,7 @@ public class PNGImageTest {
   @Test
   public void testSepiaImage() {
 
-    pngJpgImage.sepiaImage(imageName, "sepia-img");
+    pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
 
     // Get the sepia image data
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap().get("sepia-img");

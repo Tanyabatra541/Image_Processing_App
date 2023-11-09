@@ -48,7 +48,7 @@ public interface ImageOperations {
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sharpened image.
    */
-  void sharpenImage(String sourceName, String destName);
+  void sharpenImage(String sourceName, String destName, int splitPercentage);
 
   /**
    * Applies a blurring effect to the source image, creating a blurred version with the given name.
@@ -57,7 +57,7 @@ public interface ImageOperations {
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination blurred image.
    */
-  void blurImage(String sourceName, String destName);
+  void blurImage(String sourceName, String destName, int splitPercentage);
 
   /**
    * Brighten the colors of the source image by a specified increment and save the brightened
@@ -76,7 +76,7 @@ public interface ImageOperations {
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sepia-toned image.
    */
-  void sepiaImage(String sourceName, String destName);
+  void sepiaImage(String sourceName, String destName, int splitPercentage);
 
   /**
    * Combine three source images representing the red, green, and blue channels into a single
@@ -118,6 +118,12 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+
   void compress(String imageName, double compressionThreshold, int maxValue);
+
+  void colorCorrectImage(String sourceImageName, String destImageName);
+
+  void createHistogram(String sourceName, String destName);
+
 
 }

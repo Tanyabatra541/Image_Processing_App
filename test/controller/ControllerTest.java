@@ -234,7 +234,7 @@ public class ControllerTest {
 
     controller.parseAndExecute("load " + imagePath + " " + imageName);
     controller.parseAndExecute("sepia " + imageName + " sepia-img");
-    pngJpgImage.sepiaImage(imageName, "sepia-img");
+    pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
 
     // Get the sepia image data
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap().get("sepia-img");

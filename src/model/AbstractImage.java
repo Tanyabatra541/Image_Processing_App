@@ -1,9 +1,17 @@
 package model;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+
+import java.util.Base64;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 
 /**
@@ -143,17 +151,20 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destImageName   The name of the destination sharpened image.
    */
   @Override
-  public void sharpenImage(String sourceImageName, String destImageName) {
+  public void sharpenImage(String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceImageName);
-
+      return;
     }
+
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
 
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] sharpenedRGBData = new int[height][width][3];
+
+    int splitPosition = width * splitPercentage / 100;
 
     for (int y = 2; y < height - 2; y++) {
       for (int x = 2; x < width - 2; x++) {
@@ -161,13 +172,20 @@ public abstract class AbstractImage implements ImageOperations {
           float sum = 0.0f;
           for (int ky = -2; ky <= 2; ky++) {
             for (int kx = -2; kx <= 2; kx++) {
+              int pixelX = Math.min(width - 1, Math.max(0, x + kx));
+              int pixelY = Math.min(height - 1, Math.max(0, y + ky));
               float kernelValue = sharpeningKernel[(ky + 2) * 5 + (kx + 2)];
-              int pixelValue = sourceRGBData[y + ky][x + kx][channel];
+              int pixelValue = sourceRGBData[pixelY][pixelX][channel];
               sum += kernelValue * pixelValue;
             }
           }
           int newValue = Math.min(255, Math.max(0, (int) sum));
-          sharpenedRGBData[y][x][channel] = newValue;
+          if (splitPercentage == 0 || x < splitPosition) {
+            sharpenedRGBData[y][x][channel] = newValue;
+          } else {
+            // Copy the original image data to the destination image for the other side
+            sharpenedRGBData[y][x][channel] = sourceRGBData[y][x][channel];
+          }
         }
       }
     }
@@ -178,8 +196,9 @@ public abstract class AbstractImage implements ImageOperations {
     imageMap.put(destImageName, sharpenedImage);
     rgbDataMap.put(destImageName, sharpenedRGBData);
 
-    System.out.println("Image sharpening completed. Sharpened image saved as " + destImageName);
+    System.out.println("Image sharpening by " + splitPercentage + "% completed. Sharpened image saved as " + destImageName);
   }
+
 
 
   /**
@@ -190,11 +209,11 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destImageName   The name of the destination blurred image.
    */
   @Override
-  public void blurImage(String sourceImageName, String destImageName) {
+  public void blurImage(String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceImageName);
-
+      return;
     }
 
     int[][][] sourceRGBData = rgbDataMap.get(sourceImageName);
@@ -203,21 +222,30 @@ public abstract class AbstractImage implements ImageOperations {
     int width = sourceRGBData[0].length;
     int[][][] blurredRGBData = new int[height][width][3];
 
-    for (int y = 1; y < height - 1; y++) {
-      for (int x = 1; x < width - 1; x++) {
+    int splitPosition = width * splitPercentage / 100;
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
         for (int channel = 0; channel < 3; channel++) {
           float sum = 0.0f;
           int kernelIndex = 0;
           for (int ky = -1; ky <= 1; ky++) {
             for (int kx = -1; kx <= 1; kx++) {
+              int pixelX = Math.min(width - 1, Math.max(0, x + kx));
+              int pixelY = Math.min(height - 1, Math.max(0, y + ky));
               float kernelValue = gaussianKernel[kernelIndex];
-              int pixelValue = sourceRGBData[y + ky][x + kx][channel];
+              int pixelValue = sourceRGBData[pixelY][pixelX][channel];
               sum += kernelValue * pixelValue;
               kernelIndex++;
             }
           }
           int newValue = Math.min(255, Math.max(0, (int) sum));
-          blurredRGBData[y][x][channel] = newValue;
+          if (splitPercentage == 0 || x < splitPosition) {
+            blurredRGBData[y][x][channel] = newValue;
+          } else {
+            // Copy the original image data to the destination image for the other side
+            blurredRGBData[y][x][channel] = sourceRGBData[y][x][channel];
+          }
         }
       }
     }
@@ -228,8 +256,13 @@ public abstract class AbstractImage implements ImageOperations {
     imageMap.put(destImageName, blurredImage);
     rgbDataMap.put(destImageName, blurredRGBData);
 
-    System.out.println("Image blurring completed. Blurred image saved as " + destImageName);
+    System.out.println("Image blurring by " + splitPercentage +  "% completed. Blurred image saved as " + destImageName);
   }
+
+
+
+
+
 
 
   /**
@@ -282,10 +315,11 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destName   The name of the destination sepia-toned image.
    */
   @Override
-  public void sepiaImage(String sourceName, String destName) {
+  public void sepiaImage(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceName);
+      return;
     }
 
     int[][][] sourceRGBData = rgbDataMap.get(sourceName);
@@ -293,6 +327,8 @@ public abstract class AbstractImage implements ImageOperations {
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] sepiaRGBData = new int[height][width][3];
+
+    int splitPosition = width * splitPercentage / 100;
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
@@ -308,9 +344,16 @@ public abstract class AbstractImage implements ImageOperations {
         tg = Math.min(255, Math.max(0, tg));
         tb = Math.min(255, Math.max(0, tb));
 
-        sepiaRGBData[y][x][0] = tr;
-        sepiaRGBData[y][x][1] = tg;
-        sepiaRGBData[y][x][2] = tb;
+        if (x >= splitPosition) {
+          sepiaRGBData[y][x][0] = tr;
+          sepiaRGBData[y][x][1] = tg;
+          sepiaRGBData[y][x][2] = tb;
+        } else {
+          // Copy the original image data to the destination image for the other side
+          sepiaRGBData[y][x][0] = sourceRGBData[y][x][0];
+          sepiaRGBData[y][x][1] = sourceRGBData[y][x][1];
+          sepiaRGBData[y][x][2] = sourceRGBData[y][x][2];
+        }
       }
     }
 
@@ -320,8 +363,9 @@ public abstract class AbstractImage implements ImageOperations {
     imageMap.put(destName, sepiaImage);
     rgbDataMap.put(destName, sepiaRGBData);
 
-    System.out.println("Sepia filter applied. Sepia-toned image saved as " + destName);
+    System.out.println("Sepia filter applied with " + splitPercentage + "% split. Sepia-toned image saved as " + destName);
   }
+
 
 
   /**
@@ -759,8 +803,134 @@ public abstract class AbstractImage implements ImageOperations {
 
 
 
+  /**
+   * Color-correct the image by aligning the meaningful peaks of its histogram.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination color-corrected image.
+   */
+  @Override
+  public void colorCorrectImage(String sourceName, String destName) {
+    ImageContent sourceImage = imageMap.get(sourceName);
 
+    if (sourceImage != null) {
+      int[][][] sourceRGBData = rgbDataMap.get(sourceName);
 
+      int height = sourceRGBData.length;
+      int width = sourceRGBData[0].length;
 
+      // Create Histogram instance for each channel with the given value range (10 to 245).
+      Histogram histogram = new Histogram(10, 245);
+
+      // Populate the histogram with values from the image data.
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int redValue = sourceRGBData[y][x][0];
+          int greenValue = sourceRGBData[y][x][1];
+          int blueValue = sourceRGBData[y][x][2];
+          histogram.addValue(redValue, greenValue, blueValue);
+        }
+      }
+
+      // Calculate the max count across all channels.
+      histogram.calculateMaxCount();
+
+      // Find the peak values for each channel.
+      int peakR = histogram.findPeakValue(histogram.histogramR);
+      int peakG = histogram.findPeakValue(histogram.histogramG);
+      int peakB = histogram.findPeakValue(histogram.histogramB);
+
+      // Calculate the average value across peaks.
+      int averagePeak = (peakR + peakG + peakB) / 3;
+
+      System.out.println("Average Peak: " + averagePeak);
+
+      // Offset each channel's values so that their histogram peak occurs at the average value.
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int redValue = sourceRGBData[y][x][0];
+          int greenValue = sourceRGBData[y][x][1];
+          int blueValue = sourceRGBData[y][x][2];
+
+          // Offset the values
+          int offsetR = averagePeak - peakR;
+          int offsetG = averagePeak - peakG;
+          int offsetB = averagePeak - peakB;
+
+          // Apply offsets and ensure values stay within the valid range (10 to 245)
+          int correctedRed = Math.min(245, Math.max(10, redValue + offsetR));
+          int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
+          int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
+
+          sourceRGBData[y][x][0] = correctedRed;
+          sourceRGBData[y][x][1] = correctedGreen;
+          sourceRGBData[y][x][2] = correctedBlue;
+        }
+      }
+
+      // Create a StringBuilder for the corrected image content.
+      StringBuilder correctedContent = createPPMContent(width, height, sourceRGBData);
+
+      // Create and store the corrected image.
+      ImageContent correctedImage = new ImageContent(destName, correctedContent.toString());
+      imageMap.put(destName, correctedImage);
+      rgbDataMap.put(destName, sourceRGBData);
+      System.out.println("Color correction completed. Corrected image saved as " + destName);
+    } else {
+      System.out.println("Source image not found: " + sourceName);
+    }
+  }
+
+  public void createHistogram(String sourceName, String destName) {
+    Histogram histogram = new Histogram(10, 245);
+    int[][][] sourceRGBData = rgbDataMap.get(sourceName);
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+
+        int redValue = sourceRGBData[y][x][0];
+        int greenValue = sourceRGBData[y][x][1];
+        int blueValue = sourceRGBData[y][x][2];
+        histogram.addValue(redValue, greenValue, blueValue);
+
+      }
+    }
+    histogram.calculateMaxCount();
+
+    // Calculate the average value across peaks.
+    BufferedImage histogramImage = histogram.createHistogramImage(256, 256);
+    width = histogramImage.getWidth();
+    height = histogramImage.getHeight();
+
+    int[][][] imageRGBData = new int[height][width][3];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int rgb = histogramImage.getRGB(x, y);
+        imageRGBData[y][x][0] = (rgb >> 16) & 0xFF; // Red component
+        imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;  // Green component
+        imageRGBData[y][x][2] = rgb & 0xFF;         // Blue component
+      }
+    }
+    ImageContent image = new ImageContent(destName, serializeImageData(imageRGBData));
+    imageMap.put(destName, image);
+    rgbDataMap.put(destName, imageRGBData);
+    System.out.println("Histogram of the image saved as " + destName);
+  }
+
+  private static String serializeImageData(int[][][] imageData) {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    for (int y = 0; y < imageData.length; y++) {
+      for (int x = 0; x < imageData[y].length; x++) {
+        int rgb = (imageData[y][x][0] << 16) | (imageData[y][x][1] << 8) | imageData[y][x][2];
+        outputStream.write((rgb >> 16) & 0xFF);
+        outputStream.write((rgb >> 8) & 0xFF);
+        outputStream.write(rgb & 0xFF);
+      }
+    }
+    byte[] imageBytes = outputStream.toByteArray();
+    return Base64.getEncoder().encodeToString(imageBytes);
+  }
 
 }
