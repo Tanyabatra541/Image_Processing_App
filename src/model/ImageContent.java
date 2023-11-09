@@ -6,8 +6,13 @@ package model;
  * This class is used to store image data within the application.
  */
 class ImageContent {
+
+  double[][] pixels;
   private final String name;
   private final String content;
+
+  private int height;
+  private int width;
 
   /**
    * Constructs an `Model.ImageContent` instance with the specified name and content.
@@ -36,5 +41,21 @@ class ImageContent {
    */
   public String getContent() {
     return content;
+  }
+
+  public void setPixels(double[][] pixels) {
+    this.pixels = pixels;
+  }
+
+  public void setWidth(int w) {
+    this.width = w;
+  }
+
+  public void setHeight(int h) {
+    this.height = h;
+  }
+
+  public double[][] getPixels() {
+    return pixels;
   }
 }

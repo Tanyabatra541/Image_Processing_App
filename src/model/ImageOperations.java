@@ -118,4 +118,6 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+  void compress(String imageName, double compressionThreshold, int maxValue);
+
 }

@@ -15,6 +15,9 @@ import javax.imageio.ImageIO;
  */
 public class PNGImage extends AbstractImage {
 
+  private int height;
+  private int width;
+
   private static String serializeImageData(int[][][] imageData) {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     for (int y = 0; y < imageData.length; y++) {
@@ -73,7 +76,10 @@ public class PNGImage extends AbstractImage {
 
 
     if (imageRGBData != null) {
+
       ImageContent image = new ImageContent(imageName, serializeImageData(imageRGBData));
+      image.setWidth(width);
+      image.setHeight(height);
       imageMap.put(imageName, image);
       rgbDataMap.put(imageName, imageRGBData);
       System.out.println("Loaded image: " + imageName);
@@ -81,6 +87,7 @@ public class PNGImage extends AbstractImage {
       System.out.println("Failed to load the image from: " + imagePath);
     }
   }
+
 
   private int[][][] convertPNGToRGB(String imagePath) {
     try {
@@ -96,8 +103,8 @@ public class PNGImage extends AbstractImage {
         return null;
       }
 
-      int width = bufferedImage.getWidth();
-      int height = bufferedImage.getHeight();
+      width = bufferedImage.getWidth();
+      height = bufferedImage.getHeight();
 
       int[][][] imageRGBData = new int[height][width][3];
 
@@ -127,10 +134,14 @@ public class PNGImage extends AbstractImage {
   @Override
   public void saveImage(String imagePath, String imageName)  {
     int[][][] rgbData = rgbDataMap.get(imageName);
-
-
+    double[][] pixels = imageMap.get(imageName).getPixels();
+    BufferedImage bufferedImage;
     if (rgbData != null) {
-      BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
+      if (pixels != null) {
+        bufferedImage = convertRGBAndPixelsDataToBufferedImage(rgbData, pixels);
+      } else {
+        bufferedImage = convertRGBDataToBufferedImage(rgbData);
+      }
 
       //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
 
@@ -152,4 +163,29 @@ public class PNGImage extends AbstractImage {
 
     }
   }
+
+  protected static BufferedImage convertRGBAndPixelsDataToBufferedImage(int[][][] rgbData, double[][] pixels) {
+    int height = rgbData.length;
+    int width = rgbData[0].length;
+
+    BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int r = rgbData[y][x][0];
+        int g = rgbData[y][x][1];
+        int b = rgbData[y][x][2];
+
+        int grayValue = (int) (pixels[y][x] * 255); // Scale to 0-255 range
+
+        int rgb = (r << 16) | (g << 8) | b;
+        rgb = (rgb & 0xFF000000) | (grayValue << 16) | (grayValue << 8) | grayValue;
+
+        bufferedImage.setRGB(x, y, rgb);
+      }
+    }
+
+    return bufferedImage;
+  }
+
 }

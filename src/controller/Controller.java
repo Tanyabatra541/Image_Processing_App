@@ -269,7 +269,16 @@ public class Controller implements ActionListener {
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
-
+      case "compress":
+      //  if (parts.length < 3) {
+        //  System.out.println("Invalid command for compress");
+        //} else {
+          //int increment = Integer.parseInt(parts[3]);
+          String sourceImageName = parts[1];
+          String destImageName = parts[2];
+          imageObj.compress(sourceImageName,80,255);
+        //}
+        break;
       case "run":
         String scriptFilename = parts[1];
         model.executeScriptFromFile(scriptFilename);
