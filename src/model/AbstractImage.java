@@ -943,9 +943,10 @@ public abstract class AbstractImage implements ImageOperations {
       int height = sourceRGBData.length;
       int width = sourceRGBData[0].length;
 
-      double scaleR = 255.0 / (highlightPoint - shadowPoint);
-      double scaleG = 255.0 / (highlightPoint - shadowPoint);
-      double scaleB = 255.0 / (highlightPoint - shadowPoint);
+      double a = 255.0 / (midPoint - shadowPoint);
+      double b = -a * shadowPoint;
+      double c = 255.0 / (highlightPoint - midPoint);
+      double d = -c * midPoint;
 
       // Apply the levels adjustment to each channel
       for (int y = 0; y < height; y++) {
@@ -954,9 +955,9 @@ public abstract class AbstractImage implements ImageOperations {
           int greenValue = sourceRGBData[y][x][1];
           int blueValue = sourceRGBData[y][x][2];
 
-          int adjustedRed = (int) (scaleR * (redValue - shadowPoint));
-          int adjustedGreen = (int) (scaleG * (greenValue - shadowPoint));
-          int adjustedBlue = (int) (scaleB * (blueValue - shadowPoint));
+          int adjustedRed = applyQuadraticTransformation(redValue, a, b);
+          int adjustedGreen = applyQuadraticTransformation(greenValue, a, b);
+          int adjustedBlue = applyQuadraticTransformation(blueValue, c, d);
 
           // Ensure adjusted values stay within the valid range (0 to 255)
           adjustedRed = Math.min(255, Math.max(0, adjustedRed));
@@ -982,5 +983,9 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  private int applyQuadraticTransformation(int value, double a, double b) {
+    double adjustedValue = a * Math.pow(value, 2) + b * value;
+    return (int) Math.round(adjustedValue);
+  }
 
 }

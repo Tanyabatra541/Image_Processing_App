@@ -140,8 +140,8 @@ import java.io.IOException;
 
 public class Histogram {
   int[] histogramR;
-   int[] histogramG;
-   int[] histogramB;
+  int[] histogramG;
+  int[] histogramB;
   private int minValue;
   private int maxValue;
   private int maxCount;
