@@ -9,7 +9,7 @@ class ImageContent {
 
   double[][] pixels;
   private final String name;
-  private final int[][][] rgbDataMap;
+  private int[][][] rgbDataMap;
 
   private int height;
   private int width;
@@ -43,6 +43,10 @@ class ImageContent {
    */
   public int[][][] getRgbDataMap() {
     return rgbDataMap;
+  }
+
+  public void setRgbDataMap(int[][][] rgbDataMap) {
+    this.rgbDataMap = rgbDataMap;
   }
 
   public void setPixels(double[][] pixels) {

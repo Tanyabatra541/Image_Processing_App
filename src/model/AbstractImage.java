@@ -626,7 +626,7 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
   public void calculatePixels(String imageName) {
-    if (imageName != null && imageMap.containsKey(imageMap) && imageMap.get(imageMap).getRgbDataMap() !=null ) {
+    if (imageName != null && imageMap.containsKey(imageName)  ) {
       int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
       int imageWidth = imageRGBData.length;
       int imageHeight = imageRGBData[0].length;
@@ -663,7 +663,7 @@ public abstract class AbstractImage implements ImageOperations {
 
 
   public void compress(String imageName, double compressionPercentage, int maxValue) {
-    if (imageMap.containsKey(imageMap) && imageMap.get(imageMap).getRgbDataMap() !=null ) {
+    if (imageMap.containsKey(imageName) ) {
       int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
 
       // Calculate the compression threshold based on the percentage

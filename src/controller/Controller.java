@@ -320,7 +320,7 @@ public class Controller implements ActionListener {
       case "compress":
         String sourceImageName = parts[1];
         String destImageName = parts[2];
-        imageObj.compress(sourceImageName,80,255);
+        imageObj.compress(sourceImageName,10,255);
         break;
 
       case "run":
