@@ -22,9 +22,9 @@ public class PPMImage extends AbstractImage {
   @Override
   public void loadImage(String imagePath, String imageName) {
     int[][][] imageRGBData = readImageRGBData(imagePath);
-    ImageContent image = new ImageContent(imageName, convertToPPMFormat(imageRGBData));
+    ImageContent image = new ImageContent(imageName, imageRGBData);
     imageMap.put(imageName, image);
-    rgbDataMap.put(imageName, imageRGBData);
+    //rgbDataMap.put(imageName, imageRGBData);
     System.out.println("Loaded image: " + imageName);
   }
 
@@ -101,7 +101,7 @@ public class PPMImage extends AbstractImage {
 
 
     if (image != null) {
-      String content = image.getContent();
+      String content = convertToPPMFormat(image.getRgbDataMap());
 
       // Create a file and write the image content to it
       File file = new File(imagePath);

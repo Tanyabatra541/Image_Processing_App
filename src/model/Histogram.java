@@ -140,8 +140,8 @@ import java.io.IOException;
 
 public class Histogram {
   int[] histogramR;
-   int[] histogramG;
-   int[] histogramB;
+  int[] histogramG;
+  int[] histogramB;
   private int minValue;
   private int maxValue;
   private int maxCount;
@@ -203,7 +203,7 @@ public class Histogram {
   }
 
   private void drawHistogramLine(Graphics2D g2d, int[] values, int width, int height) {
-    g2d.setStroke(new BasicStroke(2.0f));
+    g2d.setStroke(new BasicStroke(1.0f));
     for (int i = 1; i < values.length; i++) {
       int x1 = (i - 1) * width / (values.length - 1);
       int y1 = height - values[i - 1] * height / maxCount;

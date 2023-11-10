@@ -96,7 +96,7 @@ public class ControllerTest {
     // Check if the image was loaded successfully
     assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
     // Get the RGB data
-    int[][][] rgbData = pngJpgImage.getRgbDataMap().get(imageName);
+    int[][][] rgbData = pngJpgImage.getRgbDataMap(imageName);
 
     // Check if the dimensions match
     assertEquals(rgbMatrix.length, rgbData.length);
@@ -124,7 +124,7 @@ public class ControllerTest {
 
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("vertical-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -153,7 +153,7 @@ public class ControllerTest {
 
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -182,7 +182,7 @@ public class ControllerTest {
     // Perform sharpening on the image
 
     // Get the sharpened image data
-    int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap().get("sharp-img");
+    int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
 
     // Define the expected RGB values for the sharpened image
     int[][][] expectedSharpenedImageData = {
@@ -210,7 +210,7 @@ public class ControllerTest {
     // Perform blurring on the image
 
     // Get the blurred image data
-    int[][][] blurredImageData = pngJpgImage.getRgbDataMap().get("blurred-img");
+    int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
 
     // Check if the blurred image matches the expected result
     int[][][] expectedBlurredImageData = {
@@ -237,7 +237,7 @@ public class ControllerTest {
     pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
 
     // Get the sepia image data
-    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap().get("sepia-img");
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
 
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedSepiaImageData = new int[2][2][3];
@@ -276,7 +276,7 @@ public class ControllerTest {
 
 
     // Get the extracted red component data
-    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
+    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap("red-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedRedComponent.length; y++) {
@@ -306,7 +306,7 @@ public class ControllerTest {
     pngJpgImage.extractComponent(imageName, "green-component-img", "green");
 
     // Get the extracted red component data
-    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap().get("green-component-img");
+    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap("green-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedGreenComponent.length; y++) {
@@ -334,7 +334,7 @@ public class ControllerTest {
 
 
     // Get the extracted red component data
-    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap().get("blue-component-img");
+    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap("blue-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedBlueComponent.length; y++) {
@@ -355,9 +355,9 @@ public class ControllerTest {
     // Perform RGB splitting on the image
 
     // Get the split RGB components
-    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
-    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap().get("green-component-img");
-    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap().get("blue-component-img");
+    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap("red-component-img");
+    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap("green-component-img");
+    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap("blue-component-img");
 
     // Check if the split components are not null
     assertNotNull(extractedRedComponent);
@@ -411,7 +411,7 @@ public class ControllerTest {
             + " green-component-img" + " blue-component-img");
 
     // Get the combined RGB data
-    int[][][] combinedRGBData = pngJpgImage.getRgbDataMap().get("combined-img");
+    int[][][] combinedRGBData = pngJpgImage.getRgbDataMap("combined-img");
 
     // Check if the combined RGB data is not null
     assertNotNull(combinedRGBData);
@@ -437,7 +437,7 @@ public class ControllerTest {
     controller.parseAndExecute("brighten 50 " + imageName + " brighten-img");
 
 
-    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brighten-img");
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap("brighten-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -464,7 +464,7 @@ public class ControllerTest {
     // Perform a brightness adjustment
     controller.parseAndExecute("load " + imagePath + " " + imageName);
     controller.parseAndExecute("brighten -50 " + imageName + " darken-img");
-    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("darken-img");
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap("darken-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -494,7 +494,7 @@ public class ControllerTest {
             + " horizontal-vertical-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-vertical-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("horizontal-vertical-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -524,7 +524,7 @@ public class ControllerTest {
             + " vertical-horizontal-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-horizontal-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("vertical-horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -559,7 +559,7 @@ public class ControllerTest {
 
 
     // Get the extracted red component data
-    int[][][] extractedValueComponent = pngJpgImage.getRgbDataMap().get("value-component-img");
+    int[][][] extractedValueComponent = pngJpgImage.getRgbDataMap("value-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedValueComponent.length; y++) {
@@ -587,7 +587,7 @@ public class ControllerTest {
     controller.parseAndExecute("luma-component " + imageName + " luma-component-img");
 
     // Get the extracted red component data
-    int[][][] extractedLumaComponent = pngJpgImage.getRgbDataMap().get("luma-component-img");
+    int[][][] extractedLumaComponent = pngJpgImage.getRgbDataMap("luma-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedLumaComponent.length; y++) {
@@ -615,8 +615,7 @@ public class ControllerTest {
     controller.parseAndExecute("intensity-component " + imageName + " intensity-component-img");
 
     // Get the extracted red component data
-    int[][][] extractedIntensityComponent = pngJpgImage.getRgbDataMap()
-            .get("intensity-component-img");
+    int[][][] extractedIntensityComponent = pngJpgImage.getRgbDataMap("intensity-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedIntensityComponent.length; y++) {

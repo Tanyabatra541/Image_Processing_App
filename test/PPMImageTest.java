@@ -127,7 +127,7 @@ public class PPMImageTest {
     // Check if the image was loaded successfully
     assertTrue(ppmImage.getImageMap().containsKey(imageName));
     // Get the RGB data
-    int[][][] rgbData = ppmImage.getRgbDataMap().get(imageName);
+    int[][][] rgbData = ppmImage.getRgbDataMap(imageName);
 
     // Check if the dimensions match
     assertEquals(rgbMatrix.length, rgbData.length);
@@ -154,7 +154,7 @@ public class PPMImageTest {
     ppmImage.verticalFlipImage(imageName, "vertical-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = ppmImage.getRgbDataMap().get("vertical-flip-img");
+    int[][][] flippedImageData = ppmImage.getRgbDataMap("vertical-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -178,7 +178,7 @@ public class PPMImageTest {
 
 
     ppmImage.brightenImage(imageName, "brighten-img", 50);
-    int[][][] brightenedImageData = ppmImage.getRgbDataMap().get("brighten-img");
+    int[][][] brightenedImageData = ppmImage.getRgbDataMap("brighten-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -205,7 +205,7 @@ public class PPMImageTest {
     // Perform a brightness adjustment
     ppmImage.brightenImage(imageName, "darken-img", -50);
     // Get the brightened image data
-    int[][][] brightenedImageData = ppmImage.getRgbDataMap().get("darken-img");
+    int[][][] brightenedImageData = ppmImage.getRgbDataMap("darken-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -233,7 +233,7 @@ public class PPMImageTest {
     ppmImage.horizontalFlipImage(imageName, "horizontal-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = ppmImage.getRgbDataMap().get("horizontal-flip-img");
+    int[][][] flippedImageData = ppmImage.getRgbDataMap("horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -264,7 +264,7 @@ public class PPMImageTest {
             "horizontal-vertical-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = ppmImage.getRgbDataMap().get("horizontal-vertical-flip-img");
+    int[][][] flippedImageData = ppmImage.getRgbDataMap("horizontal-vertical-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -295,7 +295,7 @@ public class PPMImageTest {
             "vertical-horizontal-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = ppmImage.getRgbDataMap().get("vertical-horizontal-flip-img");
+    int[][][] flippedImageData = ppmImage.getRgbDataMap("vertical-horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -324,7 +324,7 @@ public class PPMImageTest {
     ppmImage.sharpenImage(image2Name, "sharp-img", 0);
 
     // Get the sharpened image data
-    int[][][] sharpenedImageData = ppmImage.getRgbDataMap().get("sharp-img");
+    int[][][] sharpenedImageData = ppmImage.getRgbDataMap("sharp-img");
 
     // Define the expected RGB values for the sharpened image
     int[][][] expectedSharpenedImageData = {
@@ -367,7 +367,7 @@ public class PPMImageTest {
     ppmImage.blurImage(image2Name, "blurred-img", 0);
 
     // Get the blurred image data
-    int[][][] blurredImageData = ppmImage.getRgbDataMap().get("blurred-img");
+    int[][][] blurredImageData = ppmImage.getRgbDataMap("blurred-img");
 
     // Check if the blurred image matches the expected result
     int[][][] expectedBlurredImageData = {
@@ -414,7 +414,7 @@ public class PPMImageTest {
     ppmImage.sepiaImage(imageName, "sepia-img", 0);
 
     // Get the sepia image data
-    int[][][] sepiaImageData = ppmImage.getRgbDataMap().get("sepia-img");
+    int[][][] sepiaImageData = ppmImage.getRgbDataMap("sepia-img");
 
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedSepiaImageData = new int[2][2][3];
@@ -450,7 +450,7 @@ public class PPMImageTest {
     ppmImage.extractComponent(imageName, "red-component-img", "red");
 
     // Get the extracted red component data
-    int[][][] extractedRedComponent = ppmImage.getRgbDataMap().get("red-component-img");
+    int[][][] extractedRedComponent = ppmImage.getRgbDataMap("red-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedRedComponent.length; y++) {
@@ -477,7 +477,7 @@ public class PPMImageTest {
     ppmImage.extractComponent(imageName, "green-component-img", "green");
 
     // Get the extracted red component data
-    int[][][] extractedGreenComponent = ppmImage.getRgbDataMap().get("green-component-img");
+    int[][][] extractedGreenComponent = ppmImage.getRgbDataMap("green-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedGreenComponent.length; y++) {
@@ -503,7 +503,7 @@ public class PPMImageTest {
     ppmImage.extractComponent(imageName, "blue-component-img", "blue");
 
     // Get the extracted red component data
-    int[][][] extractedBlueComponent = ppmImage.getRgbDataMap().get("blue-component-img");
+    int[][][] extractedBlueComponent = ppmImage.getRgbDataMap("blue-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedBlueComponent.length; y++) {
@@ -529,7 +529,7 @@ public class PPMImageTest {
     ppmImage.extractComponent(imageName, "value-component-img", "value");
 
     // Get the extracted red component data
-    int[][][] extractedValueComponent = ppmImage.getRgbDataMap().get("value-component-img");
+    int[][][] extractedValueComponent = ppmImage.getRgbDataMap("value-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedValueComponent.length; y++) {
@@ -556,7 +556,7 @@ public class PPMImageTest {
     ppmImage.extractComponent(imageName, "luma-component-img", "luma");
 
     // Get the extracted red component data
-    int[][][] extractedLumaComponent = ppmImage.getRgbDataMap().get("luma-component-img");
+    int[][][] extractedLumaComponent = ppmImage.getRgbDataMap("luma-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedLumaComponent.length; y++) {
@@ -584,7 +584,7 @@ public class PPMImageTest {
             "intensity");
 
     // Get the extracted red component data
-    int[][][] extractedIntensityComponent = ppmImage.getRgbDataMap().get("intensity-component-img");
+    int[][][] extractedIntensityComponent = ppmImage.getRgbDataMap("intensity-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedIntensityComponent.length; y++) {
@@ -604,9 +604,9 @@ public class PPMImageTest {
             "green-component-img", "blue-component-img");
 
     // Get the split RGB components
-    int[][][] extractedRedComponent = ppmImage.getRgbDataMap().get("red-component-img");
-    int[][][] extractedGreenComponent = ppmImage.getRgbDataMap().get("green-component-img");
-    int[][][] extractedBlueComponent = ppmImage.getRgbDataMap().get("blue-component-img");
+    int[][][] extractedRedComponent = ppmImage.getRgbDataMap("red-component-img");
+    int[][][] extractedGreenComponent = ppmImage.getRgbDataMap("green-component-img");
+    int[][][] extractedBlueComponent = ppmImage.getRgbDataMap("blue-component-img");
 
     // Check if the split components are not null
     assertNotNull(extractedRedComponent);
@@ -662,7 +662,7 @@ public class PPMImageTest {
             "green-component-img2", "blue-component-img2");
 
     // Get the combined RGB data
-    int[][][] combinedRGBData = ppmImage.getRgbDataMap().get("combined-img");
+    int[][][] combinedRGBData = ppmImage.getRgbDataMap("combined-img");
 
     // Check if the combined RGB data is not null
     assertNotNull(combinedRGBData);

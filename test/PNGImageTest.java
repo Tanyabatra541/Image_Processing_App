@@ -30,15 +30,11 @@ public class PNGImageTest {
   private static String image2Name = "output2";
   private static String image2Path = "output2.png";
 
- /* int[][][] rgbMatrix = {
+ int[][][] rgbMatrix = {
           {{255, 0, 0}, {0, 255, 0}},
           {{0, 0, 255}, {255, 255, 255}}
-  };*/
-  int[][][] rgbMatrix = {
-          {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}},
-         {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}},
-          {{0, 0, 255}, {255, 255, 255}, {255, 255, 255}}
   };
+
   int[][][] rgbMatrix2 = {
           {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128},
                   {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
@@ -86,7 +82,7 @@ public class PNGImageTest {
     assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
 
     // Get the RGB data
-    int[][][] rgbData = pngJpgImage.getRgbDataMap().get(imageName);
+    int[][][] rgbData = pngJpgImage.getRgbDataMap(imageName);
 
 
     // Print the RGB data
@@ -153,7 +149,7 @@ public class PNGImageTest {
     pngJpgImage.verticalFlipImage(imageName, "vertical-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("vertical-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -178,7 +174,7 @@ public class PNGImageTest {
 
     pngJpgImage.brightenImage(imageName, "brighten-img", 50);
 
-    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("brighten-img");
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap("brighten-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -206,7 +202,7 @@ public class PNGImageTest {
     pngJpgImage.brightenImage(imageName, "darken-img", -50);
 
     // Get the brightened image data
-    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap().get("darken-img");
+    int[][][] brightenedImageData = pngJpgImage.getRgbDataMap("darken-img");
 
     // Check if the brightened image matches the expected result
     // You need to define expected RGB values after brightening with an increment of 50.
@@ -219,7 +215,6 @@ public class PNGImageTest {
     for (int y = 0; y < expectedBrightenedImageData.length; y++) {
       for (int x = 0; x < expectedBrightenedImageData[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-
           assertEquals(expectedBrightenedImageData[y][x][c], brightenedImageData[y][x][c]);
         }
       }
@@ -234,7 +229,7 @@ public class PNGImageTest {
     pngJpgImage.horizontalFlipImage(imageName, "horizontal-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -265,7 +260,7 @@ public class PNGImageTest {
             "horizontal-vertical-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("horizontal-vertical-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("horizontal-vertical-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -296,7 +291,7 @@ public class PNGImageTest {
             "vertical-horizontal-flip-img");
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get("vertical-horizontal-flip-img");
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap("vertical-horizontal-flip-img");
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
@@ -325,7 +320,7 @@ public class PNGImageTest {
     pngJpgImage.sharpenImage(image2Name, "sharp-img", 0);
 
     // Get the sharpened image data
-    int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap().get("sharp-img");
+    int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
 
     // Define the expected RGB values for the sharpened image
     int[][][] expectedSharpenedImageData = {
@@ -368,7 +363,7 @@ public class PNGImageTest {
     pngJpgImage.blurImage(image2Name, "blurred-img", 0);
 
     // Get the blurred image data
-    int[][][] blurredImageData = pngJpgImage.getRgbDataMap().get("blurred-img");
+    int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
 
     // Check if the blurred image matches the expected result
     int[][][] expectedBlurredImageData = {
@@ -415,7 +410,7 @@ public class PNGImageTest {
     pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
 
     // Get the sepia image data
-    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap().get("sepia-img");
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
 
     // Define the expected RGB values for the sepia-toned image
     int[][][] expectedSepiaImageData = new int[2][2][3];
@@ -451,7 +446,7 @@ public class PNGImageTest {
     pngJpgImage.extractComponent(imageName, "red-component-img", "red");
 
     // Get the extracted red component data
-    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
+    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap("red-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedRedComponent.length; y++) {
@@ -478,7 +473,7 @@ public class PNGImageTest {
     pngJpgImage.extractComponent(imageName, "green-component-img", "green");
 
     // Get the extracted red component data
-    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap().get("green-component-img");
+    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap("green-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedGreenComponent.length; y++) {
@@ -504,7 +499,7 @@ public class PNGImageTest {
     pngJpgImage.extractComponent(imageName, "blue-component-img", "blue");
 
     // Get the extracted red component data
-    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap().get("blue-component-img");
+    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap("blue-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedBlueComponent.length; y++) {
@@ -530,7 +525,7 @@ public class PNGImageTest {
     pngJpgImage.extractComponent(imageName, "value-component-img", "value");
 
     // Get the extracted red component data
-    int[][][] extractedValueComponent = pngJpgImage.getRgbDataMap().get("value-component-img");
+    int[][][] extractedValueComponent = pngJpgImage.getRgbDataMap("value-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedValueComponent.length; y++) {
@@ -557,7 +552,7 @@ public class PNGImageTest {
     pngJpgImage.extractComponent(imageName, "luma-component-img", "luma");
 
     // Get the extracted red component data
-    int[][][] extractedLumaComponent = pngJpgImage.getRgbDataMap().get("luma-component-img");
+    int[][][] extractedLumaComponent = pngJpgImage.getRgbDataMap("luma-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedLumaComponent.length; y++) {
@@ -586,7 +581,7 @@ public class PNGImageTest {
 
     // Get the extracted red component data
     int[][][] extractedIntensityComponent =
-            pngJpgImage.getRgbDataMap().get("intensity-component-img");
+            pngJpgImage.getRgbDataMap("intensity-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedIntensityComponent.length; y++) {
@@ -606,9 +601,9 @@ public class PNGImageTest {
             "green-component-img", "blue-component-img");
 
     // Get the split RGB components
-    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap().get("red-component-img");
-    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap().get("green-component-img");
-    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap().get("blue-component-img");
+    int[][][] extractedRedComponent = pngJpgImage.getRgbDataMap("red-component-img");
+    int[][][] extractedGreenComponent = pngJpgImage.getRgbDataMap("green-component-img");
+    int[][][] extractedBlueComponent = pngJpgImage.getRgbDataMap("blue-component-img");
 
     // Check if the split components are not null
     assertNotNull(extractedRedComponent);
@@ -664,7 +659,7 @@ public class PNGImageTest {
             "green-component-img2", "blue-component-img2");
 
     // Get the combined RGB data
-    int[][][] combinedRGBData = pngJpgImage.getRgbDataMap().get("combined-img");
+    int[][][] combinedRGBData = pngJpgImage.getRgbDataMap("combined-img");
 
     // Check if the combined RGB data is not null
     assertNotNull(combinedRGBData);
@@ -782,7 +777,7 @@ public class PNGImageTest {
     pngJpgImage.compress(imageName, 30,255);
 
     // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap().get(imageName);
+    int[][][] flippedImageData = pngJpgImage.getRgbDataMap(imageName);
 
     // Check if the flipped image matches the expected result
     int[][][] expectedFlippedImageData = new int[2][2][3];
