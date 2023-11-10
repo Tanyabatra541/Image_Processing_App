@@ -819,15 +819,15 @@ public abstract class AbstractImage implements ImageOperations {
       int height = sourceRGBData.length;
       int width = sourceRGBData[0].length;
 
-      // Create Histogram instance for each channel with the given value range (10 to 245).
+
       Histogram histogram = new Histogram(10, 245);
 
       // Populate the histogram with values from the image data.
-      for (int y = 0; y < height; y++) {
+      for (int[][] sourceRGBDatum : sourceRGBData) {
         for (int x = 0; x < width; x++) {
-          int redValue = sourceRGBData[y][x][0];
-          int greenValue = sourceRGBData[y][x][1];
-          int blueValue = sourceRGBData[y][x][2];
+          int redValue = sourceRGBDatum[x][0];
+          int greenValue = sourceRGBDatum[x][1];
+          int blueValue = sourceRGBDatum[x][2];
           histogram.addValue(redValue, greenValue, blueValue);
         }
       }
@@ -908,15 +908,65 @@ public abstract class AbstractImage implements ImageOperations {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         int rgb = histogramImage.getRGB(x, y);
-        imageRGBData[y][x][0] = (rgb >> 16) & 0xFF; // Red component
-        imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;  // Green component
-        imageRGBData[y][x][2] = rgb & 0xFF;         // Blue component
+        imageRGBData[y][x][0] = (rgb >> 16) & 0xFF;
+        imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;
+        imageRGBData[y][x][2] = rgb & 0xFF;
       }
     }
     ImageContent image = new ImageContent(destName, imageRGBData);
     imageMap.put(destName, image);
     //rgbDataMap.put(destName, imageRGBData);
     System.out.println("Histogram of the image saved as " + destName);
+  }
+
+
+  @Override
+  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName) {
+    ImageContent sourceImage = imageMap.get(sourceImageName);
+
+    if (sourceImage != null) {
+      int[][][] sourceRGBData = imageMap.get(sourceImageName).getRgbDataMap();
+
+      int height = sourceRGBData.length;
+      int width = sourceRGBData[0].length;
+
+      double scaleR = 255.0 / (highlightPoint - shadowPoint);
+      double scaleG = 255.0 / (highlightPoint - shadowPoint);
+      double scaleB = 255.0 / (highlightPoint - shadowPoint);
+
+      // Apply the levels adjustment to each channel
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int redValue = sourceRGBData[y][x][0];
+          int greenValue = sourceRGBData[y][x][1];
+          int blueValue = sourceRGBData[y][x][2];
+
+          int adjustedRed = (int) (scaleR * (redValue - shadowPoint));
+          int adjustedGreen = (int) (scaleG * (greenValue - shadowPoint));
+          int adjustedBlue = (int) (scaleB * (blueValue - shadowPoint));
+
+          // Ensure adjusted values stay within the valid range (0 to 255)
+          adjustedRed = Math.min(255, Math.max(0, adjustedRed));
+          adjustedGreen = Math.min(255, Math.max(0, adjustedGreen));
+          adjustedBlue = Math.min(255, Math.max(0, adjustedBlue));
+
+          sourceRGBData[y][x][0] = adjustedRed;
+          sourceRGBData[y][x][1] = adjustedGreen;
+          sourceRGBData[y][x][2] = adjustedBlue;
+        }
+      }
+
+      // Create a StringBuilder for the adjusted image content.
+      StringBuilder adjustedContent = createPPMContent(width, height, sourceRGBData);
+
+      // Create and store the adjusted image.
+      ImageContent adjustedImage = new ImageContent(destImageName,sourceRGBData);
+      imageMap.put(destImageName, adjustedImage);
+      //rgbDataMap.put(destImageName, sourceRGBData);
+      System.out.println("Levels adjustment completed. Adjusted image saved as " + destImageName);
+    } else {
+      System.out.println("Source image not found: " + sourceImageName);
+    }
   }
 
 
