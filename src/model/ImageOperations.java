@@ -121,11 +121,11 @@ public interface ImageOperations {
 
   void compress(String imageName, double compressionThreshold, int maxValue);
 
-  void colorCorrectImage(String sourceImageName, String destImageName);
+  void colorCorrectImage(String sourceImageName, String destImageName, int splitPercentage);
 
   void createHistogram(String sourceName, String destName);
 
-  void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName);
+  void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName, int splitPercentage);
 
 
 }

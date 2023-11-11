@@ -23,7 +23,7 @@ public class JPGImage extends PNGImage {
    */
   @Override
   public void saveImage(String imagePath, String imageName)  {
-    int[][][] rgbData = rgbDataMap.get(imageName);
+    int[][][] rgbData = imageMap.get(imageName).getRgbDataMap();
 
 
     if (rgbData != null) {

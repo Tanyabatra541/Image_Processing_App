@@ -77,11 +77,11 @@ public class PNGImage extends AbstractImage {
 
     if (imageRGBData != null) {
 
-      ImageContent image = new ImageContent(imageName, serializeImageData(imageRGBData));
+      ImageContent image = new ImageContent(imageName, imageRGBData);
       image.setWidth(width);
       image.setHeight(height);
       imageMap.put(imageName, image);
-      rgbDataMap.put(imageName, imageRGBData);
+      //rgbDataMap.put(imageName, imageRGBData);
       System.out.println("Loaded image: " + imageName);
     } else {
       System.out.println("Failed to load the image from: " + imagePath);
@@ -133,7 +133,7 @@ public class PNGImage extends AbstractImage {
    */
   @Override
   public void saveImage(String imagePath, String imageName)  {
-    int[][][] rgbData = rgbDataMap.get(imageName);
+    int[][][] rgbData = imageMap.get(imageName).getRgbDataMap();
     double[][] pixels = imageMap.get(imageName).getPixels();
     BufferedImage bufferedImage;
     if (rgbData != null) {

@@ -283,15 +283,13 @@ public class Controller implements ActionListener {
         }
         break;
       case "color-correct":
-          if (parts.length < 3) {
-            System.out.println("Invalid 'color-correct' command: Usage is 'color-correct "
-                    + "source-image-name dest-image-name'");
-          } else {
-            String sourceImageName = parts[1];
-            String destImageName = parts[2];
-            imageObj.colorCorrectImage(sourceImageName, destImageName);
-          }
-          break;
+        if (parts.length > 2 && parts[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(parts[4]);
+          imageObj.colorCorrectImage(arg1, arg2, splitPercentage);
+        } else {
+          imageObj.colorCorrectImage(arg1, arg2, 0);
+        }
+        break;
       case "histogram":
         if (parts.length < 3) {
           System.out.println("Invalid 'histogram' command: Usage is 'histogram "
@@ -313,14 +311,20 @@ public class Controller implements ActionListener {
           int b = Integer.parseInt(parts[1]);
           int m = Integer.parseInt(parts[2]);
           int w = Integer.parseInt(parts[3]);
-          imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName);
+          if (parts.length > 5 && parts[6].equals("split")) {
+            int splitPercentage = Integer.parseInt(parts[7]);
+            imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName, splitPercentage);
+          } else {
+            imageObj.colorCorrectImage(arg1, arg2, 0);
+          }
+
         }
         break;
 
       case "compress":
         String sourceImageName = parts[1];
         String destImageName = parts[2];
-        imageObj.compress(sourceImageName,80,255);
+        imageObj.compress(sourceImageName,10,255);
         break;
 
       case "run":
