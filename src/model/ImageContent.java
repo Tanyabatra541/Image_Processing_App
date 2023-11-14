@@ -11,8 +11,8 @@ class ImageContent {
   private final String name;
   private int[][][] rgbDataMap;
 
-  private int height;
-  private int width;
+  int height;
+  int width;
 
  // private int[][][] rgbDataMap;
 

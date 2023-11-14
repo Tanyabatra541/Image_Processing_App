@@ -127,5 +127,7 @@ public interface ImageOperations {
 
   void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName, int splitPercentage);
 
+  void convertToGrayscale(String sourceName, String destName, int splitPercentage);
+
 
 }

@@ -160,7 +160,7 @@ public class Controller implements ActionListener {
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
-        if (parts.length > 2 && parts[3].equals("split")) {
+        if (parts.length> 3 && parts[3].equals("split")) {
           int splitPercentage = Integer.parseInt(parts[4]);
           imageObj.sharpenImage(arg1, arg2, splitPercentage);
         } else {
@@ -168,7 +168,7 @@ public class Controller implements ActionListener {
         }
         break;
       case "blur":
-        if (parts.length > 2 && parts[3].equals("split")) {
+        if (parts.length > 3 && parts[3].equals("split")) {
           int splitPercentage = Integer.parseInt(parts[4]);
           imageObj.blurImage(arg1, arg2, splitPercentage);
         } else {
@@ -187,7 +187,7 @@ public class Controller implements ActionListener {
         }
         break;
       case "sepia":
-        if (parts.length > 2 && parts[3].equals("split")) {
+        if (parts.length > 3 && parts[3].equals("split")) {
           int splitPercentage = Integer.parseInt(parts[4]);
           imageObj.sepiaImage(arg1, arg2, splitPercentage);
         } else {
@@ -283,7 +283,7 @@ public class Controller implements ActionListener {
         }
         break;
       case "color-correct":
-        if (parts.length > 2 && parts[3].equals("split")) {
+        if (parts.length > 3 && parts[3].equals("split")) {
           int splitPercentage = Integer.parseInt(parts[4]);
           imageObj.colorCorrectImage(arg1, arg2, splitPercentage);
         } else {
@@ -302,7 +302,7 @@ public class Controller implements ActionListener {
         break;
 
       case "levels-adjust":
-        if (parts.length < 5) {
+        if (parts.length < 6) {
           System.out.println("Invalid 'levels-adjust' command: Usage is 'levels-adjust "
                   + "b m w source-image-name dest-image-name'");
         } else {
@@ -311,13 +311,28 @@ public class Controller implements ActionListener {
           int b = Integer.parseInt(parts[1]);
           int m = Integer.parseInt(parts[2]);
           int w = Integer.parseInt(parts[3]);
-          if (parts.length > 5 && parts[6].equals("split")) {
+          if (parts.length > 6 && parts[6].equals("split")) {
             int splitPercentage = Integer.parseInt(parts[7]);
             imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName, splitPercentage);
           } else {
-            imageObj.colorCorrectImage(arg1, arg2, 0);
+            imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName, 0);
           }
+        }
+        break;
 
+      case "greyscale":
+        if (parts.length < 3) {
+          System.out.println("Invalid 'brighten' command: Usage is 'greyscale "
+                  + "source-image-name dest-image-name'");
+        } else {
+          String sourceImageName = parts[1];
+          String destImageName = parts[2];
+          if (parts.length > 3 && parts[3].equals("split")) {
+            int splitPercentage = Integer.parseInt(parts[4]);
+            imageObj.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
+          } else {
+            imageObj.convertToGrayscale(sourceImageName, destImageName, 0);
+          }
         }
         break;
 
