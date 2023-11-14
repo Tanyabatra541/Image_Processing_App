@@ -850,16 +850,8 @@ public abstract class AbstractImage implements ImageOperations {
           int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
 
           // Apply split
-          if (x >= splitPosition) {
-            colorCorrectedImage[y][x][0] = correctedRed;
-            colorCorrectedImage[y][x][1] = correctedGreen;
-            colorCorrectedImage[y][x][2] = correctedBlue;
-          } else {
-            // Copy the original image data to the destination image for the other side
-            colorCorrectedImage[y][x][0] = redValue;
-            colorCorrectedImage[y][x][1] = greenValue;
-            colorCorrectedImage[y][x][2] = blueValue;
-          }
+          split(colorCorrectedImage, splitPosition, y, x, redValue, greenValue, blueValue, correctedRed, correctedGreen, correctedBlue);
+
           colorCorrectedImage[y][x][0] = Math.max(0, Math.min(255, redValue + offsetR));
           colorCorrectedImage[y][x][1] = Math.max(0, Math.min(255, greenValue + offsetG));
           colorCorrectedImage[y][x][2] = Math.max(0, Math.min(255, blueValue + offsetB));
@@ -943,16 +935,7 @@ public abstract class AbstractImage implements ImageOperations {
           int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint, highlightPoint);
 
           // Apply split
-          if (x >= splitPosition) {
-            adjustedRGBData[y][x][0] = adjustedRed;
-            adjustedRGBData[y][x][1] = adjustedGreen;
-            adjustedRGBData[y][x][2] = adjustedBlue;
-          } else {
-            // Copy the original image data to the destination image for the other side
-            adjustedRGBData[y][x][0] = redValue;
-            adjustedRGBData[y][x][1] = greenValue;
-            adjustedRGBData[y][x][2] = blueValue;
-          }
+          split(adjustedRGBData, splitPosition, y, x, redValue, greenValue, blueValue, adjustedRed, adjustedGreen, adjustedBlue);
         }
       }
 
@@ -962,6 +945,18 @@ public abstract class AbstractImage implements ImageOperations {
       System.out.println("Adjusted image with " + splitPercentage + "% split. Image saved as " + destImageName);
     } else {
       System.out.println("Source image not found: " + sourceImageName);
+    }
+  }
+
+  private void split(int[][][] adjustedRGBData, int splitPosition, int y, int x, int redValue, int greenValue, int blueValue, int adjustedRed, int adjustedGreen, int adjustedBlue) {
+    if (x >= splitPosition) {
+      adjustedRGBData[y][x][0] = adjustedRed;
+      adjustedRGBData[y][x][1] = adjustedGreen;
+      adjustedRGBData[y][x][2] = adjustedBlue;
+    } else {
+      adjustedRGBData[y][x][0] = redValue;
+      adjustedRGBData[y][x][1] = greenValue;
+      adjustedRGBData[y][x][2] = blueValue;
     }
   }
 
@@ -983,7 +978,6 @@ public abstract class AbstractImage implements ImageOperations {
     int adjustedValue = (int) (a * value * value + b * value + c);
     return Math.min(255, Math.max(0, adjustedValue));
   }
-
 
 
   @Override
@@ -1022,16 +1016,7 @@ public abstract class AbstractImage implements ImageOperations {
           grayscalePixels[y][x][2] = grayscaleValue;
 
           // Apply vertical split
-          if (x >= splitPosition) {
-            grayscalePixels[y][x][0] = grayscaleValue;
-            grayscalePixels[y][x][1] = grayscaleValue;
-            grayscalePixels[y][x][2] = grayscaleValue;
-          } else {
-            // Copy the original image data to the destination image for the other side
-            grayscalePixels[y][x][0] = red;
-            grayscalePixels[y][x][1] = green;
-            grayscalePixels[y][x][2] = blue;
-          }
+          split(grayscalePixels, splitPosition, y, x, red, green, blue, grayscaleValue, grayscaleValue, grayscaleValue);
         }
       }
 
