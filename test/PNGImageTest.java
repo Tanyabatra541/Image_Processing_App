@@ -413,7 +413,7 @@ public class PNGImageTest {
   @Test
   public void testSepiaImage() {
 
-    pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
+    pngJpgImage.sepiaImage(imageName, "sepia-img",0);
 
     // Get the sepia image data
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");

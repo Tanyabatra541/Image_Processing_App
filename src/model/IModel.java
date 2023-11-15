@@ -2,7 +2,7 @@ package model;
 
 
 /**
- * The `Model.Model.IModel` interface defines the contract for the model
+ * The `IModel` interface defines the contract for the model
  * component of the application,
  * responsible for handling and processing data and commands.
  */
@@ -23,25 +23,11 @@ public interface IModel {
   String getString();
 
   /**
-   * Executes a script from a file specified by the script filename.
-   *
-   * @param scriptFilename The name of the script file to be executed.
-   */
-  void executeScriptFromFile(String scriptFilename);
-
-  /**
    * Retrieves the result of the most recent operation or command execution.
    *
    * @return The result of the operation or command.
    */
   String getResult();
 
-  /**
-   * Identifies the file format of an image based on its file extension.
-   *
-   * @param filePath The path to the image file.
-   * @return The file format or null if the format is unsupported or not recognized.
-   */
-  String identifyFileFormat(String filePath);
 
 }

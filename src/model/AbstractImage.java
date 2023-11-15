@@ -1,17 +1,9 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-
-import java.util.Base64;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 
 /**
@@ -20,6 +12,7 @@ import javax.imageio.ImageIO;
  * images in specific formats.
  */
 public abstract class AbstractImage implements ImageOperations {
+
 
 
   protected static final Map<String, ImageContent> imageMap = new HashMap<>();
@@ -849,12 +842,12 @@ public abstract class AbstractImage implements ImageOperations {
           int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
           int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
 
-          // Apply split
-          split(colorCorrectedImage, splitPosition, y, x, redValue, greenValue, blueValue, correctedRed, correctedGreen, correctedBlue);
-
           colorCorrectedImage[y][x][0] = Math.max(0, Math.min(255, redValue + offsetR));
           colorCorrectedImage[y][x][1] = Math.max(0, Math.min(255, greenValue + offsetG));
           colorCorrectedImage[y][x][2] = Math.max(0, Math.min(255, blueValue + offsetB));
+
+          // Apply split
+          split(colorCorrectedImage, splitPosition, y, x, redValue, greenValue, blueValue, correctedRed, correctedGreen, correctedBlue);
         }
       }
 
@@ -868,6 +861,19 @@ public abstract class AbstractImage implements ImageOperations {
       System.out.println("Color correction completed with " + splitPercentage + "% split. Corrected image saved as " + destName);
     } else {
       System.out.println("Source image not found: " + sourceName);
+    }
+  }
+
+  private void split(int[][][] colorCorrectedImage, int splitPosition, int y, int x, int redValue, int greenValue, int blueValue, int correctedRed, int correctedGreen, int correctedBlue) {
+    if (x >= splitPosition) {
+      colorCorrectedImage[y][x][0] = correctedRed;
+      colorCorrectedImage[y][x][1] = correctedGreen;
+      colorCorrectedImage[y][x][2] = correctedBlue;
+    } else {
+      // Copy the original image data to the destination image for the other side
+      colorCorrectedImage[y][x][0] = redValue;
+      colorCorrectedImage[y][x][1] = greenValue;
+      colorCorrectedImage[y][x][2] = blueValue;
     }
   }
 
@@ -947,19 +953,6 @@ public abstract class AbstractImage implements ImageOperations {
       System.out.println("Source image not found: " + sourceImageName);
     }
   }
-
-  private void split(int[][][] adjustedRGBData, int splitPosition, int y, int x, int redValue, int greenValue, int blueValue, int adjustedRed, int adjustedGreen, int adjustedBlue) {
-    if (x >= splitPosition) {
-      adjustedRGBData[y][x][0] = adjustedRed;
-      adjustedRGBData[y][x][1] = adjustedGreen;
-      adjustedRGBData[y][x][2] = adjustedBlue;
-    } else {
-      adjustedRGBData[y][x][0] = redValue;
-      adjustedRGBData[y][x][1] = greenValue;
-      adjustedRGBData[y][x][2] = blueValue;
-    }
-  }
-
 
   private int applyCurvesFunction(int value, double shadowPoint, double midPoint, double highlightPoint) {
     double A = shadowPoint * shadowPoint * (midPoint - highlightPoint)

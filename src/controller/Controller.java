@@ -4,10 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.function.Function;
 
 import model.IModel;
 import model.ImageOperations;
@@ -22,6 +26,8 @@ import view.IView;
  * communicates with the model and view components.
  */
 public class Controller implements ActionListener {
+
+  private Map<String, Function<String[], ImageOperations>> imageCommands;
 
   private static ImageOperations imageObj = null;
   private static IModel model = null;
@@ -66,7 +72,8 @@ public class Controller implements ActionListener {
           }
 
           // Pass the file contents to the model for processing
-          model.executeScriptFromFile(inputText);
+
+          executeScriptFromFile(inputText);
 
           // Display any output or result from the model in the view
           String result = model.getResult(); // This method depends on your model structure
@@ -121,7 +128,7 @@ public class Controller implements ActionListener {
     String cmd = parts[0];
     String arg1 = parts[1];
     String arg2 = parts.length > 2 ? parts[2] : null;
-    String extension = model.identifyFileFormat(arg1);
+    String extension = identifyFileFormat(arg1);
 
     if (!Objects.equals(parts[0], "run")) {
 
@@ -344,13 +351,62 @@ public class Controller implements ActionListener {
 
       case "run":
         String scriptFilename = parts[1];
-        model.executeScriptFromFile(scriptFilename);
+        executeScriptFromFile(scriptFilename);
         break;
       default:
         System.out.println("Invalid command: " + command);
         break;
     }
   }
-}
 
+  /**
+   * Executes a script loaded from a file, processing each line as a command.
+   *
+   * @param scriptFilename The filename of the script to execute.
+   */
+  public static void executeScriptFromFile(String scriptFilename) {
+    try {
+      File scriptFile = new File(scriptFilename);
+      if (!scriptFile.exists()) {
+        System.out.println("Script file not found: " + scriptFilename);
+        return;
+      }
+
+      Scanner sc = new Scanner(scriptFile);
+      while (sc.hasNextLine()) {
+        String line = sc.nextLine().trim();
+        if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
+          Controller.parseAndExecute(line);
+        }
+      }
+      sc.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("Error reading script file: " + e.getMessage());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Identifies the file format of an image based on its file extension.
+   *
+   * @param filePath The path to the image file.
+   * @return The file format or null if the format is unsupported or not recognized.
+   */
+  public static String identifyFileFormat(String filePath) {
+    // Get the index of the last dot in the file path
+    int lastDotIndex = filePath.lastIndexOf('.');
+
+    if (lastDotIndex > 0) {
+      // Extract the substring after the last dot
+      String fileExtension = filePath.substring(lastDotIndex + 1);
+
+      // Convert the file extension to lowercase for consistency
+      return fileExtension.toLowerCase();
+    } else {
+      // No file extension found
+      return null;
+    }
+  }
+}
 

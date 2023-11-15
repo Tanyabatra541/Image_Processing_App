@@ -7,6 +7,7 @@ import java.io.IOException;
  */
 public interface ImageOperations {
 
+
   /**
    * Load an image from a file and store it in the image map and RGB data map.
    *
@@ -128,6 +129,7 @@ public interface ImageOperations {
   void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName, int splitPercentage);
 
   void convertToGrayscale(String sourceName, String destName, int splitPercentage);
+
 
 
 }
