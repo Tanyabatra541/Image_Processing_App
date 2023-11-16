@@ -5,7 +5,7 @@ package model;
  * its associated name and content.
  * This class is used to store image data within the application.
  */
-class ImageContent {
+public class ImageContent {
 
   double[][] pixels;
   private final String name;

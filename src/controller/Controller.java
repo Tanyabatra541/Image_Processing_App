@@ -1,20 +1,20 @@
 package controller;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
-
-import model.IModel;
 import model.ImageOperations;
 import model.JPGImage;
 import model.PNGImage;
 import model.PPMImage;
 import view.IView;
+
+import static java.lang.System.exit;
 
 /**
  * The `Controller` class serves as the controller in the MVC
@@ -23,21 +23,24 @@ import view.IView;
  */
 public class Controller implements ActionListener {
 
-  private static ImageOperations imageObj = null;
-  private static IModel model = null;
+  private String input;
+  private final String result;
+
+  public static ImageOperations imageObj = null;
   private final IView view;
 
   /**
    * Constructs a new controller.Controller.controller.Controller instance.
    *
-   * @param m The model to work with.
    * @param v The view to interact with.
    */
-  public Controller(IModel m, IView v) {
-    model = m;
+  public Controller(IView v) {
     view = v;
     view.setListener(this);
     view.display();
+    input = "";
+    result = "";
+
   }
 
   /**
@@ -47,29 +50,26 @@ public class Controller implements ActionListener {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-
     if (Objects.equals(e.getActionCommand(), "Execute Button")) {
       // Read the text from the input textField
       String inputText = view.getInputString();
-
       // Check if the input text represents a file path
       File file = new File(inputText);
       if (file.exists() && file.isFile()) {
         try {
           // Read the contents of the file and display them in the view
-          StringBuilder fileContents = new StringBuilder();
+          StringBuilder fileContents;
+          fileContents = new StringBuilder();
           try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
               fileContents.append(line).append("\n");
             }
           }
-
           // Pass the file contents to the model for processing
-          model.executeScriptFromFile(inputText);
-
+          executeScriptFromFile(inputText);
           // Display any output or result from the model in the view
-          String result = model.getResult(); // This method depends on your model structure
+          String result = getResult(); // This method depends on your model structure
           view.setEchoOutput(result);
         } catch (IOException ex) {
           // Handle any exceptions that occur during file reading
@@ -77,13 +77,11 @@ public class Controller implements ActionListener {
         }
       } else {
         // Send the text to the model
-        model.setString(inputText);
-
+        setString(inputText);
         // Clear the input textField
         view.clearInputString();
-
         // Finally, echo the string in the view
-        String text = model.getString();
+        String text = getString();
         view.setEchoOutput(text);
       }
     } else if (Objects.equals(e.getActionCommand(), "Exit Button")) {
@@ -104,6 +102,30 @@ public class Controller implements ActionListener {
     }
   }
 
+  private void setString(String i) {
+    input = i;
+  }
+
+  /**
+   * Gets the input string.
+   *
+   * @return The input string.
+   */
+  private String getString() {
+    return input;
+  }
+
+  /**
+   * Retrieves the result from processing commands, if available.
+   *
+   * @return The result string obtained from command execution.
+   */
+  private String getResult() {
+    return result;
+  }
+
+  public static String[] parts;
+
   /**
    * Parses the file and executes each line as a command and decides what operation is to be
    * performed on it.
@@ -112,7 +134,7 @@ public class Controller implements ActionListener {
    * @throws IOException If an I/O error occurs while executing the command.
    */
   public static void parseAndExecute(String command) throws IOException {
-    String[] parts = command.split(" ");
+    parts = command.split(" ");
     if (parts.length < 2) {
       System.out.println("Invalid command: " + command);
       return;
@@ -121,7 +143,7 @@ public class Controller implements ActionListener {
     String cmd = parts[0];
     String arg1 = parts[1];
     String arg2 = parts.length > 2 ? parts[2] : null;
-    String extension = model.identifyFileFormat(arg1);
+    String extension = identifyFileFormat(arg1);
 
     if (!Objects.equals(parts[0], "run")) {
 
@@ -160,7 +182,7 @@ public class Controller implements ActionListener {
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
-        if (parts.length> 3 && parts[3].equals("split")) {
+        if (parts.length > 3 && parts[3].equals("split")) {
           int splitPercentage = Integer.parseInt(parts[4]);
           imageObj.sharpenImage(arg1, arg2, splitPercentage);
         } else {
@@ -172,7 +194,7 @@ public class Controller implements ActionListener {
           int splitPercentage = Integer.parseInt(parts[4]);
           imageObj.blurImage(arg1, arg2, splitPercentage);
         } else {
-          imageObj.blurImage(arg1, arg2, 0);
+          imageObj.blurImage(arg1, arg2,0);
         }
         break;
       case "brighten":
@@ -313,9 +335,9 @@ public class Controller implements ActionListener {
           int w = Integer.parseInt(parts[3]);
           if (parts.length > 6 && parts[6].equals("split")) {
             int splitPercentage = Integer.parseInt(parts[7]);
-            imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName, splitPercentage);
+            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName, splitPercentage);
           } else {
-            imageObj.applyLevelsAdjustment(b,m,w,sourceImageName, destImageName, 0);
+            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName, 0);
           }
         }
         break;
@@ -342,16 +364,65 @@ public class Controller implements ActionListener {
         String destImageName = parts[3];
         imageObj.compress(sourceImageName,destImageName,percentage);
         break;
-
-      case "run":
+      case "-file":
         String scriptFilename = parts[1];
-        model.executeScriptFromFile(scriptFilename);
+        executeScriptFromFile(scriptFilename);
+        exit(0);
         break;
       default:
         System.out.println("Invalid command: " + command);
         break;
     }
   }
-}
 
+  /**
+   * Executes a script loaded from a file, processing each line as a command.
+   *
+   * @param scriptFilename The filename of the script to execute.
+   */
+  public static void executeScriptFromFile(String scriptFilename) {
+    try {
+      File scriptFile = new File(scriptFilename);
+      if (!scriptFile.exists()) {
+        System.out.println("Script file not found: " + scriptFilename);
+        return;
+      }
+
+      Scanner sc = new Scanner(scriptFile);
+      while (sc.hasNextLine()) {
+        String line = sc.nextLine().trim();
+        if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
+          Controller.parseAndExecute(line);
+        }
+      }
+      sc.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("Error reading script file: " + e.getMessage());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Identifies the file format of an image based on its file extension.
+   *
+   * @param filePath The path to the image file.
+   * @return The file format or null if the format is unsupported or not recognized.
+   */
+  public static String identifyFileFormat(String filePath) {
+    // Get the index of the last dot in the file path
+    int lastDotIndex = filePath.lastIndexOf('.');
+
+    if (lastDotIndex > 0) {
+      // Extract the substring after the last dot
+      String fileExtension = filePath.substring(lastDotIndex + 1);
+
+      // Convert the file extension to lowercase for consistency
+      return fileExtension.toLowerCase();
+    } else {
+      // No file extension found
+      return null;
+    }
+  }
+}
 

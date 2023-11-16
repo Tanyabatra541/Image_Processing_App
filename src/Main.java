@@ -1,6 +1,6 @@
 import controller.Controller;
-import model.IModel;
-import model.Model;
+//import model.IModel;
+//import model.Model;
 import view.IView;
 import view.JFrameView;
 
@@ -16,8 +16,7 @@ public class Main {
    * @param args The command-line arguments.
    */
   public static void main(String[] args) {
-    IModel model = new Model();
     IView view = new JFrameView("Echo a string");
-    Controller controller = new Controller(model, view);
+    Controller controller = new Controller( view);
   }
 }

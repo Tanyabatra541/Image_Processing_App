@@ -15,8 +15,8 @@ import javax.imageio.ImageIO;
  */
 public class PNGImage extends AbstractImage {
 
-  private int height;
-  private int width;
+  public static int height;
+  public static int width;
 
   private static String serializeImageData(int[][][] imageData) {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -89,7 +89,7 @@ public class PNGImage extends AbstractImage {
   }
 
 
-  private int[][][] convertPNGToRGB(String imagePath) {
+  public static int[][][] convertPNGToRGB(String imagePath) {
     try {
       File imageFile = new File(imagePath);
       if (!imageFile.exists()) {
@@ -133,36 +133,41 @@ public class PNGImage extends AbstractImage {
    */
   @Override
   public void saveImage(String imagePath, String imageName)  {
-    int[][][] rgbData = imageMap.get(imageName).getRgbDataMap();
-    double[][] pixels = imageMap.get(imageName).getPixels();
-    BufferedImage bufferedImage;
-    if (rgbData != null) {
-      if (pixels != null) {
-        bufferedImage = convertRGBAndPixelsDataToBufferedImage(rgbData, pixels);
+    // Retrieve ImageContent from imageMap
+    ImageContent imageContent = imageMap.get(imageName);
+
+    if (imageContent != null) {
+      int[][][] rgbData = imageContent.getRgbDataMap();
+      double[][] pixels = imageContent.getPixels();
+      BufferedImage bufferedImage;
+
+      if (rgbData != null) {
+        if (pixels != null) {
+          bufferedImage = convertRGBAndPixelsDataToBufferedImage(rgbData, pixels);
+        } else {
+          bufferedImage = convertRGBDataToBufferedImage(rgbData);
+        }
+
+        //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
+
+        // Check if the format is "png" before saving as PNG
+        File output = new File(imagePath);
+
+        try {
+          ImageIO.write(bufferedImage, "png", output);
+          System.out.println("Image saved as " + imagePath + " in the png format");
+        } catch (Exception e) {
+          System.out.println("Error in saving File");
+          e.printStackTrace(); // Print the stack trace for better error diagnostics
+        }
       } else {
-        bufferedImage = convertRGBDataToBufferedImage(rgbData);
+        System.out.println("RGB data is null for image: " + imageName);
       }
-
-      //String format = imagePath.substring(imagePath.lastIndexOf('.') + 1);
-
-      // Check if the format is "png" before saving as PNG
-      File output = new File(imagePath);
-
-
-
-      try {
-        ImageIO.write(bufferedImage, "png", output);
-        System.out.println("Image saved as " + imagePath + " in the png format");
-
-      } catch (Exception e) {
-        System.out.println("Error in saving File");
-      }
-
-
-      //ImageIO.write(bufferedImage, "png", output);
-
+    } else {
+      System.out.println("ImageContent not found for image: " + imageName);
     }
   }
+
 
   protected static BufferedImage convertRGBAndPixelsDataToBufferedImage(int[][][] rgbData, double[][] pixels) {
     int height = rgbData.length;

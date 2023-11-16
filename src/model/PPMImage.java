@@ -49,7 +49,7 @@ public class PPMImage extends AbstractImage {
     return ppmContent.toString();
   }
 
-  private static int[][][] readImageRGBData(String filename) {
+  public static int[][][] readImageRGBData(String filename) {
     Scanner sc = null;
 
     try {

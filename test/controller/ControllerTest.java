@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 
 import model.JPGImage;
-import model.Model;
+//import model.Model;
 import view.IView;
 import view.JFrameView;
 
@@ -60,11 +60,14 @@ public class ControllerTest {
   public void setUp() {
     pngJpgImage = new JPGImage();
     createAndSaveJPG(originalMatrix, imageName, imagePath);
+
     createAndSaveJPG(rgbMatrix3, image3Name, image3Path);
-    Model model = new Model();
-    IView view = new JFrameView(null);
-    controller = new Controller(model, view);
+
     System.setOut(new PrintStream(outContent));
+
+    IView view = new JFrameView(null);
+    controller = new Controller(view);
+
   }
 
   private static void createAndSaveJPG(int[][][] matrix, String fileName, String filePath) {
