@@ -1,151 +1,27 @@
 package model;
-//
-//import java.util.Arrays;
-//import javax.imageio.ImageIO;
-//import java.awt.*;
-//import java.awt.image.BufferedImage;
-//import java.io.File;
-//import java.io.IOException;
-//
-//public class Histogram {
-//  private int[] histogram;
-//  private int minValue;
-//  private int maxValue;
-//
-//  private int[] values;
-//
-//  private int[] valuesR;
-//  private int[] valuesG;
-//  private int[] valuesB;
-//
-//  public Histogram(int minValue, int maxValue) {
-//    this.minValue = minValue;
-//    this.maxValue = maxValue;
-//    this.histogram = new int[maxValue - minValue + 1];
-//    this.valuesR = new int[maxValue - minValue + 1];
-//    this.valuesG = new int[maxValue - minValue + 1];
-//    this.valuesB = new int[maxValue - minValue + 1];
-//  }
-//
-//  public void addValue(int redValue, int greenValue, int blueValue) {
-//    if (redValue >= minValue && redValue <= maxValue
-//            && greenValue >= minValue && greenValue <= maxValue
-//            && blueValue >= minValue && blueValue <= maxValue) {
-//      histogram[redValue - minValue]++;
-//      valuesR[redValue - minValue]++;
-//      valuesG[greenValue - minValue]++;
-//      valuesB[blueValue - minValue]++;
-//    }
-//  }
-//
-//  public int findPeakValue() {
-//    int peak = minValue;
-//    int maxCount = 0;
-//
-//    for (int i = 0; i < histogram.length; i++) {
-//      if (histogram[i] > maxCount) {
-//        maxCount = histogram[i];
-//        peak = i + minValue;
-//      }
-//    }
-//
-//    return peak;
-//  }
-//
-//  public int getMaxCount() {
-//    return Arrays.stream(histogram).max().orElse(0);
-//  }
-//
-//  public int getMinValue() {
-//    return minValue;
-//  }
-//
-//  public int getMaxValue() {
-//    return maxValue;
-//  }
-//
-//  public BufferedImage createHistogramImage(int width, int height, Color color) {
-//    BufferedImage histogramImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-//    Graphics2D g2d = histogramImage.createGraphics();
-//
-//    // Clear the image with a white background.
-//    g2d.setColor(Color.WHITE);
-//    g2d.fillRect(0, 0, width, height);
-//
-//    g2d.setColor(color);
-//    g2d.setStroke(new BasicStroke(2.0f));
-//
-//    for (int i = 1; i < values.length; i++) {
-//      int x1 = (i - 1) * width / (values.length - 1);
-//      int y1 = height - values[i - 1] * height / maxValue;
-//      int x2 = i * width / (values.length - 1);
-//      int y2 = height - values[i] * height / maxValue;
-//      g2d.drawLine(x1, y1, x2, y2);
-//    }
-//
-//    g2d.dispose();
-//    return histogramImage;
-//  }
-//
-//  public void saveHistogramImage(String destName, int width, int height, Color color) {
-//    BufferedImage histogramImage = createHistogramImage(width, height, color);
-//
-//    try {
-//      ImageIO.write(histogramImage, "PNG", new File(destName));
-//      System.out.println("Histogram image saved as " + destName);
-//    } catch (IOException e) {
-//      System.out.println("Failed to save histogram image: " + e.getMessage());
-//    }
-//  }
-//
-//  public BufferedImage createCombinedHistogramImage(int width, int height) {
-//    BufferedImage histogramImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-//    Graphics2D g2d = histogramImage.createGraphics();
-//
-//    // Clear the image with a white background.
-//    g2d.setColor(Color.WHITE);
-//    g2d.fillRect(0, 0, width, height);
-//
-//    g2d.setColor(Color.RED);
-//    drawHistogramLine(g2d, valuesR, width, height);
-//
-//    g2d.setColor(Color.GREEN);
-//    drawHistogramLine(g2d, valuesG, width, height);
-//
-//    g2d.setColor(Color.BLUE);
-//    drawHistogramLine(g2d, valuesB, width, height);
-//
-//    g2d.dispose();
-//    return histogramImage;
-//  }
-//
-//  private void drawHistogramLine(Graphics2D g2d, int[] values, int width, int height) {
-//    g2d.setStroke(new BasicStroke(2.0f));
-//    for (int i = 1; i < values.length; i++) {
-//      int x1 = (i - 1) * width / (values.length - 1);
-//      int y1 = height - values[i - 1] * height / getMaxCount();
-//      int x2 = i * width / (values.length - 1);
-//      int y2 = height - values[i] * height / getMaxCount();
-//      g2d.drawLine(x1, y1, x2, y2);
-//    }
-//  }
-//}
-//
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
 
+/**
+ * The `Histogram` class represents a histogram for RGB color values and provides methods like
+ * creating histogram images, adding values to the histogram and calculating peak values.
+ */
 public class Histogram {
   int[] histogramR;
   int[] histogramG;
   int[] histogramB;
-  private int minValue;
-  private int maxValue;
+  private final int minValue;
+  private final int maxValue;
   private int maxCount;
 
+  /**
+   * Constructs a `Histogram` instance with the specified minimum and maximum values for color and
+   * initializes the histogram arrays.
+   *
+   * @param minValue The minimum value for color intensity.
+   * @param maxValue The maximum value for color intensity.
+   */
   public Histogram(int minValue, int maxValue) {
     this.minValue = minValue;
     this.maxValue = maxValue;
@@ -154,6 +30,13 @@ public class Histogram {
     this.histogramB = new int[maxValue - minValue + 1];
   }
 
+  /**
+   * Add a color value to the histogram.
+   *
+   * @param redValue   The red color value.
+   * @param greenValue The green color value.
+   * @param blueValue  The blue color value.
+   */
   public void addValue(int redValue, int greenValue, int blueValue) {
     if (redValue >= minValue && redValue <= maxValue) {
       histogramR[redValue - minValue]++;
@@ -166,6 +49,9 @@ public class Histogram {
     }
   }
 
+  /**
+   * Calculate the maximum count of all color values in the histogram.
+   */
   public void calculateMaxCount() {
     maxCount = 0;
     for (int i = 0; i < histogramR.length; i++) {
@@ -181,6 +67,13 @@ public class Histogram {
     }
   }
 
+  /**
+   * Create a histogram image with the specified width and height.
+   *
+   * @param width  The width of the histogram image.
+   * @param height The height of the histogram image.
+   * @return The histogram image.
+   */
   public BufferedImage createHistogramImage(int width, int height) {
     BufferedImage histogramImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     Graphics2D g2d = histogramImage.createGraphics();
@@ -202,6 +95,14 @@ public class Histogram {
     return histogramImage;
   }
 
+  /**
+   * Draws a histogram line for a specific color channel.
+   *
+   * @param g2d    The graphics context for drawing.
+   * @param values The array of histogram values for a color channel.
+   * @param width  The width of the histogram image.
+   * @param height The height of the histogram image.
+   */
   private void drawHistogramLine(Graphics2D g2d, int[] values, int width, int height) {
     g2d.setStroke(new BasicStroke(1.0f));
     for (int i = 1; i < values.length; i++) {
@@ -213,6 +114,12 @@ public class Histogram {
     }
   }
 
+  /**
+   * Finds the peak value in the given histogram array.
+   *
+   * @param histogram The array representing the histogram.
+   * @return The peak value in the histogram.
+   */
   public int findPeakValue(int[] histogram) {
     int peak = minValue;
     int maxCount = 0;
