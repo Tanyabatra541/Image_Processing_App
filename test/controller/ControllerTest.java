@@ -18,8 +18,10 @@ import view.IView;
 import view.JFrameView;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 
 /**
@@ -29,8 +31,13 @@ public class ControllerTest {
 
   private static JPGImage pngJpgImage;
 
+  private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+
   private static String imageName = "outputJPG";
   private static String imagePath = "outputJPG.jpg";
+
+  private static String image3Name = "output3";
+  private static String image3Path = "output3.jpg";
 
   static int[][][] rgbMatrix = new int[2][2][3];
 
@@ -41,14 +48,23 @@ public class ControllerTest {
           {{0, 0, 255}, {255, 255, 255}}
   };
 
+  int[][][] rgbMatrix3 = {
+          {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
+          {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
+          {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+  };
+
+
 
   @Before
   public void setUp() {
     pngJpgImage = new JPGImage();
     createAndSaveJPG(originalMatrix, imageName, imagePath);
+    createAndSaveJPG(rgbMatrix3, image3Name, image3Path);
     Model model = new Model();
     IView view = new JFrameView(null);
     controller = new Controller(model, view);
+    System.setOut(new PrintStream(outContent));
   }
 
   private static void createAndSaveJPG(int[][][] matrix, String fileName, String filePath) {
@@ -628,6 +644,207 @@ public class ControllerTest {
     }
   }
 
+
+  @Test
+  public void testCompressby90() throws IOException {
+
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress 90 " + image3Name + " compressed-90-img");
+
+
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-90-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{0, 0, 201},{0, 0, 201}, {0, 0, 0}},
+            {{0, 0, 201},{0, 0, 201}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressby50() throws IOException {
+
+
+
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress 50 " + image3Name + " compressed-50-img");
+
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-50-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{174, 200, 201},{174, 200, 201}, {0, 116, 195}},
+            {{174, 200, 201},{174, 200, 201}, {0, 116, 195}},
+            {{216, 230, 190}, {216, 230, 190}, {0, 242, 0}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressby10() throws IOException {
+
+
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress 10 " + image3Name + " compressed-10-img");
+
+
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-10-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{181, 207, 213},{167, 193, 199}, {89, 102, 180}},
+            {{167, 193, 188},{181, 207, 202}, {118, 131, 209}},
+            {{187, 206, 160}, {246, 255, 219}, {228, 242, 229}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressby0() throws IOException {
+
+
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress 0 " + image3Name + " compressed-0-img");
+
+
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-0-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{185, 211, 212}, {174, 200, 201}, {0, 0, 0}},
+            {{160, 186, 187}, {177, 203, 204}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressbyNegative() throws IOException {
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress -5 " + image3Name + " compressed--5-img");
+
+
+    assertEquals("Loaded image: output3\n" +
+            "Compression percentage must be between 0 and 100.\n" +
+            "Error in compressing output3 by -5.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testCompressWithMaxPercentage() throws IOException {
+    // Compression with 100% should result in a completely black image
+
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress 100 " + image3Name + " compressed-100-img");
+
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-100-img");
+
+    int[][][] expectedCompressedImage = {
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
+
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+        }
+      }
+    }
+
+  }
+
+  @Test
+  public void testCompressWithNonPowerOfTwoDimensions() throws IOException {
+    // Test compressing an image with non-power-of-two dimensions
+    // For simplicity, you can create a small image with dimensions like 3x3
+    int[][][] nonPowerOfTwoImage = {
+            {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
+            {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
+            {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+    };
+
+    createAndSaveJPG(nonPowerOfTwoImage, "nonPowerOfTwoImage", "nonPowerOfTwoImage.png");
+    controller.parseAndExecute("load nonPowerOfTwoImage.png nonPowerOfTwoImage");
+    controller.parseAndExecute("compress 50 nonPowerOfTwoImage compressed-non-power-of-two-img");
+
+    // Try compressing the non-power-of-two image with 50% compression
+
+
+    // Verify that the compression was successful and the image dimensions remain the same
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-non-power-of-two-img");
+
+    assertEquals(nonPowerOfTwoImage.length, compressedImage.length);
+    assertEquals(nonPowerOfTwoImage[0].length, compressedImage[0].length);
+  }
+
+  @Test
+  public void testCompressWithInvalidPercentage() throws IOException {
+    // Attempting to compress with an invalid percentage should result in an error message
+
+    controller.parseAndExecute("load " + image3Path + " " + image3Name);
+    controller.parseAndExecute("compress 115 " + image3Name + " invalid-percentage-img");
+
+
+    assertEquals("Loaded image: output3\n" +
+            "Compression percentage must be between 0 and 100.\n" +
+            "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
 
 
 }

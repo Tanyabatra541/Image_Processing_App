@@ -119,7 +119,7 @@ public interface ImageOperations {
   void extractComponent(String sourceName, String destName, String component);
 
 
-  void compress(String imageName, double compressionThreshold, int maxValue);
+  void compress(String imageName, String destName, double compressionThreshold);
 
   void colorCorrectImage(String sourceImageName, String destImageName, int splitPercentage);
 

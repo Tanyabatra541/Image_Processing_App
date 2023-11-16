@@ -28,9 +28,18 @@ public class PPMImageTest {
 
   private static String image2Name = "output2PPM";
   private static String image2Path = "output2PPM.ppm";
+
+  private static String image3Name = "output3";
+  private static String image3Path = "output3.ppm";
   int[][][] rgbMatrix = {
           {{255, 0, 0}, {0, 255, 0}},
           {{0, 0, 255}, {255, 255, 255}}
+  };
+
+  int[][][] rgbMatrix3 = {
+          {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
+          {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
+          {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
   };
 
   int[][][] rgbMatrix2 = {
@@ -62,6 +71,7 @@ public class PPMImageTest {
     ppmImage = new PPMImage();
     createAndSavePPM(rgbMatrix, imageName, imagePath);
     createAndSavePPM(rgbMatrix2, image2Name, image2Path);
+    createAndSavePPM(rgbMatrix3, image3Name, image3Path);
     System.setOut(new PrintStream(outContent));
 
   }
@@ -772,6 +782,203 @@ public class PPMImageTest {
 
 
     assertEquals(expectedErrorMessage, outContent.toString().trim());
+  }
+
+
+  @Test
+  public void testCompressby90() throws IOException {
+
+    ppmImage.compress(image3Name, "compressed-90-img",90);
+
+
+    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-90-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{0, 215, 0},{0, 215, 0}, {0, 0, 0}},
+            {{0, 215, 0},{0, 215, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressby50() throws IOException {
+
+
+    ppmImage.compress(image3Name, "compressed-50-img",50);
+
+    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-50-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{255, 215, 115},{100, 215, 115}, {0, 0, 255}},
+            {{255, 215, 115},{100, 215, 115}, {0, 0, 255}},
+            {{222, 212, 255}, {222, 212, 255}, {255, 255, 255}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressby10() throws IOException {
+
+    ppmImage.compress(image3Name, "compressed-10-img",10);
+
+
+    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-10-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{255, 200, 80},{100, 255, 150}, {95, 100, 255}},
+            {{255, 150, 150},{100, 255, 80}, {95, 100, 255}},
+            {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+
+  }
+
+  @Test
+  public void testCompressby0() throws IOException {
+
+    ppmImage.compress(image3Name, "compressed-0-img",0);
+
+
+    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-0-img");
+
+
+    int[][][] expectedCompressedImage = {
+            {{255, 200, 80}, {100, 255, 150}, {0, 0, 0}},
+            {{255, 150, 150}, {100, 255, 80}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+        }
+      }
+    }
+
+  }
+
+  @Test
+  public void testCompressbyNegative() throws IOException {
+
+    ppmImage.compress(image3Name, "compressed-0-img",-5);
+    assertEquals("Compression percentage must be between 0 and 100.\n" +
+            "Error in compressing output3 by -5.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testCompressWithMaxPercentage() throws IOException {
+    // Compression with 100% should result in a completely black image
+    ppmImage.compress(image3Name, "compressed-100-img", 100);
+
+    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-100-img");
+
+    int[][][] expectedCompressedImage = {
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+    };
+
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
+        for (int c = 0; c < 3; c++) {
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+        }
+      }
+    }
+
+  }
+
+  @Test
+  public void testCompressWithNonPowerOfTwoDimensions() throws IOException {
+    // Test compressing an image with non-power-of-two dimensions
+    // For simplicity, you can create a small image with dimensions like 3x3
+    int[][][] nonPowerOfTwoImage = {
+            {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
+            {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
+            {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+    };
+
+    createAndSavePPM(nonPowerOfTwoImage, "nonPowerOfTwoImage", "nonPowerOfTwoImage.png");
+
+    // Try compressing the non-power-of-two image with 50% compression
+    ppmImage.compress("nonPowerOfTwoImage", "compressed-non-power-of-two-img", 50);
+
+    // Verify that the compression was successful and the image dimensions remain the same
+    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-non-power-of-two-img");
+
+    assertEquals(nonPowerOfTwoImage.length, compressedImage.length);
+    assertEquals(nonPowerOfTwoImage[0].length, compressedImage[0].length);
+  }
+
+  @Test
+  public void testCompressWithInvalidPercentage() throws IOException {
+    // Attempting to compress with an invalid percentage should result in an error message
+    ppmImage.compress(image3Name, "invalid-percentage-img", 115);
+    assertEquals("Compression percentage must be between 0 and 100.\n" +
+            "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testCompressWithLargeImage() throws IOException {
+    // Test compressing a large image to ensure efficiency
+    int[][][] largeImage = new int[1000][1000][3];
+
+    createAndSavePPM(largeImage, "largeImage", "largeImage.png");
+
+    // Try compressing the non-power-of-two image with 50% compression
+    ppmImage.compress("largeImage", "compressedLargeImage", 50);
+
+    int[][][] result = ppmImage.getRgbDataMap("compressedLargeImage");
+
+    // Ensure that the dimensions are still correct
+    assertEquals(1000, result.length);
+    assertEquals(1000, result[0].length);
   }
 }
 

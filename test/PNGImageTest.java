@@ -30,16 +30,19 @@ public class PNGImageTest {
   private static String image2Name = "output2";
   private static String image2Path = "output2.png";
 
+  private static String image3Name = "output3";
+  private static String image3Path = "output3.png";
+
 
   int[][][] rgbMatrix = {
           {{255, 0, 0}, {0, 255, 0}},
           {{0, 0, 255}, {255, 255, 255}}
   };
-//  int[][][] rgbMatrix = {
-//          {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}},
-//         {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}},
-//          {{0, 0, 255}, {255, 255, 255}, {255, 255, 255}}
-//  };
+ int[][][] rgbMatrix3 = {
+          {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
+        {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
+          {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+  };
 
   int[][][] rgbMatrix2 = {
           {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128},
@@ -72,6 +75,7 @@ public class PNGImageTest {
     pngJpgImage = new PNGImage();
     createAndSavePNG(rgbMatrix, imageName, imagePath);
     createAndSavePNG(rgbMatrix2, image2Name, image2Path);
+    createAndSavePNG(rgbMatrix3, image3Name, image3Path);
     System.setOut(new PrintStream(outContent));
   }
 
@@ -687,17 +691,15 @@ public class PNGImageTest {
   @Test
   public void testSaveImage() throws IOException {
     // Create a new image content to save
+      PNGImage img = new PNGImage();
+      img.saveImage(imagePath, imageName);
 
-
-    // Save the image
-    pngJpgImage.saveImage(imageName, imagePath);
-
-    // Check if the file exists at the specified path
-    File savedFile = new File(imagePath);
+   File savedFile = new File(imagePath);
     assertTrue("Image file should exist after saving.", savedFile.exists());
 
     // Clean up: Delete the saved file after the test
     savedFile.delete();
+    //  assertEquals("expectedErrorMessage", outContent.toString().trim());
   }
 
   @Test
@@ -776,34 +778,603 @@ public class PNGImageTest {
   }
 
   @Test
-  public void testCompress() throws IOException {
+  public void testCompressby90() throws IOException {
+
+    pngJpgImage.compress(image3Name, "compressed-90-img",90);
 
 
-    // Perform a horizontal flip
-    pngJpgImage.compress(imageName, 30,255);
-
-    // Get the flipped image data
-    int[][][] flippedImageData = pngJpgImage.getRgbDataMap(imageName);
-
-    // Check if the flipped image matches the expected result
-    int[][][] expectedFlippedImageData = new int[2][2][3];
-    expectedFlippedImageData[0][0] = new int[]{0, 255, 0};
-    expectedFlippedImageData[0][1] = new int[]{255, 0, 0};
-    expectedFlippedImageData[1][0] = new int[]{255, 255, 255};
-    expectedFlippedImageData[1][1] = new int[]{0, 0, 255};
+    int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-90-img");
 
 
-    for (int y = 0; y < flippedImageData.length; y++) {
-      for (int x = 0; x < flippedImageData[y].length; x++) {
+      int[][][] expectedCompressedImage = {
+              {{0, 215, 0},{0, 215, 0}, {0, 0, 0}},
+              {{0, 215, 0},{0, 215, 0}, {0, 0, 0}},
+              {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+      };
+
+
+    for (int y = 0; y < compressedImage.length; y++) {
+      for (int x = 0; x < compressedImage[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-          System.out.print(flippedImageData[y][x][c]+",");
-          //assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
+
+          assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
 
         }
       }
     }
-    //System.out.println("img "+outContent.toString().trim());
-    assertEquals(flippedImageData, outContent.toString().trim());
+
+
   }
+
+    @Test
+    public void testCompressby50() throws IOException {
+
+
+        pngJpgImage.compress(image3Name, "compressed-50-img",50);
+
+        int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-50-img");
+
+
+        int[][][] expectedCompressedImage = {
+                {{255, 215, 115},{100, 215, 115}, {0, 0, 255}},
+                {{255, 215, 115},{100, 215, 115}, {0, 0, 255}},
+                {{222, 212, 255}, {222, 212, 255}, {255, 255, 255}}
+        };
+
+
+        for (int y = 0; y < compressedImage.length; y++) {
+            for (int x = 0; x < compressedImage[y].length; x++) {
+                for (int c = 0; c < 3; c++) {
+
+                    assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+                }
+            }
+        }
+
+
+    }
+
+    @Test
+    public void testCompressby10() throws IOException {
+
+        pngJpgImage.compress(image3Name, "compressed-10-img",10);
+
+
+        int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-10-img");
+
+
+        int[][][] expectedCompressedImage = {
+                {{255, 200, 80},{100, 255, 150}, {95, 100, 255}},
+                {{255, 150, 150},{100, 255, 80}, {95, 100, 255}},
+                {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+        };
+
+
+        for (int y = 0; y < compressedImage.length; y++) {
+            for (int x = 0; x < compressedImage[y].length; x++) {
+                for (int c = 0; c < 3; c++) {
+
+                    assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+                }
+            }
+        }
+
+
+    }
+
+    @Test
+    public void testCompressby0() throws IOException {
+
+        pngJpgImage.compress(image3Name, "compressed-0-img",0);
+
+
+        int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-0-img");
+
+
+        int[][][] expectedCompressedImage = {
+                {{255, 200, 80}, {100, 255, 150}, {0, 0, 0}},
+                {{255, 150, 150}, {100, 255, 80}, {0, 0, 0}},
+                {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+        };
+
+
+        for (int y = 0; y < compressedImage.length; y++) {
+            for (int x = 0; x < compressedImage[y].length; x++) {
+                for (int c = 0; c < 3; c++) {
+
+                    assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+
+                }
+            }
+        }
+
+    }
+
+    @Test
+    public void testCompressbyNegative() throws IOException {
+
+        pngJpgImage.compress(image3Name, "compressed-0-img",-5);
+        assertEquals("Compression percentage must be between 0 and 100.\n" +
+                "Error in compressing output3 by -5.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testCompressWithMaxPercentage() throws IOException {
+        // Compression with 100% should result in a completely black image
+        pngJpgImage.compress(image3Name, "compressed-100-img", 100);
+
+        int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-100-img");
+
+        int[][][] expectedCompressedImage = {
+                {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+                {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
+                {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
+        };
+
+
+
+        for (int y = 0; y < compressedImage.length; y++) {
+            for (int x = 0; x < compressedImage[y].length; x++) {
+                for (int c = 0; c < 3; c++) {
+
+                    assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
+                }
+            }
+        }
+
+    }
+
+    @Test
+    public void testCompressWithNonPowerOfTwoDimensions() throws IOException {
+        // Test compressing an image with non-power-of-two dimensions
+        // For simplicity, you can create a small image with dimensions like 3x3
+        int[][][] nonPowerOfTwoImage = {
+                {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
+                {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
+                {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
+        };
+
+        createAndSavePNG(nonPowerOfTwoImage, "nonPowerOfTwoImage", "nonPowerOfTwoImage.png");
+
+        // Try compressing the non-power-of-two image with 50% compression
+        pngJpgImage.compress("nonPowerOfTwoImage", "compressed-non-power-of-two-img", 50);
+
+        // Verify that the compression was successful and the image dimensions remain the same
+        int[][][] compressedImage = pngJpgImage.getRgbDataMap("compressed-non-power-of-two-img");
+
+        assertEquals(nonPowerOfTwoImage.length, compressedImage.length);
+        assertEquals(nonPowerOfTwoImage[0].length, compressedImage[0].length);
+    }
+
+    @Test
+    public void testCompressWithInvalidPercentage() throws IOException {
+        // Attempting to compress with an invalid percentage should result in an error message
+        pngJpgImage.compress(image3Name, "invalid-percentage-img", 115);
+        assertEquals("Compression percentage must be between 0 and 100.\n" +
+                "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testCompressWithLargeImage() throws IOException {
+        // Test compressing a large image to ensure efficiency
+        int[][][] largeImage = new int[1000][1000][3];
+
+        createAndSavePNG(largeImage, "largeImage", "largeImage.png");
+
+        // Try compressing the non-power-of-two image with 50% compression
+        pngJpgImage.compress("largeImage", "compressedLargeImage", 50);
+
+        int[][][] result = pngJpgImage.getRgbDataMap("compressedLargeImage");
+
+        // Ensure that the dimensions are still correct
+        assertEquals(1000, result.length);
+        assertEquals(1000, result[0].length);
+    }
+
+    @Test
+    public void testBlurImageWith50Split() {
+        // Perform blurring on the image
+        pngJpgImage.blurImage(image2Name, "blurred-img", 50);
+
+        // Get the blurred image data
+        int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
+
+        // Check if the blurred image matches the expected result
+        int[][][] expectedBlurredImageData = {
+                {{145, 114, 148, },{163, 149, 92, },{119, 161, 119, },{113, 115, 171, },{155, 80, 159, },{160, 32, 192, },{96, 255, 128, },{224, 64, 32, },{128, 160, 160, },{192, 128, 96, },},
+                {{105, 168, 138, },{135, 161, 106, },{143, 151, 103, },{159, 127, 135, },{165, 122, 147, },{32, 192, 96, },{128, 64, 224, },{160, 32, 128, },{96, 160, 64, },{160, 224, 255, },},
+                {{90, 155, 142, },{124, 135, 134, },{152, 117, 108, },{159, 135, 119, },{153, 156, 155, },{128, 64, 192, },{255, 128, 32, },{64, 192, 128, },{32, 96, 255, },{192, 64, 128, },},
+                {{113, 117, 150, },{141, 131, 140, },{157, 109, 114, },{148, 122, 127, },{134, 152, 163, },{96, 224, 160, },{128, 192, 64, },{160, 255, 32, },{224, 64, 160, },{255, 128, 96, },},
+                {{137, 103, 140, },{157, 129, 146, },{157, 119, 124, },{148, 109, 129, },{118, 136, 163, },{128, 64, 192, },{255, 128, 32, },{64, 192, 128, },{32, 96, 255, },{192, 64, 128, },},
+                {{151, 113, 128, },{159, 115, 140, },{153, 131, 124, },{154, 129, 115, },{120, 150, 137, },{32, 192, 96, },{128, 64, 224, },{160, 32, 128, },{96, 160, 64, },{160, 224, 255, },},
+                {{160, 139, 104, },{164, 123, 112, },{158, 141, 118, },{150, 161, 116, },{128, 185, 108, },{128, 192, 64, },{160, 255, 32, },{224, 64, 160, },{255, 128, 96, },{32, 192, 96, },},
+                {{168, 133, 94, },{164, 137, 110, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{160, 255, 32, },{224, 64, 160, },{255, 128, 96, },{32, 192, 96, },{128, 64, 224, },},
+                {{164, 136, 116, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{224, 64, 160, },{255, 128, 96, },{32, 192, 96, },{128, 64, 224, },{160, 32, 128, },},
+                {{162, 152, 120, },{134, 184, 122, },{128, 209, 90, },{158, 197, 74, },{203, 143, 102, },{255, 128, 96, },{32, 192, 96, },{128, 64, 224, },{160, 32, 128, },{96, 255, 128, },}
+        };
+
+        for (int y = 0; y < blurredImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < blurredImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    System.out.print(blurredImageData[y][x][c] + ", ");
+                    assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        //assertEquals("Compression percentage must be between 0 and 100.\n" +
+          //      "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+
+    @Test
+    public void testBlurImageWith0Split() {
+        // Perform blurring on the image
+        pngJpgImage.blurImage(image2Name, "blurred-img", 0);
+
+        // Get the blurred image data
+        int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
+
+        // Check if the blurred image matches the expected result
+        int[][][] expectedBlurredImageData = {
+                {{145, 114, 148, },{163, 149, 92, },{119, 161, 119, },{113, 115, 171, },{155, 80, 159, },{141, 107, 152, },{136, 135, 132, },{160, 119, 100, },{158, 132, 115, },{168, 154, 135, },},
+                {{105, 168, 138, },{135, 161, 106, },{143, 151, 103, },{159, 127, 135, },{165, 122, 147, },{135, 125, 145, },{135, 113, 138, },{135, 107, 123, },{126, 132, 139, },{154, 156, 171, },},
+                {{90, 155, 142, },{124, 135, 134, },{152, 117, 108, },{159, 135, 119, },{153, 156, 155, },{143, 144, 145, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
+                {{113, 117, 150, },{141, 131, 140, },{157, 109, 114, },{148, 122, 127, },{134, 152, 163, },{139, 154, 143, },{151, 171, 88, },{135, 171, 103, },{147, 119, 151, },{199, 92, 135, },},
+                {{137, 103, 140, },{157, 129, 146, },{157, 119, 124, },{148, 109, 129, },{118, 136, 163, },{119, 142, 149, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
+                {{151, 113, 128, },{159, 115, 140, },{153, 131, 124, },{154, 129, 115, },{120, 150, 137, },{105, 157, 133, },{141, 123, 126, },{147, 105, 129, },{131, 132, 139, },{131, 166, 167, },},
+                {{160, 139, 104, },{164, 123, 112, },{158, 141, 118, },{150, 161, 116, },{128, 185, 108, },{126, 193, 94, },{165, 149, 106, },{189, 113, 118, },{155, 136, 119, },{105, 164, 147, },},
+                {{168, 133, 94, },{164, 137, 110, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{111, 102, 158, },},
+                {{164, 136, 116, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{117, 103, 154, },{130, 93, 156, },},
+                {{162, 152, 120, },{134, 184, 122, },{128, 209, 90, },{158, 197, 74, },{203, 143, 102, },{197, 127, 112, },{131, 140, 124, },{111, 102, 158, },{130, 93, 156, },{122, 159, 134, }}
+        };
+
+        for (int y = 0; y < blurredImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < blurredImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(blurredImageData[y][x][c] + ", ");
+                    assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+       // assertEquals("Compression percentage must be between 0 and 100.\n" +
+         //     "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testBlurImageWith100Split() {
+        // Perform blurring on the image
+        pngJpgImage.blurImage(image2Name, "blurred-img", 100);
+
+        // Get the blurred image data
+        int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
+
+        // Check if the blurred image matches the expected result
+        int[][][] expectedBlurredImageData = {
+                {{145, 114, 148, },{163, 149, 92, },{119, 161, 119, },{113, 115, 171, },{155, 80, 159, },{141, 107, 152, },{136, 135, 132, },{160, 119, 100, },{158, 132, 115, },{168, 154, 135, },},
+                {{105, 168, 138, },{135, 161, 106, },{143, 151, 103, },{159, 127, 135, },{165, 122, 147, },{135, 125, 145, },{135, 113, 138, },{135, 107, 123, },{126, 132, 139, },{154, 156, 171, },},
+                {{90, 155, 142, },{124, 135, 134, },{152, 117, 108, },{159, 135, 119, },{153, 156, 155, },{143, 144, 145, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
+                {{113, 117, 150, },{141, 131, 140, },{157, 109, 114, },{148, 122, 127, },{134, 152, 163, },{139, 154, 143, },{151, 171, 88, },{135, 171, 103, },{147, 119, 151, },{199, 92, 135, },},
+                {{137, 103, 140, },{157, 129, 146, },{157, 119, 124, },{148, 109, 129, },{118, 136, 163, },{119, 142, 149, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
+                {{151, 113, 128, },{159, 115, 140, },{153, 131, 124, },{154, 129, 115, },{120, 150, 137, },{105, 157, 133, },{141, 123, 126, },{147, 105, 129, },{131, 132, 139, },{131, 166, 167, },},
+                {{160, 139, 104, },{164, 123, 112, },{158, 141, 118, },{150, 161, 116, },{128, 185, 108, },{126, 193, 94, },{165, 149, 106, },{189, 113, 118, },{155, 136, 119, },{105, 164, 147, },},
+                {{168, 133, 94, },{164, 137, 110, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{111, 102, 158, },},
+                {{164, 136, 116, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{117, 103, 154, },{130, 93, 156, },},
+                {{162, 152, 120, },{134, 184, 122, },{128, 209, 90, },{158, 197, 74, },{203, 143, 102, },{197, 127, 112, },{131, 140, 124, },{111, 102, 158, },{130, 93, 156, },{122, 159, 134, }}
+        };
+
+        for (int y = 0; y < blurredImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < blurredImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(blurredImageData[y][x][c] + ", ");
+                    assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        // assertEquals("Compression percentage must be between 0 and 100.\n" +
+        //     "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+
+    @Test
+    public void testSharpenImageWith50Split() throws IOException {
+
+        // Perform sharpening on the image
+        pngJpgImage.sharpenImage(image2Name, "sharp-img", 50);
+
+        // Get the sharpened image data
+        int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
+
+        // Define the expected RGB values for the sharpened image
+        int[][][] expectedSharpenedImageData = {
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{180, 75, 40, },{220, 167, 0, },{160, 255, 251, },{128, 64, 192, },{255, 128, 32, },{64, 192, 128, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{223, 12, 52, },{132, 96, 163, },{116, 148, 239, },{96, 224, 160, },{128, 192, 64, },{160, 255, 32, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{179, 75, 92, },{196, 31, 83, },{8, 152, 255, },{128, 64, 192, },{255, 128, 32, },{64, 192, 128, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{191, 135, 112, },{168, 64, 103, },{80, 108, 199, },{32, 192, 96, },{128, 64, 224, },{160, 32, 128, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{180, 108, 136, },{172, 192, 88, },{56, 255, 80, },{128, 192, 64, },{160, 255, 32, },{224, 64, 160, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{184, 124, 112, },{56, 255, 160, },{116, 255, 32, },{160, 255, 32, },{224, 64, 160, },{255, 128, 96, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },}
+        };
+
+        for (int y = 0; y < expectedSharpenedImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < expectedSharpenedImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sharpenedImageData[y][x][c] + ", ");
+                    assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+      //  assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testSharpenImageWith0Split() throws IOException {
+
+        // Perform sharpening on the image
+        pngJpgImage.sharpenImage(image2Name, "sharp-img", 0);
+
+        // Get the sharpened image data
+        int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
+
+        // Define the expected RGB values for the sharpened image
+        int[][][] expectedSharpenedImageData = {
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{180, 75, 40, },{220, 167, 0, },{160, 255, 251, },{163, 136, 180, },{195, 175, 0, },{68, 179, 84, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{223, 12, 52, },{132, 96, 163, },{116, 148, 239, },{143, 255, 191, },{179, 255, 0, },{155, 255, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{179, 75, 92, },{196, 31, 83, },{8, 152, 255, },{71, 88, 239, },{203, 135, 0, },{68, 155, 104, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{191, 135, 112, },{168, 64, 103, },{80, 108, 199, },{0, 220, 163, },{136, 12, 188, },{171, 0, 131, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{180, 108, 136, },{172, 192, 88, },{56, 255, 80, },{64, 255, 64, },{232, 198, 8, },{255, 51, 108, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{184, 124, 112, },{56, 255, 160, },{116, 255, 32, },{204, 255, 0, },{255, 115, 88, },{255, 132, 68, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, }}
+        };
+
+        for (int y = 0; y < expectedSharpenedImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < expectedSharpenedImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sharpenedImageData[y][x][c] + ", ");
+                    assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        //  assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testSharpenImageWith100Split() throws IOException {
+
+        // Perform sharpening on the image
+        pngJpgImage.sharpenImage(image2Name, "sharp-img", 100);
+
+        // Get the sharpened image data
+        int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
+
+        // Define the expected RGB values for the sharpened image
+        int[][][] expectedSharpenedImageData = {
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{180, 75, 40, },{220, 167, 0, },{160, 255, 251, },{163, 136, 180, },{195, 175, 0, },{68, 179, 84, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{223, 12, 52, },{132, 96, 163, },{116, 148, 239, },{143, 255, 191, },{179, 255, 0, },{155, 255, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{179, 75, 92, },{196, 31, 83, },{8, 152, 255, },{71, 88, 239, },{203, 135, 0, },{68, 155, 104, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{191, 135, 112, },{168, 64, 103, },{80, 108, 199, },{0, 220, 163, },{136, 12, 188, },{171, 0, 131, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{180, 108, 136, },{172, 192, 88, },{56, 255, 80, },{64, 255, 64, },{232, 198, 8, },{255, 51, 108, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{184, 124, 112, },{56, 255, 160, },{116, 255, 32, },{204, 255, 0, },{255, 115, 88, },{255, 132, 68, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },},
+                {{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, },{0, 0, 0, }}
+        };
+
+        for (int y = 0; y < expectedSharpenedImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < expectedSharpenedImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sharpenedImageData[y][x][c] + ", ");
+                    assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        //  assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+    @Test
+    public void testSepiaImageWith0Split() {
+
+        pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{100, 88, 69, },{196, 174, 136, },},
+                {{48, 42, 33, },{255, 255, 238, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+          //assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testSepiaImageWith50Split() {
+
+        pngJpgImage.sepiaImage(imageName, "sepia-img", 50);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{196, 174, 136, },},
+                {{0, 0, 255, },{255, 255, 238, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+       // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testSepiaImageWith100Split() {
+
+        pngJpgImage.sepiaImage(imageName, "sepia-img", 100);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+
+    @Test
+    public void testColorCorrectionWith0Split() {
+
+        pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 0);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+     //   assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+
+    @Test
+    public void testColorCorrectionWith50Split() {
+
+        pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 50);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, }}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                   // System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+          // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testColorCorrectionWith100Split() {
+
+        pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 100);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, }}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                     //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+
 
 }

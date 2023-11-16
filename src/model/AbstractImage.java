@@ -4,12 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-
-import java.util.Base64;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -613,178 +608,272 @@ public abstract class AbstractImage implements ImageOperations {
   public int[][][] getRgbDataMap(String imageName) {
     return imageMap.get(imageName).getRgbDataMap();
   }
+/*
 
-  public void calculatePixels(String imageName) {
-    if (imageName != null && imageMap.containsKey(imageName)) {
-      int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
-      int imageWidth = imageRGBData.length;
-      int imageHeight = imageRGBData[0].length;
 
-      double[][] pixels = new double[imageWidth][imageHeight];
+  double[][] redTrans;
+  double[][] greenTrans;
+  double[][] blueTrans;
+  double[][] paddedRed;
+  double[][] paddedGreen;
+  double[][] paddedBlue;
+  int[][] initialArray;
+  double threshold;
+  Set<Double> uniqueValues = new HashSet<Double>();
 
-      for (int i = 0; i < imageWidth; i++) {
-        for (int j = 0; j < imageHeight; j++) {
-          // Calculate the pixel value for (i, j) and store it in the pixels array
-          pixels[i][j] = calculatePixelValue(imageRGBData[i][j]);
+  BufferedImage img;
+  BufferedImage out;
+
+  int[][] outputImage;
+  public void padImages(int[][][] imageRGBData) {
+    int height = imageRGBData.length;
+    int width = imageRGBData[0].length;
+
+    double[][] redArr = new double[height][width];
+    double[][] greenArr = new double[height][width];
+    double[][] blueArr = new double[height][width];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        redArr[y][x] = imageRGBData[y][x][0];
+        greenArr[y][x] = imageRGBData[y][x][1];
+        blueArr[y][x] = imageRGBData[y][x][2];
+      }
+    }
+
+    paddedRed = padToPowerOfTwo(redArr);
+    paddedGreen = padToPowerOfTwo(greenArr);
+    paddedBlue = padToPowerOfTwo(blueArr);
+    initialArray=new int[paddedRed.length][paddedRed[0].length];
+
+     redTrans=new double[paddedRed.length][paddedRed[0].length];
+    greenTrans=new double[paddedGreen.length][paddedGreen[0].length];
+    blueTrans=new double[paddedBlue.length][paddedBlue[0].length];
+
+  }
+  private double[][] padToPowerOfTwo(double[][] matrix) {
+    int originalRows = matrix.length;
+    int originalCols = matrix[0].length;
+    int lengthTobe = Math.max(originalRows, originalCols);
+
+    int newRows = nextPowerOfTwo(lengthTobe);
+    int newCols = newRows;
+
+
+    // If the matrix dimensions are already powers of 2, no padding is needed
+    if (newRows == originalRows && newCols == originalCols) {
+      return copy2DArray(matrix);
+    }
+
+
+
+    // Pad the rows
+    double[][] paddedMatrix = new double[newRows][newCols];
+    for (int i = 0; i < originalRows; i++) {
+      System.arraycopy(matrix[i], 0, paddedMatrix[i], 0, originalCols);
+    }
+    return paddedMatrix;
+  }
+  private int nextPowerOfTwo(int n) {
+    int newSize = 1;
+    while (newSize < n) {
+      newSize <<= 1;
+    }
+    return newSize;
+  }
+
+  private double[][] copy2DArray(double[][] original) {
+    int rows = original.length;
+    int cols = original[0].length;
+    double[][] copy = new double[rows][cols];
+    for (int i = 0; i < rows; i++) {
+      System.arraycopy(original[i], 0, copy[i], 0, cols);
+    }
+    return copy;
+  }
+
+  public void logic(){
+    redTrans = haar2D(paddedRed);
+    greenTrans = haar2D(paddedGreen);
+    blueTrans = haar2D(paddedBlue);
+
+    //
+    calculateThreshold(50);
+    resetValuesBelowThreshold();
+
+    redTrans = inverseHaar2D(redTrans);
+    greenTrans = inverseHaar2D(greenTrans);
+    blueTrans = inverseHaar2D(blueTrans);
+
+
+  }
+
+  public void calculateThreshold(int compressionPercentage) {
+
+    gatherUniqueValues(redTrans);
+    gatherUniqueValues(greenTrans);
+    gatherUniqueValues(blueTrans);
+    List<Double> sortedList = new ArrayList<>(uniqueValues);
+    Collections.sort(sortedList);
+    int totalCount = sortedList.size();
+    int cutOffIndex = Math.round((float) (compressionPercentage * totalCount) /100);
+    threshold = sortedList.get(cutOffIndex);
+    System.out.println(threshold);
+  }
+
+  public void gatherUniqueValues(double[][] matrix) {
+    int rows = matrix.length;
+    int cols = matrix[0].length;
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        uniqueValues.add(matrix[i][j]);
+      }
+    }
+  }
+  public double[][] haar2D(double[][] matrix) {
+    int rows = matrix.length;
+    int cols = matrix[0].length;
+
+    // Apply Haar transform to rows
+    for (int i = 0; i < rows; i++) {
+      matrix[i] = transform1(matrix[i], cols);
+    }
+
+    // Apply Haar transform to columns
+    for (int j = 0; j < cols; j++) {
+      double[] column = new double[rows];
+      for (int i = 0; i < rows; i++) {
+        column[i] = matrix[i][j];
+      }
+      column = transform1(column, rows);
+      for (int i = 0; i < rows; i++) {
+        matrix[i][j] = column[i];
+      }
+    }
+
+    return matrix;
+  }
+
+  public double[] transform1(double[] s, int length) {
+    int mid = length / 2;
+    double[] avg = new double[mid];
+    double[] diff = new double[mid];
+
+    for (int i = 0, j = 0; i < mid; i++, j += 2) {
+      double a = s[j];
+      double b = s[j + 1];
+      avg[i] = (a + b) / Math.sqrt(2);
+      diff[i] = (a - b) / Math.sqrt(2);
+    }
+
+    double[] transformedSequence = new double[length];
+    System.arraycopy(avg, 0, transformedSequence, 0, mid);
+    System.arraycopy(diff, 0, transformedSequence, mid, mid);
+
+    return transformedSequence;
+  }
+
+  public double[][] inverseHaar2D(double[][] matrix) {
+    int rows = matrix.length;
+    int cols = matrix[0].length;
+
+    // Apply inverse Haar transform to columns
+    for (int j = 0; j < cols; j++) {
+      double[] column = new double[rows];
+      for (int i = 0; i < rows; i++) {
+        column[i] = matrix[i][j];
+      }
+      column = inverseTransform1(column, rows);
+      for (int i = 0; i < rows; i++) {
+        matrix[i][j] = column[i];
+      }
+    }
+
+    // Apply inverse Haar transform to rows
+    for (int i = 0; i < rows; i++) {
+      matrix[i] = inverseTransform1(matrix[i], cols);
+    }
+
+    return matrix;
+  }
+
+  public double[] inverseTransform1(double[] s, int length) {
+    int mid = length / 2;
+    double[] originalSequence = new double[length];
+
+    for (int i = 0, j = 0; i < mid; i++, j += 2) {
+      double avg = s[i];
+      double diff = s[i + mid];
+      originalSequence[j] = (avg + diff) / Math.sqrt(2);
+      originalSequence[j + 1] = (avg - diff) / Math.sqrt(2);
+    }
+
+    return originalSequence;
+  }
+
+  public void resetValuesBelowThreshold(){
+    int width = initialArray.length;
+    int height = initialArray[0].length;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if(redTrans[x][y]<=threshold){
+          redTrans[x][y] = 0;
+        }
+        if(greenTrans[x][y]<=threshold){
+          greenTrans[x][y] = 0;
+        }
+        if(blueTrans[x][y]<=threshold){
+          blueTrans[x][y] = 0;
         }
       }
-      imageMap.get(imageName).setPixels(pixels);
-    } else {
-      System.out.println("Image not found or RGB data missing.");
     }
   }
 
-  public double calculatePixelValue(int[] rgb) {
-    // You can choose any method to calculate the pixel value based on the RGB values.
-    // For example, you can calculate the grayscale pixel value by averaging the RGB values.
-    int red = rgb[0];
-    int green = rgb[1];
-    int blue = rgb[2];
+  public void combinePixel(int[][][] sourceRgb){
 
-    // Calculate the average of the RGB values (you can use different formulas if needed)
-    int average = (red + green + blue) / 3;
+    int height = sourceRgb.length;
+    int width = sourceRgb[0].length;
 
-    // Normalize the value as needed (e.g., divide by 255 for a range of 0 to 1)
+    int[][][] imageRGBData = new int[height][width][3];
 
-    return average / 255.0;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        // Round and convert each channel to int
+        int red = (int) Math.round(redTrans[y][x]);
+        int green = (int) Math.round(greenTrans[y][x]);
+        int blue = (int) Math.round(blueTrans[y][x]);
+
+        // Ensure that the values are within the valid range (0 to 255)
+        red = Math.max(0, Math.min(255, red));
+        green = Math.max(0, Math.min(255, green));
+        blue = Math.max(0, Math.min(255, blue));
+
+        // Store the values in the imageRGBData array
+        imageRGBData[y][x][0] = red;
+        imageRGBData[y][x][1] = green;
+        imageRGBData[y][x][2] = blue;
+      }
+    }
+
+    ImageContent correctedImage = new ImageContent("destName", imageRGBData);
+    imageMap.put("destName", correctedImage);
+
   }
-
 
   public void compress(String imageName, double compressionPercentage, int maxValue) {
-    if (imageMap.containsKey(imageName)) {
-      int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
+    int[][][] sourceRgb =imageMap.get(imageName).getRgbDataMap();
+    padImages(sourceRgb);
+    logic();
+    combinePixel(sourceRgb);
+    ImageContent correctedImage = new ImageContent("destName", imageRGBData);
+        imageMap.put("destName", correctedImage);
 
-      // Calculate the compression threshold based on the percentage
-      double compressionThreshold = calculateCompressionThreshold(compressionPercentage, maxValue);
 
-      // Rest of your compression code...
-      // Step 1: Perform Haar Wavelet Transform
-      double[][][] transformedData = performHaarWaveletTransform(imageRGBData);
-
-      // Step 2: Apply compression by setting small values to zero
-      applyCompression(transformedData, compressionThreshold);
-
-      // Step 3: Perform Inverse Haar Transform
-      int[][][] compressedRGBData = performInverseHaarWaveletTransform(transformedData);
-      ImageContent image = new ImageContent(imageName, compressedRGBData);
-      // Update the RGB data map with the compressed data
-      imageMap.put(imageName, image);
-
-      // Recalculate and update the pixels (if necessary)
-      calculatePixels(imageName);
-
-      System.out.println("Image " + imageName + " compressed with " + compressionPercentage + "% compression.");
-    } else {
-      System.out.println("Image not found or RGB data missing.");
-    }
   }
 
-  // Calculate the compression threshold based on the percentage
-  private double calculateCompressionThreshold(double compressionPercentage, int maxValue) {
-    if (compressionPercentage < 0) {
-      compressionPercentage = 0;
-    } else if (compressionPercentage > 100) {
-      compressionPercentage = 100;
-    }
+*/
 
-    // Calculate the threshold as a percentage of the maximum value
-    return compressionPercentage / 100.0 * maxValue;
-  }
 
-  private void applyCompression(double[][][] transformedData, double compressionThreshold) {
-    int width = transformedData.length;
-    int height = transformedData[0].length;
-    int channels = transformedData[0][0].length;
-
-    // Adjust the threshold by multiplying it by a factor (e.g., 2.0)
-    double adjustedThreshold = compressionThreshold * 2.0;
-
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < height; y++) {
-        for (int c = 0; c < channels; c++) {
-          if (Math.abs(transformedData[x][y][c]) < adjustedThreshold) {
-            // Set small values to zero
-            transformedData[x][y][c] = 0.0;
-          }
-        }
-      }
-    }
-  }
-
-  public double[][][] performHaarWaveletTransform(int[][][] channelData) {
-    //System.out.println("channel"+ Arrays.toString(channelData[0]));
-    int width = channelData[0].length;
-    int height = channelData.length;
-    double[][][] transformedData = new double[height][width][3];
-
-    for (int channel = 0; channel < 3; channel++) {
-      // Horizontal Haar Wavelet Transform
-      for (int i = 0; i < height; i++) {
-        //System.out.println("row " + i);
-        int[] row = channelData[i][channel];
-        //System.out.println("channelData[i][channel] " + Arrays.toString(row)); // Print the entire row
-        double[] transformedRow = applyHaarWaveletTransform(row);
-        //System.out.println("transformedRow " + Arrays.toString(transformedRow)); // Print the entire transformedRow
-        for (int j = 0; j < width; j++) {
-          //System.out.println("j " + j + " w "+ width);
-          //System.out.println("transformedRow[j] " + transformedRow.length);
-          transformedData[i][j][channel] = transformedRow[channel];
-        }
-      }
-
-      // Vertical Haar Wavelet Transform
-      for (int j = 0; j < width; j++) {
-        int[] column = new int[height];
-        for (int i = 0; i < height; i++) {
-          column[i] = channelData[i][j][channel];
-        }
-        double[] transformedColumn = applyHaarWaveletTransform(column);
-        for (int i = 0; i < height; i++) {
-          transformedData[i][j][channel] = transformedColumn[i];
-        }
-      }
-    }
-
-    return transformedData;
-  }
-
-  private double[] applyHaarWaveletTransform(int[] data) {
-    int n = data.length;
-    double[] result = new double[n]; // Make sure the result has the same length as the input data
-
-    int half = n / 2;
-
-    // Calculate the averages and differences
-    for (int i = 0; i < half; i++) {
-      int sum = data[2 * i] + data[2 * i + 1];
-      int diff = data[2 * i] - data[2 * i + 1];
-      result[i] = (sum + diff) / 2.0; // Store the average
-      result[i + half] = (sum - diff) / 2.0; // Store the difference
-    }
-
-    return result;
-  }
-
-  private int[][][] performInverseHaarWaveletTransform(double[][][] transformedData) {
-    int width = transformedData.length;
-    int height = transformedData[0].length;
-
-    int[][][] result = new int[width][height][3]; // Assuming it's a color image
-
-    for (int channel = 0; channel < 3; channel++) {
-      // Perform inverse Haar Wavelet Transform for each color channel
-      for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height / 2; j++) {
-          double avg = (transformedData[i][2 * j][channel] + transformedData[i][2 * j + 1][channel]) / Math.sqrt(2);
-          double diff = (transformedData[i][2 * j][channel] - transformedData[i][2 * j + 1][channel]) / Math.sqrt(2);
-          result[i][j][channel] = (int) avg;
-          result[i][j + height / 2][channel] = (int) diff;
-        }
-      }
-    }
-
-    return result;
-  }
 
 
   /**
@@ -1031,5 +1120,18 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  public void compress(String imageName, String destName, double compressionPercentage) {
+    int[][][] sourceRgb =imageMap.get(imageName).getRgbDataMap();
+    Compression compressedImage = new Compression();
+    int[][][] imageRGBData = compressedImage.compress(sourceRgb,compressionPercentage);
+    if(imageRGBData != null){
+      ImageContent correctedImage = new ImageContent(destName, imageRGBData);
+      imageMap.put(destName, correctedImage);
+      System.out.println("Compress image with " + compressionPercentage + "% saved as " + destName);
+    }else{
+      System.out.println("Error in compressing " + imageName + " by " + compressionPercentage +" %");
+    }
+
+  }
 
 }
