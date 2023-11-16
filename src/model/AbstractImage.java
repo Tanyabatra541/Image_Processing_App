@@ -28,7 +28,7 @@ public abstract class AbstractImage implements ImageOperations {
 
 
   /**
-   * Load an image from a file and store it in the image map and RGB data map.
+   * Load an image from a file and store it in the image map.
    *
    * @param imagePath The file path of the image to load.
    * @param imageName The name to associate with the loaded image.
@@ -44,7 +44,6 @@ public abstract class AbstractImage implements ImageOperations {
    * @throws IOException If an error occurs while saving the image.
    */
   public abstract void saveImage(String imagePath, String imageName) throws IOException;
-
 
   /**
    * Flip an image horizontally and save it as a new image with the given name.
@@ -71,7 +70,7 @@ public abstract class AbstractImage implements ImageOperations {
           }
         }
 
-        StringBuilder flippedContent = createPPMContent(width, height, flippedRGBData);
+        createPPMContent(width, height, flippedRGBData);
 
         ImageContent flippedImage = new ImageContent(destImageName, flippedRGBData);
         imageMap.put(destImageName, flippedImage);
@@ -113,23 +112,14 @@ public abstract class AbstractImage implements ImageOperations {
       flippedRGBData[newY] = sourceRGBData[y];
     }
 
-    StringBuilder flippedContent = createPPMContent(width, height, flippedRGBData);
+    createPPMContent(width, height, flippedRGBData);
 
     ImageContent flippedImage = new ImageContent(destImageName, flippedRGBData);
     imageMap.put(destImageName, flippedImage);
-    //rgbDataMap.put(destImageName, flippedRGBData);
 
     System.out.println("Vertical flip completed. Flipped image saved as " + destImageName);
   }
 
-
-  /**
-   * Applies a sharpening kernel to the source image, creating a sharpened image with the given
-   * name.
-   *
-   * @param sourceImageName The name of the source image.
-   * @param destImageName   The name of the destination sharpened image.
-   */
 
   private void sharpenImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
@@ -175,27 +165,35 @@ public abstract class AbstractImage implements ImageOperations {
     ImageContent sharpenedImage = new ImageContent(destImageName, sharpenedRGBData);
     imageMap.put(destImageName, sharpenedImage);
 
-    System.out.println("Image sharpening by " + splitPercentage + "% completed. Sharpened image saved as " + destImageName);
+    System.out.println("Image sharpening by " + splitPercentage + "% completed. Sharpened image "
+            + "saved as " + destImageName);
   }
 
+  /**
+   * Applies a sharpening kernel to a particular percentage of the source image depending on the
+   * splitPercentage parameter passed, creating a split sharpened image having both the operated
+   * image and the original image with the given name.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination sharpened image.
+   */
   @Override
-  public void sharpenImage(String sourceName, String destName, int splitPercentage){
+  public void sharpenImage(String sourceName, String destName, int splitPercentage) {
     sharpenImageHelper(sourceName, destName, splitPercentage);
   }
 
+  /**
+   * Applies a sharpening kernel to the source image, creating a sharpened image with the given
+   * name.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination sharpened image.
+   */
   @Override
-  public void sharpenImage(String sourceName, String destName){
+  public void sharpenImage(String sourceName, String destName) {
     sharpenImageHelper(sourceName, destName, 0);
   }
 
-
-  /**
-   * Applies a blurring effect to the source image, creating a blurred version with the given name.
-   * This method uses a Gaussian blurring kernel.
-   *
-   * @param sourceImageName The name of the source image.
-   * @param destImageName   The name of the destination blurred image.
-   */
 
   private void blurImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
@@ -243,16 +241,33 @@ public abstract class AbstractImage implements ImageOperations {
     ImageContent blurredImage = new ImageContent(destImageName, blurredRGBData);
     imageMap.put(destImageName, blurredImage);
 
-    System.out.println("Image blurring by " + splitPercentage + "% completed. Blurred image saved as " + destImageName);
+    System.out.println("Image blurring by " + splitPercentage + "% completed. Blurred image saved "
+            + "as " + destImageName);
   }
 
+
+  /**
+   * Applies a Gaussian blurring kernel to a particular percentage of the source image depending on
+   * the splitPercentage parameter passed, creating a split blurred image having both the operated
+   * image and the original image with the given name.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination sharpened image.
+   */
   @Override
-  public void blurImage(String sourceName, String destName, int splitPercentage){
+  public void blurImage(String sourceName, String destName, int splitPercentage) {
     blurImageHelper(sourceName, destName, splitPercentage);
   }
 
+  /**
+   * Applies a blurring effect to the source image, creating a blurred version with the given name.
+   * This method uses a Gaussian blurring kernel.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination blurred image.
+   */
   @Override
-  public void blurImage(String sourceName, String destName){
+  public void blurImage(String sourceName, String destName) {
     blurImageHelper(sourceName, destName, 0);
   }
 
@@ -298,13 +313,6 @@ public abstract class AbstractImage implements ImageOperations {
     System.out.println("Image brightening completed. Brightened image saved as " + destImageName);
   }
 
-
-  /**
-   * Applies a sepia filter to the source image and save the sepia-toned image with the given name.
-   *
-   * @param sourceName The name of the source image.
-   * @param destName   The name of the destination sepia-toned image.
-   */
   private void sepiaImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
@@ -347,22 +355,36 @@ public abstract class AbstractImage implements ImageOperations {
       }
     }
 
-    StringBuilder sepiaContent = createPPMContent(width, height, sepiaRGBData);
+    createPPMContent(width, height, sepiaRGBData);
 
     ImageContent sepiaImage = new ImageContent(destName, sepiaRGBData);
     imageMap.put(destName, sepiaImage);
-    //rgbDataMap.put(destName, sepiaRGBData);
 
-    System.out.println("Sepia filter applied with " + splitPercentage + "% split. Sepia-toned image saved as " + destName);
+    System.out.println("Sepia filter applied with " + splitPercentage + "% split. Sepia-toned "
+            + "image saved as " + destName);
   }
 
+  /**
+   * Applies the sepia tone to a particular percentage of the source image depending on
+   * the splitPercentage parameter passed, creating a split sepia image having both the operated
+   * image and the original image with the given name.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination sharpened image.
+   */
   @Override
-  public void sepiaImage(String sourceName, String destName, int splitPercentage){
+  public void sepiaImage(String sourceName, String destName, int splitPercentage) {
     sepiaImageHelper(sourceName, destName, splitPercentage);
   }
 
+  /**
+   * Applies a sepia filter to the source image and save the sepia-toned image with the given name.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination sepia-toned image.
+   */
   @Override
-  public void sepiaImage(String sourceName, String destName){
+  public void sepiaImage(String sourceName, String destName) {
     sepiaImageHelper(sourceName, destName, 0);
   }
 
@@ -488,8 +510,9 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
-  private StringBuilder createPPMContent(int width, int height, int[][][] rgbData) {
-    StringBuilder content = new StringBuilder();
+  private void createPPMContent(int width, int height, int[][][] rgbData) {
+    StringBuilder content;
+    content = new StringBuilder();
     content.append("P3\n");
     content.append(width).append(" ").append(height).append("\n");
     content.append("255\n");
@@ -504,7 +527,6 @@ public abstract class AbstractImage implements ImageOperations {
       content.append("\n");
     }
 
-    return content;
   }
 
 
@@ -620,6 +642,7 @@ public abstract class AbstractImage implements ImageOperations {
     return imageMap.get(imageName).getRgbDataMap();
   }
 
+
   public void calculatePixels(String imageName) {
     if (imageName != null && imageMap.containsKey(imageName)) {
       int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
@@ -685,7 +708,6 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
-  // Calculate the compression threshold based on the percentage
   private double calculateCompressionThreshold(double compressionPercentage, int maxValue) {
     if (compressionPercentage < 0) {
       compressionPercentage = 0;
@@ -793,13 +815,6 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
-  /**
-   * Color-correct the image by aligning the meaningful peaks of its histogram.
-   *
-   * @param sourceName The name of the source image.
-   * @param destName   The name of the destination color-corrected image.
-   */
-
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
 
@@ -877,17 +892,34 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+
+  /**
+   * Color-correct a part of the image depending on the splitPercentage parameter passed by
+   * aligning the meaningful peaks of its histogram. The final image will have a part of color
+   * corrected image and a part of the original image
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination color-corrected image.
+   */
   @Override
   public void colorCorrectImage(String sourceName, String destName, int splitPercentage) {
     colorCorrectImageHelper(sourceName, destName, splitPercentage);
   }
 
+  /**
+   * Color-correct the image by aligning the meaningful peaks of its histogram.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination color-corrected image.
+   */
   @Override
   public void colorCorrectImage(String sourceName, String destName) {
     colorCorrectImageHelper(sourceName, destName, 0);
   }
 
-  private void split(int[][][] colorCorrectedImage, int splitPosition, int y, int x, int redValue, int greenValue, int blueValue, int correctedRed, int correctedGreen, int correctedBlue) {
+  private void split(int[][][] colorCorrectedImage, int splitPosition, int y, int x, int redValue,
+                     int greenValue, int blueValue, int correctedRed, int correctedGreen,
+                     int correctedBlue) {
     if (x <= splitPosition) {
       colorCorrectedImage[y][x][0] = correctedRed;
       colorCorrectedImage[y][x][1] = correctedGreen;
@@ -901,6 +933,12 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
+  /**
+   * Create a histogram of the source image and save it as a separate image.
+   *
+   * @param sourceName The name of the source image.
+   * @param destName   The name of the destination histogram image.
+   */
   @Override
   public void createHistogram(String sourceName, String destName) {
     Histogram histogram = new Histogram(0, 255);
@@ -940,7 +978,9 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
-  private void applyLevelsAdjustmentHelper(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName, int splitPercentage) {
+  private void applyLevelsAdjustmentHelper(int shadowPoint, int midPoint, int highlightPoint,
+                                           String sourceImageName, String destImageName,
+                                           int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
 
     if (sourceImage != null) {
@@ -977,14 +1017,38 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  /**
+   * Levels-adjust a part of the image depending on the splitPercentage parameter passed.
+   * The final image will have a part of level-adjusted image and a part of the original image
+   *
+   * @param shadowPoint     The shadow point.
+   * @param midPoint        The mid-point.
+   * @param highlightPoint  The highlight point.
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination adjusted image.
+   * @param splitPercentage The percentage of the image to apply the adjustment to.
+   */
   @Override
-  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName,  int splitPercentage) {
-    applyLevelsAdjustmentHelper(shadowPoint, midPoint, highlightPoint, sourceImageName, destImageName, splitPercentage);
+  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String
+          sourceImageName, String destImageName, int splitPercentage) {
+    applyLevelsAdjustmentHelper(shadowPoint, midPoint, highlightPoint, sourceImageName,
+            destImageName, splitPercentage);
   }
 
+  /**
+   * Levels-adjust the image and saves it in the destination image passed.
+   *
+   * @param shadowPoint     The shadow point.
+   * @param midPoint        The mid-point.
+   * @param highlightPoint  The highlight point.
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination adjusted image.
+   */
   @Override
-  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName) {
-    applyLevelsAdjustmentHelper(shadowPoint, midPoint, highlightPoint, sourceImageName, destImageName, 0);
+  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String
+          sourceImageName, String destImageName) {
+    applyLevelsAdjustmentHelper(shadowPoint, midPoint, highlightPoint, sourceImageName,
+            destImageName, 0);
   }
 
   private int applyCurvesFunction(int value, double shadowPoint, double midPoint, double highlightPoint) {
@@ -994,8 +1058,10 @@ public abstract class AbstractImage implements ImageOperations {
             - midPoint * highlightPoint * highlightPoint;
 
     double A_a = -shadowPoint * (128 - 255) + 128 * highlightPoint - 255 * midPoint;
-    double A_b = shadowPoint * shadowPoint * (128 - 255) + 255 * midPoint * midPoint - 128 * highlightPoint * highlightPoint;
-    double A_c = shadowPoint * shadowPoint * (255 * midPoint - 128 * highlightPoint) - shadowPoint * (255 * midPoint * midPoint - 128 * highlightPoint * highlightPoint);
+    double A_b = shadowPoint * shadowPoint * (128 - 255) + 255 * midPoint * midPoint - 128
+            * highlightPoint * highlightPoint;
+    double A_c = shadowPoint * shadowPoint * (255 * midPoint - 128 * highlightPoint) - shadowPoint
+            * (255 * midPoint * midPoint - 128 * highlightPoint * highlightPoint);
 
     double a = A_a / A;
     double b = A_b / A;
@@ -1006,6 +1072,13 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
+  /**
+   * Convert the source image to grayscale using the specified transformation.
+   *
+   * @param sourceName      The name of the source image.
+   * @param destName        The name of the destination grayscale image.
+   * @param splitPercentage The percentage of the image to apply the transformation to.
+   */
   @Override
   public void convertToGrayscale(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
@@ -1034,7 +1107,8 @@ public abstract class AbstractImage implements ImageOperations {
           int blue = sourceRGBData[y][x][2];
 
           // Apply the specified transformation
-          int grayscaleValue = (int) (grayscaleMatrix[0][0] * red + grayscaleMatrix[0][1] * green + grayscaleMatrix[0][2] * blue);
+          int grayscaleValue = (int) (grayscaleMatrix[0][0] * red + grayscaleMatrix[0][1] * green
+                  + grayscaleMatrix[0][2] * blue);
 
           // Set the same grayscale value for all channels
           grayscalePixels[y][x][0] = grayscaleValue;
@@ -1042,7 +1116,8 @@ public abstract class AbstractImage implements ImageOperations {
           grayscalePixels[y][x][2] = grayscaleValue;
 
           // Apply vertical split
-          split(grayscalePixels, splitPosition, y, x, red, green, blue, grayscaleValue, grayscaleValue, grayscaleValue);
+          split(grayscalePixels, splitPosition, y, x, red, green, blue, grayscaleValue,
+                  grayscaleValue, grayscaleValue);
         }
       }
 
@@ -1051,7 +1126,8 @@ public abstract class AbstractImage implements ImageOperations {
       imageMap.put(destName, grayscaleImage);
 
       // Store the grayscale image
-      System.out.println("Grayscale image with " + splitPercentage + "% split saved as " + destName);
+      System.out.println("Grayscale image with " + splitPercentage + "% split saved as "
+              + destName);
     } else {
       System.out.println("Source image not found: " + sourceName);
     }

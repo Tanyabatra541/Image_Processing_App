@@ -1,10 +1,11 @@
 # Assignment4_MVC
 
 1. ImageContent:
-   The `ImageContent` class is a simple data class used to store the name and content of images.
-2. model.model.AbstractImage:
-   Manipulation operations for images are based on `model.model.AbstractImage` class, which serves as an
-   abstract foundation. For image operations, a set of abstract methods is defined which are
+   The `ImageContent` class is designed to represent an image along with its associated name and 
+   content. This class serves as a container for storing image data.
+2. AbstractImage:
+   Manipulation operations for images are based on `model.model.AbstractImage` class, which serves 
+   as an abstract foundation. For image operations, a set of abstract methods is defined which are
    for the three types of images(i.e. PNG, JPG, and PPM). there are two kernels defined as well
    which are used for image operations.
 3. PNGJPGImage:
