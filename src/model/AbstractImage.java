@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 public abstract class AbstractImage implements ImageOperations {
 
   public static final Map<String, ImageContent> imageMap = new HashMap<>();
@@ -644,7 +643,6 @@ public abstract class AbstractImage implements ImageOperations {
     return imageMap.get(imageName).getRgbDataMap();
   }
 
-
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
 
@@ -811,39 +809,44 @@ public abstract class AbstractImage implements ImageOperations {
   private void applyLevelsAdjustmentHelper(int shadowPoint, int midPoint, int highlightPoint,
                                            String sourceImageName, String destImageName,
                                            int splitPercentage) {
-    ImageContent sourceImage = imageMap.get(sourceImageName);
 
-    if (sourceImage != null) {
-      int[][][] sourceRGBData = imageMap.get(sourceImageName).getRgbDataMap();
+    if(shadowPoint < midPoint && midPoint < highlightPoint) {
+      ImageContent sourceImage = imageMap.get(sourceImageName);
 
-      int width = sourceRGBData[0].length;
-      int height = sourceRGBData.length;
+      if (sourceImage != null) {
+        int[][][] sourceRGBData = imageMap.get(sourceImageName).getRgbDataMap();
 
-      int[][][] adjustedRGBData = new int[height][width][3];
+        int width = sourceRGBData[0].length;
+        int height = sourceRGBData.length;
 
-      int splitPosition = width * splitPercentage / 100;
+        int[][][] adjustedRGBData = new int[height][width][3];
 
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          int redValue = sourceRGBData[y][x][0];
-          int greenValue = sourceRGBData[y][x][1];
-          int blueValue = sourceRGBData[y][x][2];
+        int splitPosition = width * splitPercentage / 100;
 
-          int adjustedRed = applyCurvesFunction(redValue, shadowPoint, midPoint, highlightPoint);
-          int adjustedGreen = applyCurvesFunction(greenValue, shadowPoint, midPoint, highlightPoint);
-          int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint, highlightPoint);
+        for (int y = 0; y < height; y++) {
+          for (int x = 0; x < width; x++) {
+            int redValue = sourceRGBData[y][x][0];
+            int greenValue = sourceRGBData[y][x][1];
+            int blueValue = sourceRGBData[y][x][2];
 
-          // Apply split
-          split(adjustedRGBData, splitPosition, y, x, redValue, greenValue, blueValue, adjustedRed, adjustedGreen, adjustedBlue);
+            int adjustedRed = applyCurvesFunction(redValue, shadowPoint, midPoint, highlightPoint);
+            int adjustedGreen = applyCurvesFunction(greenValue, shadowPoint, midPoint, highlightPoint);
+            int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint, highlightPoint);
+
+            // Apply split
+            split(adjustedRGBData, splitPosition, y, x, redValue, greenValue, blueValue, adjustedRed, adjustedGreen, adjustedBlue);
+          }
         }
+
+        ImageContent adjustedImage = new ImageContent(destImageName, adjustedRGBData);
+        imageMap.put(destImageName, adjustedImage);
+
+        System.out.println("Adjusted image with " + splitPercentage + "% split. Image saved as " + destImageName);
+      } else {
+        System.out.println("Source image not found: " + sourceImageName);
       }
-
-      ImageContent adjustedImage = new ImageContent(destImageName, adjustedRGBData);
-      imageMap.put(destImageName, adjustedImage);
-
-      System.out.println("Adjusted image with " + splitPercentage + "% split. Image saved as " + destImageName);
     } else {
-      System.out.println("Source image not found: " + sourceImageName);
+      System.out.println("Invalid shadow, mid, highlight points");
     }
   }
 
@@ -963,16 +966,24 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  /**
+   * Compresses the specified image with the given compression percentage and saves the compressed
+   * image with the provided destination name.
+   *
+   * @param imageName             The name of the source image to be compressed.
+   * @param destName              The name to be assigned to the compressed image.
+   * @param compressionPercentage The percentage of compression to be applied to the image.
+   */
   public void compress(String imageName, String destName, double compressionPercentage) {
-    int[][][] sourceRgb =imageMap.get(imageName).getRgbDataMap();
+    int[][][] sourceRgb = imageMap.get(imageName).getRgbDataMap();
     Compression compressedImage = new Compression();
-    int[][][] imageRGBData = compressedImage.compress(sourceRgb,compressionPercentage);
-    if(imageRGBData != null){
+    int[][][] imageRGBData = compressedImage.compress(sourceRgb, compressionPercentage);
+    if (imageRGBData != null) {
       ImageContent correctedImage = new ImageContent(destName, imageRGBData);
       imageMap.put(destName, correctedImage);
       System.out.println("Compress image with " + compressionPercentage + "% saved as " + destName);
-    }else{
-      System.out.println("Error in compressing " + imageName + " by " + compressionPercentage +" %");
+    } else {
+      System.out.println("Error in compressing " + imageName + " by " + compressionPercentage + " %");
     }
 
   }
