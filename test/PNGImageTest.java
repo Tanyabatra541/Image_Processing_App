@@ -1366,8 +1366,8 @@ public class PNGImageTest {
 
         // Define the expected RGB values for the sepia-toned image
         int[][][] expectedSepiaImageData = {
-                {{255, 0, 0, },{0, 255, 0, },},
-                {{0, 0, 255, },{255, 255, 255, }}
+                {{245, 10, 10, },{10, 245, 10, },},
+                {{10, 10, 245, },{245, 245, 245, },}
         };
 
 
@@ -1385,7 +1385,154 @@ public class PNGImageTest {
         // assertEquals("Compression percentage must be between 0 and 100.\n" +
 //"Error in compressing output3 by 115.0 %", outContent.toString().trim());
     }
+    @Test
+    public void testLevelAdjustment1() {
 
+        pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img");
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, }}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    // System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        //  assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testLevelAdjustment2() {
+
+        pngJpgImage.applyLevelsAdjustment(0,128,255,imageName, "color-correct-img");
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                     //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+          //assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testLevelAdjustment3() {
+
+        pngJpgImage.applyLevelsAdjustment(0,0,0,imageName, "color-correct-img");
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{0, 0, 0, },{0, 255, 0, },},
+        {{0, 0, 0, },{255, 255, 255, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+       // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+    @Test
+    public void testLevelAdjustment4() {
+
+        pngJpgImage.applyLevelsAdjustment(255,255,255,imageName, "color-correct-img");
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{0, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 0, },{255, 255, 255, }}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                    //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+        // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
+
+    @Test
+    public void testLevelAdjustmentWithSplit() {
+
+        pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img", 50);
+
+        // Get the sepia image data
+        int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+        // Define the expected RGB values for the sepia-toned image
+        int[][][] expectedSepiaImageData = {
+                {{255, 0, 0, },{0, 255, 0, },},
+                {{0, 0, 255, },{255, 255, 255, },}
+        };
+
+
+        // Compare the actual sepia-toned image data with the expected result
+        for (int y = 0; y < sepiaImageData.length; y++) {
+            System.out.print("{");
+            for (int x = 0; x < sepiaImageData[y].length; x++) {
+                System.out.print("{");
+                for (int c = 0; c < 3; c++) {
+                     //System.out.print(sepiaImageData[y][x][c] + ", ");
+                    assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+                }System.out.print("},");
+            }System.out.println("},");
+        }
+          //assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+    }
 
 
 }
