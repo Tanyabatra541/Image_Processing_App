@@ -2,8 +2,10 @@ package model;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.Map;
+
 
 
 public abstract class AbstractImage implements ImageOperations {
@@ -642,7 +644,6 @@ public abstract class AbstractImage implements ImageOperations {
     return imageMap.get(imageName).getRgbDataMap();
   }
 
-
   public void calculatePixels(String imageName) {
     if (imageName != null && imageMap.containsKey(imageName)) {
       int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
@@ -813,7 +814,6 @@ public abstract class AbstractImage implements ImageOperations {
 
     return result;
   }
-
 
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
@@ -1133,5 +1133,18 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  public void compress(String imageName, String destName, double compressionPercentage) {
+    int[][][] sourceRgb =imageMap.get(imageName).getRgbDataMap();
+    Compression compressedImage = new Compression();
+    int[][][] imageRGBData = compressedImage.compress(sourceRgb,compressionPercentage);
+    if(imageRGBData != null){
+      ImageContent correctedImage = new ImageContent(destName, imageRGBData);
+      imageMap.put(destName, correctedImage);
+      System.out.println("Compress image with " + compressionPercentage + "% saved as " + destName);
+    }else{
+      System.out.println("Error in compressing " + imageName + " by " + compressionPercentage +" %");
+    }
+
+  }
 
 }

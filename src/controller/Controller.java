@@ -359,11 +359,11 @@ public class Controller implements ActionListener {
         break;
 
       case "compress":
-        String sourceImageName = parts[1];
-        String destImageName = parts[2];
-        imageObj.compress(sourceImageName, 10, 255);
+        double percentage = Double.parseDouble(parts[1]);
+        String sourceImageName = parts[2];
+        String destImageName = parts[3];
+        imageObj.compress(sourceImageName,destImageName,percentage);
         break;
-
       case "-file":
         String scriptFilename = parts[1];
         executeScriptFromFile(scriptFilename);
