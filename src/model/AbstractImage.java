@@ -6,18 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-/**
- * This abstract class defines a set of image manipulation operations and provides common
- * functionality for image processing. Subclass implements methods for loading and saving
- * images in specific formats.
- */
 public abstract class AbstractImage implements ImageOperations {
 
-
-
-  protected static final Map<String, ImageContent> imageMap = new HashMap<>();
-
-  // protected static final Map<String, int[][][]> rgbDataMap = new HashMap<>();
+  public static final Map<String, ImageContent> imageMap = new HashMap<>();
 
 
   protected float[] sharpeningKernel = {
@@ -139,8 +130,8 @@ public abstract class AbstractImage implements ImageOperations {
    * @param sourceImageName The name of the source image.
    * @param destImageName   The name of the destination sharpened image.
    */
-  @Override
-  public void sharpenImage(String sourceImageName, String destImageName, int splitPercentage) {
+
+  private void sharpenImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceImageName);
@@ -179,13 +170,22 @@ public abstract class AbstractImage implements ImageOperations {
       }
     }
 
-    StringBuilder sharpenedContent = createPPMContent(width, height, sharpenedRGBData);
+    createPPMContent(width, height, sharpenedRGBData);
 
     ImageContent sharpenedImage = new ImageContent(destImageName, sharpenedRGBData);
     imageMap.put(destImageName, sharpenedImage);
-    //rgbDataMap.put(destImageName, sharpenedRGBData);
 
     System.out.println("Image sharpening by " + splitPercentage + "% completed. Sharpened image saved as " + destImageName);
+  }
+
+  @Override
+  public void sharpenImage(String sourceName, String destName, int splitPercentage){
+    sharpenImageHelper(sourceName, destName, splitPercentage);
+  }
+
+  @Override
+  public void sharpenImage(String sourceName, String destName){
+    sharpenImageHelper(sourceName, destName, 0);
   }
 
 
@@ -196,8 +196,8 @@ public abstract class AbstractImage implements ImageOperations {
    * @param sourceImageName The name of the source image.
    * @param destImageName   The name of the destination blurred image.
    */
-  @Override
-  public void blurImage(String sourceImageName, String destImageName, int splitPercentage) {
+
+  private void blurImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceImageName);
@@ -212,8 +212,8 @@ public abstract class AbstractImage implements ImageOperations {
 
     int splitPosition = width * splitPercentage / 100;
 
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
+    for (int y = 1; y < height - 1; y++) {
+      for (int x = 1; x < width - 1; x++) {
         for (int channel = 0; channel < 3; channel++) {
           float sum = 0.0f;
           int kernelIndex = 0;
@@ -238,13 +238,22 @@ public abstract class AbstractImage implements ImageOperations {
       }
     }
 
-    StringBuilder blurredContent = createPPMContent(width, height, blurredRGBData);
+    createPPMContent(width, height, blurredRGBData);
 
     ImageContent blurredImage = new ImageContent(destImageName, blurredRGBData);
     imageMap.put(destImageName, blurredImage);
-    // rgbDataMap.put(destImageName, blurredRGBData);
 
     System.out.println("Image blurring by " + splitPercentage + "% completed. Blurred image saved as " + destImageName);
+  }
+
+  @Override
+  public void blurImage(String sourceName, String destName, int splitPercentage){
+    blurImageHelper(sourceName, destName, splitPercentage);
+  }
+
+  @Override
+  public void blurImage(String sourceName, String destName){
+    blurImageHelper(sourceName, destName, 0);
   }
 
 
@@ -281,11 +290,10 @@ public abstract class AbstractImage implements ImageOperations {
       }
     }
 
-    StringBuilder brightenedContent = createPPMContent(width, height, brightenedRGBData);
+    createPPMContent(width, height, brightenedRGBData);
 
     ImageContent brightenedImage = new ImageContent(destImageName, brightenedRGBData);
     imageMap.put(destImageName, brightenedImage);
-    //rgbDataMap.put(destImageName, brightenedRGBData);
 
     System.out.println("Image brightening completed. Brightened image saved as " + destImageName);
   }
@@ -297,8 +305,7 @@ public abstract class AbstractImage implements ImageOperations {
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sepia-toned image.
    */
-  @Override
-  public void sepiaImage(String sourceName, String destName, int splitPercentage) {
+  private void sepiaImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceName);
@@ -327,7 +334,7 @@ public abstract class AbstractImage implements ImageOperations {
         tg = Math.min(255, Math.max(0, tg));
         tb = Math.min(255, Math.max(0, tb));
 
-        if (x >= splitPosition) {
+        if (x <= splitPosition) {
           sepiaRGBData[y][x][0] = tr;
           sepiaRGBData[y][x][1] = tg;
           sepiaRGBData[y][x][2] = tb;
@@ -347,6 +354,16 @@ public abstract class AbstractImage implements ImageOperations {
     //rgbDataMap.put(destName, sepiaRGBData);
 
     System.out.println("Sepia filter applied with " + splitPercentage + "% split. Sepia-toned image saved as " + destName);
+  }
+
+  @Override
+  public void sepiaImage(String sourceName, String destName, int splitPercentage){
+    sepiaImageHelper(sourceName, destName, splitPercentage);
+  }
+
+  @Override
+  public void sepiaImage(String sourceName, String destName){
+    sepiaImageHelper(sourceName, destName, 0);
   }
 
 
@@ -396,7 +413,7 @@ public abstract class AbstractImage implements ImageOperations {
         }
       }
 
-      StringBuilder combinedContent = createPPMContent(width, height, combinedRGBData);
+      createPPMContent(width, height, combinedRGBData);
 
       ImageContent combinedImage = new ImageContent(combinedName, combinedRGBData);
       imageMap.put(combinedName, combinedImage);
@@ -453,9 +470,9 @@ public abstract class AbstractImage implements ImageOperations {
         }
       }
 
-      StringBuilder redContent = createPPMContent(width, height, redRGBData);
-      StringBuilder greenContent = createPPMContent(width, height, greenRGBData);
-      StringBuilder blueContent = createPPMContent(width, height, blueRGBData);
+      createPPMContent(width, height, redRGBData);
+      createPPMContent(width, height, greenRGBData);
+      createPPMContent(width, height, blueRGBData);
 
       ImageContent redImage = new ImageContent(destNameRed, redRGBData);
       ImageContent greenImage = new ImageContent(destNameGreen, greenRGBData);
@@ -465,9 +482,6 @@ public abstract class AbstractImage implements ImageOperations {
       imageMap.put(destNameGreen, greenImage);
       imageMap.put(destNameBlue, blueImage);
 
-     /* rgbDataMap.put(destNameRed, redRGBData);
-      rgbDataMap.put(destNameGreen, greenRGBData);
-      rgbDataMap.put(destNameBlue, blueRGBData);*/
 
       System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
               + ", " + destNameBlue);
@@ -569,11 +583,10 @@ public abstract class AbstractImage implements ImageOperations {
           }
         }
         if (flag) {
-          StringBuilder extractedContent = createPPMContent(width, height, extractedRGBData);
+          createPPMContent(width, height, extractedRGBData);
 
           ImageContent destImage = new ImageContent(destName, extractedRGBData);
           imageMap.put(destName, destImage);
-          //rgbDataMap.put(destName, extractedRGBData);
           System.out.print(component + " component image created from '" + sourceName
                   + "' and saved as '" + destName + "'");
 
@@ -786,8 +799,8 @@ public abstract class AbstractImage implements ImageOperations {
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination color-corrected image.
    */
-  @Override
-  public void colorCorrectImage(String sourceName, String destName, int splitPercentage) {
+
+  private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
 
     if (sourceImage != null) {
@@ -801,11 +814,11 @@ public abstract class AbstractImage implements ImageOperations {
       Histogram histogram = new Histogram(10, 245);
 
       // Populate the histogram with values from the image data.
-      for (int y = 0; y < height; y++) {
+      for (int[][] sourceRGBDatum : sourceRGBData) {
         for (int x = 0; x < width; x++) {
-          int redValue = sourceRGBData[y][x][0];
-          int greenValue = sourceRGBData[y][x][1];
-          int blueValue = sourceRGBData[y][x][2];
+          int redValue = sourceRGBDatum[x][0];
+          int greenValue = sourceRGBDatum[x][1];
+          int blueValue = sourceRGBDatum[x][2];
           histogram.addValue(redValue, greenValue, blueValue);
         }
       }
@@ -864,8 +877,18 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  @Override
+  public void colorCorrectImage(String sourceName, String destName, int splitPercentage) {
+    colorCorrectImageHelper(sourceName, destName, splitPercentage);
+  }
+
+  @Override
+  public void colorCorrectImage(String sourceName, String destName) {
+    colorCorrectImageHelper(sourceName, destName, 0);
+  }
+
   private void split(int[][][] colorCorrectedImage, int splitPosition, int y, int x, int redValue, int greenValue, int blueValue, int correctedRed, int correctedGreen, int correctedBlue) {
-    if (x >= splitPosition) {
+    if (x <= splitPosition) {
       colorCorrectedImage[y][x][0] = correctedRed;
       colorCorrectedImage[y][x][1] = correctedGreen;
       colorCorrectedImage[y][x][2] = correctedBlue;
@@ -878,6 +901,7 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
+  @Override
   public void createHistogram(String sourceName, String destName) {
     Histogram histogram = new Histogram(0, 255);
     int[][][] sourceRGBData = imageMap.get(sourceName).getRgbDataMap();
@@ -912,12 +936,11 @@ public abstract class AbstractImage implements ImageOperations {
     }
     ImageContent image = new ImageContent(destName, imageRGBData);
     imageMap.put(destName, image);
-    //rgbDataMap.put(destName, imageRGBData);
     System.out.println("Histogram of the image saved as " + destName);
   }
 
-  @Override
-  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName, int splitPercentage) {
+
+  private void applyLevelsAdjustmentHelper(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
 
     if (sourceImage != null) {
@@ -952,6 +975,16 @@ public abstract class AbstractImage implements ImageOperations {
     } else {
       System.out.println("Source image not found: " + sourceImageName);
     }
+  }
+
+  @Override
+  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName,  int splitPercentage) {
+    applyLevelsAdjustmentHelper(shadowPoint, midPoint, highlightPoint, sourceImageName, destImageName, splitPercentage);
+  }
+
+  @Override
+  public void applyLevelsAdjustment(int shadowPoint, int midPoint, int highlightPoint, String sourceImageName, String destImageName) {
+    applyLevelsAdjustmentHelper(shadowPoint, midPoint, highlightPoint, sourceImageName, destImageName, 0);
   }
 
   private int applyCurvesFunction(int value, double shadowPoint, double midPoint, double highlightPoint) {

@@ -323,7 +323,7 @@ public class PNGImageTest {
   public void testSharpenImage() throws IOException {
 
     // Perform sharpening on the image
-    pngJpgImage.sharpenImage(image2Name, "sharp-img", 0);
+    pngJpgImage.sharpenImage(image2Name, "sharp-img", 100);
 
     // Get the sharpened image data
     int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
@@ -366,7 +366,7 @@ public class PNGImageTest {
   @Test
   public void testBlurImage() {
     // Perform blurring on the image
-    pngJpgImage.blurImage(image2Name, "blurred-img", 0);
+    pngJpgImage.blurImage(image2Name, "blurred-img",0);
 
     // Get the blurred image data
     int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
@@ -408,6 +408,17 @@ public class PNGImageTest {
       }
     }
   }
+
+//  @Test
+//  public void testBlurSplit(){
+//    pngJpgImage.blurImage(image2Name, "blurred-img", 50);
+////    pngJpgImage.blurImage(image2Name, "blurred-img");
+//
+//    pngJpgImage.saveImage("blurred-img", "blurred-img-blur.png");
+//
+//
+//
+//  }
 
 
   @Test
