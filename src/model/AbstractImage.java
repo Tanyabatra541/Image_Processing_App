@@ -644,40 +644,6 @@ public abstract class AbstractImage implements ImageOperations {
     return imageMap.get(imageName).getRgbDataMap();
   }
 
-  public void calculatePixels(String imageName) {
-    if (imageName != null && imageMap.containsKey(imageName)) {
-      int[][][] imageRGBData = imageMap.get(imageName).getRgbDataMap();
-      int imageWidth = imageRGBData.length;
-      int imageHeight = imageRGBData[0].length;
-
-      double[][] pixels = new double[imageWidth][imageHeight];
-
-      for (int i = 0; i < imageWidth; i++) {
-        for (int j = 0; j < imageHeight; j++) {
-          // Calculate the pixel value for (i, j) and store it in the pixels array
-          pixels[i][j] = calculatePixelValue(imageRGBData[i][j]);
-        }
-      }
-      imageMap.get(imageName).setPixels(pixels);
-    } else {
-      System.out.println("Image not found or RGB data missing.");
-    }
-  }
-
-  public double calculatePixelValue(int[] rgb) {
-    // You can choose any method to calculate the pixel value based on the RGB values.
-    // For example, you can calculate the grayscale pixel value by averaging the RGB values.
-    int red = rgb[0];
-    int green = rgb[1];
-    int blue = rgb[2];
-
-    // Calculate the average of the RGB values (you can use different formulas if needed)
-    int average = (red + green + blue) / 3;
-
-    // Normalize the value as needed (e.g., divide by 255 for a range of 0 to 1)
-
-    return average / 255.0;
-  }
 
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = imageMap.get(sourceName);
