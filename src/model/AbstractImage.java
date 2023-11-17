@@ -771,24 +771,11 @@ public abstract class AbstractImage implements ImageOperations {
   public void createHistogram(String sourceName, String destName) {
     Histogram histogram = new Histogram(0, 255);
     int[][][] sourceRGBData = imageMap.get(sourceName).getRgbDataMap();
-    int height = sourceRGBData.length;
-    int width = sourceRGBData[0].length;
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-
-        int redValue = sourceRGBData[y][x][0];
-        int greenValue = sourceRGBData[y][x][1];
-        int blueValue = sourceRGBData[y][x][2];
-        histogram.addValue(redValue, greenValue, blueValue);
-
-      }
-    }
-    histogram.calculateMaxCount();
-
+    histogram.createHistogram(sourceRGBData);
     // Calculate the average value across peaks.
     BufferedImage histogramImage = histogram.createHistogramImage(256, 256);
-    width = histogramImage.getWidth();
-    height = histogramImage.getHeight();
+    int width = histogramImage.getWidth();
+    int height = histogramImage.getHeight();
 
     int[][][] imageRGBData = new int[height][width][3];
 
@@ -810,7 +797,8 @@ public abstract class AbstractImage implements ImageOperations {
                                            String sourceImageName, String destImageName,
                                            int splitPercentage) {
 
-    if(shadowPoint < midPoint && midPoint < highlightPoint) {
+    if((shadowPoint < midPoint && midPoint < highlightPoint) && (shadowPoint >= 0 && shadowPoint <= 255)
+            && (midPoint >= 0 && midPoint <= 255) && (highlightPoint >= 0 && highlightPoint <= 255)){
       ImageContent sourceImage = imageMap.get(sourceImageName);
 
       if (sourceImage != null) {

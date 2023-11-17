@@ -1,3 +1,4 @@
+import model.Histogram;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +35,30 @@ public class JPGImageTest {
           {{255, 0, 0}, {0, 255, 0}},
           {{0, 0, 255}, {255, 255, 255}}
   };
+
+  int[][][] rgbMatrix2 = {
+          {{128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128},
+                  {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}},
+          {{96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96},
+                  {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
+          {{32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255},
+                  {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
+          {{160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96},
+                  {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}},
+          {{64, 128, 96}, {255, 160, 192}, {96, 96, 128}, {192, 32, 128}, {32, 192, 255},
+                  {128, 64, 192}, {255, 128, 32}, {64, 192, 128}, {32, 96, 255}, {192, 64, 128}},
+          {{192, 64, 128}, {160, 32, 192}, {96, 255, 128}, {224, 64, 32}, {128, 160, 160},
+                  {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 160, 64}, {160, 224, 255}},
+          {{96, 255, 128}, {224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160},
+                  {128, 192, 64}, {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}},
+          {{224, 64, 32}, {128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64},
+                  {160, 255, 32}, {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}},
+          {{128, 160, 160}, {192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32},
+                  {224, 64, 160}, {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}},
+          {{192, 128, 96}, {96, 224, 160}, {128, 192, 64}, {160, 255, 32}, {224, 64, 160},
+                  {255, 128, 96}, {32, 192, 96}, {128, 64, 224}, {160, 32, 128}, {96, 255, 128}}
+  };
+
 
   int[][][] rgbMatrix3 = {
           {{255, 200, 80}, {100, 255, 150}, {80, 90, 255}},
@@ -1240,6 +1265,547 @@ public class JPGImageTest {
 //"Error in compressing output3 by 115.0 %", outContent.toString().trim());
   }
 
+  @Test
+  public void testLevelAdjustment1() {
+
+    pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img");
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{78, 72, 74, },{167, 163, 164, },},
+            {{57, 51, 52, },{249, 245, 246, },}
+    };
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+          // System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+     // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testLevelAdjustment2() {
+
+    pngJpgImage.applyLevelsAdjustment(0,128,255,imageName, "color-correct-img");
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{66, 62, 63, },{167, 163, 164, },},
+            {{53, 49, 50, },{249, 245, 246, },}
+    };
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+          //System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+    //assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testLevelAdjustment3() {
+
+    pngJpgImage.applyLevelsAdjustment(0,0,0,imageName, "color-correct-img");
+
+
+     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
+  }
+  @Test
+  public void testLevelAdjustment4() {
+
+    pngJpgImage.applyLevelsAdjustment(255,255,255,imageName, "color-correct-img");
+
+    assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
+  }
+
+
+  @Test
+  public void testLevelAdjustment5() {
+
+    pngJpgImage.applyLevelsAdjustment(0,50,0,imageName, "color-correct-img");
+    assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
+  }
+
+  @Test
+  public void testLevelAdjustment6() {
+
+    pngJpgImage.applyLevelsAdjustment(150,100,70,imageName, "color-correct-img");
+    assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
+  }
+
+  @Test
+  public void testLevelAdjustment7() {
+
+    pngJpgImage.applyLevelsAdjustment(0,20,500,imageName, "color-correct-img");
+    assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
+  }
+
+  @Test
+  public void testLevelAdjustment8() {
+
+    pngJpgImage.applyLevelsAdjustment(-3,20,70,imageName, "color-correct-img");
+    assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
+  }
+
+  @Test
+  public void testLevelAdjustmentWithSplit() {
+
+    pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img", 50);
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{78, 72, 74, },{202, 198, 199, },},
+            {{57, 51, 52, },{253, 251, 251, },}};
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+          //System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+    //assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+  @Test
+  public void testColorCorrection() {
+
+    pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 50);
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{63, 63, 63, },{164, 164, 164, },},
+            {{50, 50, 50, },{245, 245, 245, }}
+    };
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+           //System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+    //assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testGrayScaleWith50Split() {
+
+    pngJpgImage.convertToGrayscale(imageName, "gray-scale-img", 50);
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("gray-scale-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{62, 62, 62, },{163, 163, 163, },},
+            {{49, 49, 49, },{245, 245, 245, }}
+    };
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+          //System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+   // assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testGrayScaleWith0Split() {
+
+    pngJpgImage.convertToGrayscale(imageName, "gray-scale-img", 0);
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("gray-scale-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{62, 62, 62, },{167, 163, 164, },},
+            {{49, 49, 49, },{249, 245, 246, },}
+    };
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+          //System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+ //    assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+  @Test
+  public void testGrayScaleWith100Split() {
+
+    pngJpgImage.convertToGrayscale(imageName, "gray-scale-img", 100);
+
+    // Get the sepia image data
+    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("gray-scale-img");
+
+    // Define the expected RGB values for the sepia-toned image
+    int[][][] expectedSepiaImageData = {
+            {{62, 62, 62, },{163, 163, 163, },},
+            {{49, 49, 49, },{245, 245, 245, },}
+    };
+
+
+    // Compare the actual sepia-toned image data with the expected result
+    for (int y = 0; y < sepiaImageData.length; y++) {
+      System.out.print("{");
+      for (int x = 0; x < sepiaImageData[y].length; x++) {
+        System.out.print("{");
+        for (int c = 0; c < 3; c++) {
+          //System.out.print(sepiaImageData[y][x][c] + ", ");
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+        }System.out.print("},");
+      }System.out.println("},");
+    }
+    //    assertEquals("Compression percentage must be between 0 and 100.\n" +
+//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
+
+
+  @Test
+  public void testHistogram() throws IOException {
+
+    Histogram histogram = new Histogram(0, 255);
+
+    histogram.createHistogram(rgbMatrix2);
+
+    assertEquals(24,histogram.calculateMaxCount());
+    assertEquals(128,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(64,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(96,histogram.findPeakValue(histogram.histogramB));
+
+  }
+
+  @Test
+  public void testHistogram2() throws IOException {
+
+    Histogram histogram = new Histogram(0, 255);
+    int[][][] rgbEmptyMatrix = {
+            {{0, 0, 0}, {0, 0, 0}},
+            {{0, 0, 0}, {0, 0, 0}}
+    };
+    histogram.createHistogram(rgbEmptyMatrix);
+    assertEquals(4,histogram.calculateMaxCount());
+    assertEquals(0,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+
+
+  }
+  @Test
+  public void testHistogramValues() throws IOException {
+
+    Histogram histogram = new Histogram(0, 255);
+    int[][][] rgbEmptyMatrix = {
+            {{8, 0, 0}, {1, 0, 0}},
+            {{3, 0, 0}, {5, 0, 0}}
+    };
+    histogram.createHistogram(rgbEmptyMatrix);
+    assertEquals(4,histogram.calculateMaxCount());
+
+    assertEquals(1,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+
+
+    assertEquals(1, histogram.histogramR[1]);
+    assertEquals(1, histogram.histogramR[3]);
+    assertEquals(1, histogram.histogramR[5]);
+    assertEquals(1, histogram.histogramR[8]);
+
+  }
+
+  @Test
+  public void testHistogramValues2() throws IOException {
+
+    Histogram histogram = new Histogram(0, 255);
+    int[][][] rgbEmptyMatrix = {
+            {{1, 5, 0}, {1, 9, 0}},
+            {{1, 2, 0}, {1, 2, 7}}
+    };
+    histogram.createHistogram(rgbEmptyMatrix);
+    assertEquals(4,histogram.calculateMaxCount());
+
+    assertEquals(1,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(2,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+
+
+    assertEquals(2, histogram.histogramG[2]);
+    assertEquals(1, histogram.histogramG[5]);
+    assertEquals(1, histogram.histogramG[9]);
+
+    assertEquals(4, histogram.histogramR[1]);
+
+    assertEquals(3, histogram.histogramB[0]);
+    assertEquals(1, histogram.histogramB[7]);
+
+
+  }
+
+  @Test
+  public void testHistogramValues4() throws IOException {
+    // Test case with a single pixel and maximum values
+    Histogram histogram = new Histogram(0, 255);
+    int[][][] rgbMatrix = {
+            {{255, 255, 255}}
+    };
+    histogram.createHistogram(rgbMatrix);
+    assertEquals(1, histogram.calculateMaxCount());
+    assertEquals(255, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(255, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(255, histogram.findPeakValue(histogram.histogramB));
+  }
+
+  @Test
+  public void testHistogramValues5() throws IOException {
+    // Test case with a single color image
+    Histogram histogram = new Histogram(0, 255);
+    int[][][] rgbMatrix = new int[256][256][3];
+    for (int i = 0; i < 256; i++) {
+      for (int j = 0; j < 256; j++) {
+        rgbMatrix[i][j][0] = 100;
+        rgbMatrix[i][j][1] = 50;
+        rgbMatrix[i][j][2] = 200;
+      }
+    }
+    histogram.createHistogram(rgbMatrix);
+    assertEquals(256 * 256, histogram.calculateMaxCount());
+    assertEquals(100, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(50, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(200, histogram.findPeakValue(histogram.histogramB));
+  }
+
+  @Test
+  public void testHistogramValues6() throws IOException {
+    // Test case with a random distribution of pixel values
+    Histogram histogram = new Histogram(0, 255);
+    int[][][] rgbMatrix1 = {
+            {{10, 20, 30}, {40, 50, 60}, {70, 80, 90}},
+            {{100, 110, 120}, {130, 140, 150}, {160, 170, 180}},
+            {{190, 200, 210}, {220, 230, 240}, {250, 255, 0}}
+    };
+    histogram.createHistogram(rgbMatrix1);
+    assertEquals(1, histogram.calculateMaxCount());
+    assertEquals(10, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(20, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
+  }
+
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testHistogramException1() throws IOException {
+    // Test case with an invalid range (minValue > maxValue)
+    new Histogram(255, 0);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testHistogramException2() throws IOException {
+    // Test case with a negative minimum value
+    new Histogram(-10, 255);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testHistogramException3() throws IOException {
+    // Test case with a maximum value less than the minimum value
+    new Histogram(0, -5);
+  }
+
+
+  @Test
+  public void testColorCorrectionHistogram() {
+
+    pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 0);
+
+
+    int[][][] imageData = pngJpgImage.getRgbDataMap("color-correct-img");
+    Histogram histogram = new Histogram(0, 255);
+
+    histogram.createHistogram(imageData);
+    assertEquals(1,histogram.calculateMaxCount());
+
+    assertEquals(50,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(50,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(50,histogram.findPeakValue(histogram.histogramB));
+
+    for(int i=0;i<histogram.histogramB.length;i++){
+      System.out.println(i+" : "+histogram.histogramB[i]);
+    }
+
+    assertEquals(1, histogram.histogramR[63]);
+    assertEquals(1, histogram.histogramR[167]);
+    assertEquals(1, histogram.histogramR[249]);
+
+
+    assertEquals(1, histogram.histogramG[50]);
+    assertEquals(1, histogram.histogramG[63]);
+    assertEquals(1, histogram.histogramG[245]);
+
+
+
+
+
+  }
+
+  @Test
+  public void testColorCorrectionHistogram2() {
+
+    int[][][] imageData = {
+            {{245, 10, 10, },{10, 245, 10, },},
+            {{10, 10, 245, },{245, 245, 245, },}
+    };
+
+    Histogram histogram = new Histogram(0, 255);
+
+    histogram.createHistogram(imageData);
+    assertEquals(2,histogram.calculateMaxCount());
+
+    assertEquals(10,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(10,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(10,histogram.findPeakValue(histogram.histogramB));
+
+    assertEquals(2, histogram.histogramR[10]);
+    assertEquals(2, histogram.histogramR[245]);
+
+    assertEquals(2, histogram.histogramG[10]);
+    assertEquals(2, histogram.histogramR[245]);
+
+    assertEquals(2, histogram.histogramB[10]);
+    assertEquals(2, histogram.histogramB[245]);
+
+
+  }
+
+
+  @Test
+  public void testLevelAdjustmentWithHistogram() {
+
+    Histogram sourceHistogram = new Histogram(0, 255);
+    int[][][] sourceImageData = pngJpgImage.getRgbDataMap(imageName);
+    sourceHistogram.createHistogram(sourceImageData);
+    assertEquals(1,sourceHistogram.calculateMaxCount());
+
+    assertEquals(53,sourceHistogram.findPeakValue(sourceHistogram.histogramR));
+    assertEquals(49,sourceHistogram.findPeakValue(sourceHistogram.histogramG));
+    assertEquals(50,sourceHistogram.findPeakValue(sourceHistogram.histogramB));
+
+
+    assertEquals(1, sourceHistogram.histogramR[53]);
+    assertEquals(1, sourceHistogram.histogramR[66]);
+    assertEquals(1, sourceHistogram.histogramR[167]);
+    assertEquals(1, sourceHistogram.histogramR[249]);
+
+    assertEquals(1, sourceHistogram.histogramG[49]);
+    assertEquals(1, sourceHistogram.histogramG[62]);
+    assertEquals(1, sourceHistogram.histogramG[163]);
+    assertEquals(1, sourceHistogram.histogramG[245]);
+
+    assertEquals(1, sourceHistogram.histogramB[50]);
+    assertEquals(1, sourceHistogram.histogramB[63]);
+    assertEquals(1, sourceHistogram.histogramB[164]);
+    assertEquals(1, sourceHistogram.histogramB[246]);
+
+    pngJpgImage.applyLevelsAdjustment(20, 100, 255, imageName, "color-correct-img");
+
+
+    int[][][] imageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+
+    Histogram histogram = new Histogram(0, 255);
+
+    histogram.createHistogram(imageData);
+    assertEquals(1,histogram.calculateMaxCount());
+
+    assertEquals(57,histogram.findPeakValue(histogram.histogramR));
+    assertEquals(51,histogram.findPeakValue(histogram.histogramG));
+    assertEquals(52,histogram.findPeakValue(histogram.histogramB));
+
+    for (int i=0;i<histogram.histogramR.length;i++){
+
+      if(histogram.histogramR[i] > 0){
+        System.out.println(i+" : "+ histogram.histogramR[i]);
+      }
+    }
+
+    assertEquals(1, histogram.histogramR[57]);
+    assertEquals(1, histogram.histogramR[78]);
+    assertEquals(2, histogram.histogramR[167]);
+    assertEquals(2, histogram.histogramR[249]);
+
+
+
+   /* for(int i=0;i<histogram.histogramG.length;i++){
+      System.out.println(i+" : " +histogram.histogramG[i]+",");
+    }
+    assertEquals(2, histogram.histogramR[0]);
+    assertEquals(2, histogram.histogramR[255]);
+
+    assertEquals(2, histogram.histogramG[0]);
+    assertEquals(2, histogram.histogramR[255]);
+
+    assertEquals(2, histogram.histogramB[0]);
+    assertEquals(2, histogram.histogramB[255]);*/
+
+        assertEquals("Compression percentage must be between 0 and 100.\n" +
+"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+  }
 
 
 }
