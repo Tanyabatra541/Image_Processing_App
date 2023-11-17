@@ -2,8 +2,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import controller.Controller;
-import view.IView;
-import view.JFrameView;
 
 
 /**

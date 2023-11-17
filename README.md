@@ -1,10 +1,10 @@
+# Image Processing Application
 
-
-1. imageContent:
-   The `imageContent` class is designed to represent an image along with its associated name and 
+1. ImageContent:
+   The `ImageContent` class is designed to represent an image along with its associated name and 
    content. This class serves as a container for storing image data.
-2. imageOperations:
-   The `imageOperations` interface has all the function signatures of the operations that 
+2. ImageOperations:
+   The `ImageOperations` interface has all the function signatures of the operations that 
    can be performed on an image like horizontal flip, blur, sharpen, etc. This interface is 
    implemented by the `AbstractImage` class.
 3. AbstractImage:
@@ -25,50 +25,92 @@
    Extending the `PNGImage` class is the `JPGImage` class.
    To capture photos in the JPG file format, the `saveImage` function is overridden and the rest
    of the functions are the same as the PNG class.
-7. model.model-view-controller.controller:
+7. Histogram:
+   The `Histogram` class represents a histogram for RGB color values and offers functionality for 
+   creating histogram images, adding color values to the histogram, calculating the maximum count 
+   of color values, and finding peak values in the histogram arrays. This class facilitates the 
+   analysis and visualization of color distribution in an image through histograms.
+8. Compression:
+   The `Compression` class provides methods for compressing images using Haar Wavelet Transform 
+   and thresholding techniques. It initializes, pads, and transforms the color channels of an image 
+   based on the specified compression percentage, applies thresholding, and performs inverse 
+   transformations to achieve image compression while maintaining visual quality. The class 
+   ultimately returns the compressed RGB data of the image.
 
-   controller.controller (controller.controller): The `controller` class is responsible 
-   for controlling the interaction
-   between the model and view.
-   It implements the ActionListener interface to handle user actions in the view.
-   It interacts with the model and the view to update and display data based on user input.
+Model-View-Controller:
+- Controller:
+   The `Controller` class serves as the controller in the Model-View-Controller (MVC) architectural 
+   pattern. The class handles various image processing operations based on user input, such as 
+   loading and saving images, applying filters, adjusting levels, and generating histograms and 
+   tells the model what to do and sends the control to the model based on the user input. 
+   Additionally, it supports the execution of image processing scripts from a text file.
+- Model:
+   The `Model` class is responsible for executing the commands in the script file or the command 
+   passed through the command line. The model command processing can be executed by following a 
+   specific protocol. Using the `executeScriptFromFile` approach, the `Model` class of the model is 
+   responsible for administering and performing commands in a sequential order. Using image 
+   manipulation techniques, the program carries out instructions found in a script file that it 
+   interprets.
 
-   model.model.IModel (Interface): The `IModel` interface defines methods that the 
-   `model` must implement.
-
-   view.IView (Interface): The `IView` interface defines methods that the `view` must 
-   implement.
-7. `MVCExampleBasicMVC`:
+`Main`:
    This class serves as the entry point of the application.
    It initializes the model, view, and controller and sets them up to work together.
 
-The model class is responsible for interpreting the script file and executing the commands 
-in it.
-model.model command processing can be executed by following a specific protocol.
-Using the executeScriptFromFile approach, the model.model class of the model is responsible for
-administering and performing commands in a sequential order.
-Using image manipulation techniques, the program carries out instructions found in a script
-file that it interprets.
-
-Implementing the model.model.imageOperations interface are three classes: model.PPMImage, 
-model.model.JPGImage, and PNGJPGImage,
-each with their unique image manipulation abilities.
-
-**How to run**:
+**How to run without JAR file**:
 1. Run the main method in the `Main` class.
-2. Enter the file path of the script file in the text field and click execute or click the button 
-   Go to command prompt to enter the commands manually.
-3. The resulting images will be saved in the specified file mentioned in the script.
-4. Make sure to change the file path in the script file to the path of the file you want to save 
-   the images in.
+2. Enter the commands one by one in the command prompt until the user types "exit" to exit the 
+   program.
+3. If not implementing interactive command approach, enter the command "-file <file path>" to 
+   execute the script file. It will automatically execute the file commands and exit the program.
 
 **Overall Flow**:
 
 The main method initializes the model, view, and controller.
-The user interacts with the view by entering either the file path or clicking the button
-that redirects them to the command prompt.
-The controller responds to user actions and communicates with the model.
-The model processes image commands and saves the resulting images in the specified file.
+The runProgram function is called from the main which gives the control to the controller.
+Now, the controller asks the user to enter the command or the file path and the control goes to the
+model to perform the operations typed by the user. The controller tells the model what to do.
+If the user enters the command, the controller executes the command and asks the user to enter
+another command until the user types "exit" to exit the program.
+If the user enters the file path, the controller executes the commands in the file and exits the
+program.
+The images are then saved in the res/ folder.
+
+**Parts of the program that are complete**:
+1. The program can perform all the operations on PNG, JPG, JPEG and PPM images.
+2. The program can perform all the operations on PNG, JPG, JPEG and PPM images using the interactive 
+   command approach.
+3. The program can perform all the operations on PNG, JPG, JPEG and PPM images using the script file
+4. MVC architecture is implemented.
+5. Supports all the operations mentioned in the assignment document.
+6. Supports all the operations from the previous assignment also.
+7. JAR file is created and working.
+
+**Design changes and justifications**:
+
+- No change made in the `JPGImage`, `PNGImage`, `PPMImage`, and `ImageContent` classes.
+- The `Histogram` class was added to the model to facilitate the analysis and visualization of  
+  RGB values in an image through histograms.
+- The `Compression` class was added to the model to provide methods for compressing images using 
+  Haar Wavelet Transform and thresholding techniques.
+- The compression and histogram operations were added to the `ImageOperations` interface and 
+  implemented in the `AbstractImage` class.
+- In the controller, additional switch cases were added for: 
+  - histogram
+  - compression
+  - -file
+  - color-correct/color-correct split 
+  - levels-adjust/ levels-adjust split
+- To add the split functionality in the existing model, an additional parameter "splitPercentage" 
+  was added to levels-adjust, color-correct, blur, sharpen, sepia, and greyscale. But in order to 
+  make
+  program scalable, the main method was made private which takes in the splitPercentage, source 
+  image, and destination image and then two method-overloaded public functions were added, one 
+  which takes in the split functionality into account, the other which does not take split into 
+  account (0 is sent as the splitPercentage parameter). This way our previous test cases will not 
+  change and works perfectly, and also both the split and non-split functionality is implemented.
+  The user can choose whether they want the split functionality to be implemented or not.
+   
+
 
 **Citations**:
 

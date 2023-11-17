@@ -2,7 +2,7 @@ package model;
 
 import java.io.IOException;
 
-public interface imageOperations {
+public interface ImageOperations {
 
   /**
    * Load an image from a file and store it in the image map.

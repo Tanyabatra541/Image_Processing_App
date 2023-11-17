@@ -14,8 +14,6 @@ import javax.imageio.ImageIO;
 
 import model.JPGImage;
 //import model.Model;
-import view.IView;
-import view.JFrameView;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -68,8 +66,8 @@ public class ControllerTest {
 
     System.setOut(new PrintStream(outContent));
 
-    Reader rd = new FileReader("res/scriptFile.txt");
-    controller = new Controller(rd);
+    Reader in = new FileReader("res/scriptFile.txt");
+    controller = new Controller(in);
 
   }
 
@@ -113,29 +111,29 @@ public class ControllerTest {
 
   @Test
   public void testLoad() throws IOException {
-    controller.runProgram();
+    Controller.parseAndExecute("load " + imagePath + " " + imageName);
 
     // Check if the image was loaded successfully
-//    assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
-//    // Get the RGB data
-//    int[][][] rgbData = pngJpgImage.getRgbDataMap(imageName);
-//
-//    // Check if the dimensions match
-//    assertEquals(rgbMatrix.length, rgbData.length);
-//    assertEquals(rgbMatrix[0].length, rgbData[0].length);
-//
-//    // Print the RGB data
-//    for (int y = 0; y < rgbData.length; y++) {
-//      for (int x = 0; x < rgbData[y].length; x++) {
-//        int r = rgbData[y][x][0];
-//        int g = rgbData[y][x][1];
-//        int b = rgbData[y][x][2];
-//        System.out.println("RGB at (" + x + ", " + y + "): R=" + r + " G=" + g + " B=" + b);
-//        assertEquals(rgbMatrix[y][x][0], r);
-//        assertEquals(rgbMatrix[y][x][1], g);
-//        assertEquals(rgbMatrix[y][x][2], b);
-//      }
-//    }
+    assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
+    // Get the RGB data
+    int[][][] rgbData = pngJpgImage.getRgbDataMap(imageName);
+
+    // Check if the dimensions match
+    assertEquals(rgbMatrix.length, rgbData.length);
+    assertEquals(rgbMatrix[0].length, rgbData[0].length);
+
+    // Print the RGB data
+    for (int y = 0; y < rgbData.length; y++) {
+      for (int x = 0; x < rgbData[y].length; x++) {
+        int r = rgbData[y][x][0];
+        int g = rgbData[y][x][1];
+        int b = rgbData[y][x][2];
+        System.out.println("RGB at (" + x + ", " + y + "): R=" + r + " G=" + g + " B=" + b);
+        assertEquals(rgbMatrix[y][x][0], r);
+        assertEquals(rgbMatrix[y][x][1], g);
+        assertEquals(rgbMatrix[y][x][2], b);
+      }
+    }
   }
 
 
@@ -252,8 +250,6 @@ public class ControllerTest {
 
   @Test
   public void testSepiaImage() throws IOException {
-
-
     controller.parseAndExecute("load " + imagePath + " " + imageName);
     controller.parseAndExecute("sepia " + imageName + " sepia-img");
     pngJpgImage.sepiaImage(imageName, "sepia-img", 0);

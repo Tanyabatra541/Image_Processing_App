@@ -11,7 +11,7 @@ import java.util.Map;
  * functionality to apply various image operations like blue, sharpen, brighten, sepia, color
  * correct, levels adjust, etc.
  */
-public abstract class AbstractImage implements imageOperations {
+public abstract class AbstractImage implements ImageOperations {
 
   /**
    * The `imageMap` is a map that stores the name of the image as the key and the image content as
