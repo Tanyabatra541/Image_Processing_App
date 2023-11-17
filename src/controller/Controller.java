@@ -34,7 +34,7 @@ public class Controller {
     reader = in;
   }
 
-  public void runProgram(){
+  public void runProgram() {
 
     Scanner scanner = new Scanner(reader);
     while (true) {
@@ -45,6 +45,7 @@ public class Controller {
       }
       try {
         parseAndExecute(command);
+        System.out.println(output.toString());
       } catch (IOException ex) {
         throw new RuntimeException(ex);
       }
@@ -55,6 +56,17 @@ public class Controller {
    * The parts of the command entered by the user.
    */
   public static String[] PARTS;
+
+  static Appendable output = new StringBuilder();
+
+  private static void passOrFail(boolean pass) throws IOException {
+    if (pass) {
+      output.append("Operation successful");
+    } else {
+      output.append("Operation failed");
+    }
+
+  }
 
   /**
    * Parses the file and executes each line as a command and decides what operation is to be
@@ -91,6 +103,7 @@ public class Controller {
       }
     }
 
+
     switch (cmd) {
       case "load":
         imageObj.loadImage(arg1, arg2);
@@ -105,7 +118,8 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.horizontalFlipImage(sourceImageName, destImageName);
+          boolean pass = imageObj.horizontalFlipImage(sourceImageName, destImageName);
+          passOrFail(pass);
         }
         break;
       case "vertical-flip":

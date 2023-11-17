@@ -60,7 +60,8 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destImageName   The name of the destination image.
    */
   @Override
-  public void horizontalFlipImage(String sourceImageName, String destImageName) {
+  public boolean horizontalFlipImage(String sourceImageName, String destImageName) {
+    boolean flag = true;
     ImageContent sourceImage = imageMap.get(sourceImageName);
 
     if (sourceImage != null) {
@@ -88,11 +89,14 @@ public abstract class AbstractImage implements ImageOperations {
         System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '"
                 + destImageName + "'.");
       } else {
-        System.out.println("Failed to flip the source image; invalid RGB data.");
+//        System.out.println("Failed to flip the source image; invalid RGB data.");
+        flag = false;
       }
     } else {
-      System.out.println("Source image not found: " + sourceImageName);
+//      System.out.println("Source image not found: " + sourceImageName);
+      flag = false;
     }
+    return flag;
   }
 
 
@@ -775,8 +779,7 @@ public abstract class AbstractImage implements ImageOperations {
                                            int splitPercentage) {
 
 
-    if((shadowPoint < midPoint && midPoint < highlightPoint) && (shadowPoint >= 0 && shadowPoint <= 255)
-            && (midPoint >= 0 && midPoint <= 255) && (highlightPoint >= 0 && highlightPoint <= 255)){
+    if(shadowPoint < midPoint && midPoint < highlightPoint && shadowPoint >= 0 && shadowPoint <= 255 && midPoint <= 255 && highlightPoint <= 255){
 
 
 
