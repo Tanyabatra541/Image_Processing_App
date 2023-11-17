@@ -90,7 +90,7 @@ public class ControllerTest {
 
     System.setOut(new PrintStream(outContent));
 
-    Reader in = new FileReader("res/scriptFile.txt");
+    Reader in = new FileReader("scriptFile.txt");
     controller = new Controller(in);
 
   }
@@ -1725,6 +1725,13 @@ public class ControllerTest {
     assertEquals(0, histogram.histogramR[167]);
     assertEquals(0, histogram.histogramR[249]);
 
+
+  }
+
+  @Test
+  public void testRunScriptFile() throws IOException {
+
+    controller.parseAndExecute("-file scriptFile.txt");
 
   }
 

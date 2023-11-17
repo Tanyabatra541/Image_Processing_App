@@ -1,5 +1,5 @@
-#load testImage.png and call it 'testImage'
-load res/test-image.png testImage
+#load image.png and call it 'testImage'
+load image.png testImage
 
 #brighten testImage by adding 10  
 brighten 50 testImage testImage-brighter 
@@ -30,12 +30,6 @@ vertical-flip testImage-horizontal testImage-horizontal-vertical
 
 #save testImage-horizontal-vertical
 save res/testImage-horizontal-vertical.png testImage-horizontal-vertical
-
-#flip vertical testImage horizontally 
-horizontal-flip testImage-vertical testImage-vertical-horizontal
-
-#save testImage-vertical-horizontal
-save res/testImage-vertical-horizontal.png testImage-vertical-horizontal
 
 #blur testImage
 blur testImage testImage-blur
@@ -124,6 +118,12 @@ save res/histogram-testImage.png histogram-testImage
 #color-correct testImage
 color-correct testImage color-correct-testImage
 
+#histogram of color corrected image
+histogram color-correct-testImage histogram-color-correct-testImage
+
+#save color corrected histogram
+save res/histogram-color-correct-testImage.png histogram-color-correct-testImage
+
 #save color-correct testImage
 save res/color-correct-testImage.png color-correct-testImage
 
@@ -135,6 +135,12 @@ save res/color-correct-split-testImage.png color-correct-split-testImage
 
 #levels-adjust testImage
 levels-adjust 20 100 255 testImage levels-adjust-testImage
+
+#histogram of levels-adjust testImage
+histogram levels-adjust-testImage histogram-levels-adjust-testImage
+
+#save histogram of levels-adjust testImage
+save res/histogram-levels-adjust-testImage.png histogram-levels-adjust-testImage
 
 #save levels-adjust testImage
 save res/levels-adjust-testImage.png levels-adjust-testImage
