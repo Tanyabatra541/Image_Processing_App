@@ -182,8 +182,8 @@ public abstract class AbstractImage implements ImageOperations {
    * splitPercentage parameter passed, creating a split sharpened image having both the operated
    * image and the original image with the given name.
    *
-   * @param sourceName The name of the source image.
-   * @param destName   The name of the destination sharpened image.
+   * @param sourceName      The name of the source image.
+   * @param destName        The name of the destination sharpened image.
    * @param splitPercentage The percentage of the image to be sharpened.
    */
   @Override
@@ -260,8 +260,8 @@ public abstract class AbstractImage implements ImageOperations {
    * the splitPercentage parameter passed, creating a split blurred image having both the operated
    * image and the original image with the given name.
    *
-   * @param sourceName The name of the source image.
-   * @param destName   The name of the destination sharpened image.
+   * @param sourceName      The name of the source image.
+   * @param destName        The name of the destination sharpened image.
    * @param splitPercentage The percentage of the image to be blurred.
    */
   @Override
@@ -352,7 +352,7 @@ public abstract class AbstractImage implements ImageOperations {
         tg = Math.min(255, Math.max(0, tg));
         tb = Math.min(255, Math.max(0, tb));
 
-        if (x <= splitPosition) {
+        if (splitPercentage == 0 || x <= splitPosition) {
           sepiaRGBData[y][x][0] = tr;
           sepiaRGBData[y][x][1] = tg;
           sepiaRGBData[y][x][2] = tb;
@@ -379,8 +379,8 @@ public abstract class AbstractImage implements ImageOperations {
    * the splitPercentage parameter passed, creating a split sepia image having both the operated
    * image and the original image with the given name.
    *
-   * @param sourceName The name of the source image.
-   * @param destName   The name of the destination sharpened image.
+   * @param sourceName      The name of the source image.
+   * @param destName        The name of the destination sharpened image.
    * @param splitPercentage The percentage of the image to be sepia-toned.
    */
   @Override
@@ -713,7 +713,8 @@ public abstract class AbstractImage implements ImageOperations {
           colorCorrectedImage[y][x][2] = Math.max(0, Math.min(255, blueValue + offsetB));
 
           // Apply split
-          split(colorCorrectedImage, splitPosition, y, x, redValue, greenValue, blueValue, correctedRed, correctedGreen, correctedBlue);
+          split(colorCorrectedImage, splitPosition, y, x, redValue, greenValue, blueValue,
+                  correctedRed, correctedGreen, correctedBlue, splitPercentage);
         }
       }
 
@@ -736,8 +737,8 @@ public abstract class AbstractImage implements ImageOperations {
    * aligning the meaningful peaks of its histogram. The final image will have a part of color
    * corrected image and a part of the original image
    *
-   * @param sourceName The name of the source image.
-   * @param destName   The name of the destination color-corrected image.
+   * @param sourceName      The name of the source image.
+   * @param destName        The name of the destination color-corrected image.
    * @param splitPercentage The percentage of the image to be color corrected.
    */
   @Override
@@ -758,8 +759,8 @@ public abstract class AbstractImage implements ImageOperations {
 
   private void split(int[][][] colorCorrectedImage, int splitPosition, int y, int x, int redValue,
                      int greenValue, int blueValue, int correctedRed, int correctedGreen,
-                     int correctedBlue) {
-    if (x <= splitPosition) {
+                     int correctedBlue, int splitPercentage) {
+    if (splitPercentage == 0 || x <= splitPosition) {
       colorCorrectedImage[y][x][0] = correctedRed;
       colorCorrectedImage[y][x][1] = correctedGreen;
       colorCorrectedImage[y][x][2] = correctedBlue;
@@ -821,7 +822,7 @@ public abstract class AbstractImage implements ImageOperations {
                                            String sourceImageName, String destImageName,
                                            int splitPercentage) {
 
-    if(shadowPoint < midPoint && midPoint < highlightPoint) {
+    if (shadowPoint < midPoint && midPoint < highlightPoint) {
       ImageContent sourceImage = imageMap.get(sourceImageName);
 
       if (sourceImage != null) {
@@ -845,7 +846,7 @@ public abstract class AbstractImage implements ImageOperations {
             int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint, highlightPoint);
 
             // Apply split
-            split(adjustedRGBData, splitPosition, y, x, redValue, greenValue, blueValue, adjustedRed, adjustedGreen, adjustedBlue);
+            split(adjustedRGBData, splitPosition, y, x, redValue, greenValue, blueValue, adjustedRed, adjustedGreen, adjustedBlue, splitPercentage);
           }
         }
 
@@ -961,7 +962,7 @@ public abstract class AbstractImage implements ImageOperations {
 
           // Apply vertical split
           split(grayscalePixels, splitPosition, y, x, red, green, blue, grayscaleValue,
-                  grayscaleValue, grayscaleValue);
+                  grayscaleValue, grayscaleValue, splitPercentage);
         }
       }
 
