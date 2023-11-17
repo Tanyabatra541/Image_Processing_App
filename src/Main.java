@@ -1,3 +1,6 @@
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import controller.Controller;
 import view.IView;
 import view.JFrameView;
@@ -14,7 +17,8 @@ public class Main {
    * @param args The command-line arguments.
    */
   public static void main(String[] args) {
-    IView view = new JFrameView("Eqqcho a string");
-    Controller controller = new Controller( view);
+    Reader rd = new InputStreamReader(System.in);
+    Controller controller = new Controller( rd);
+    controller.runProgram();
   }
 }
