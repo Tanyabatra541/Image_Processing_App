@@ -34,11 +34,11 @@ public class ControllerTest {
 
   private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
-  private static String imageName = "outputJPG";
-  private static String imagePath = "outputJPG.jpg";
+  private static final String imageName = "outputJPG";
+  private static final String imagePath = "outputJPG.jpg";
 
-  private static String image3Name = "output3";
-  private static String image3Path = "output3.jpg";
+  private static final String image3Name = "output3";
+  private static final String image3Path = "output3.jpg";
 
   static int[][][] rgbMatrix = new int[2][2][3];
 
@@ -197,8 +197,8 @@ public class ControllerTest {
   @Test
   public void testSharpenImage() throws IOException {
 
-    controller.parseAndExecute("load " + imagePath + " " + imageName);
-    controller.parseAndExecute("sharpen " + imageName + " sharp-img");
+    Controller.parseAndExecute("load " + imagePath + " " + imageName);
+    Controller.parseAndExecute("sharpen " + imageName + " sharp-img");
     // Perform sharpening on the image
 
     // Get the sharpened image data

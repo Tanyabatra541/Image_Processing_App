@@ -5,47 +5,98 @@ processing application. Each command is detailed with examples and specific cond
 
 ## Script Commands
 
-- *Load an Image*:
+- *Load an Image for PNG*:
     - `load <image_path> <image_name>`
     - Example: `load res/testImage.png testImage`
-- *Save an Image*:
-    - `save <output_image_path> <image_name>`
+- *Load an Image for JPG*:
+    - `load <image_path> <image_name>`
+    - Example: `load res/testImage.jpg testImage`
+- *Load an Image for PPM*:
+    - `load <image_path> <image_name>`
+    - Example: `load res/testImage.ppm testImage`
+- *Save an Image for PNG*:
+    - `save <image_path> <image_name>`
     - Example: `save res/testImage.png testImage`
-- *Color Correction*:
-    - `color-correct <source_image> <output_image>`
-    - Example: `color-correct small small_color-correct`
-- *Levels Adjustment*:
-    - `levels-adjust <black_point> <midtone_point> <white_point> <source_image> <output_image>`
-    - Example: `levels-adjust 20 100 255 small small_levels-adjust`
-- *Brightness and Darkness Adjustment*:
-    - Brighten: `brighten <increment> <source_image> <output_image>`
-    - Darken: `darken <decrement> <source_image> <output_image>`
-    - Example: `brighten 10 small small-brighter`
-- *Image Flipping*:
-    - Horizontal Flip: `horizontal-flip <source_image> <output_image>`
-    - Vertical Flip: `vertical-flip <source_image> <output_image>`
-    - Example: `horizontal-flip small small-horizontal`
-- *Blur and Sharpen*:
-    - `blur <source_image> <output_image>`
-    - `sharpen <source_image> <output_image>`
-    - Example: `blur small small-blur`
-- *Color Filters*:
-    - Sepia: `sepia <source_image> <output_image>`
-    - Greyscale: `greyscale <source_image> <output_image>`
-    - Example: `sepia small small-sepia`
-- *RGB Component Splitting and Combining*:
-    - Split: `rgb-split <source_image> <red_output> <green_output> <blue_output>`
-    - Combine: `rgb-combine <output_image> <red_input> <green_input> <blue_input>`
-    - Example: `rgb-split small small-red small-green small-blue`
-- *Value, Intensity, and Luma Visualization*:
-    - Value: `value-component <source_image> <output_image>`
-    - Intensity: `intensity <source_image> <output_image>`
-    - Luma: `luma <source_image> <output_image>`
-    - Example: `value-component small small-value`
-- *Create a Histogram Image*:
-    - `histogram <source_image> <output_histogram_image>`
-    - Example: `histogram small small-histogram`
-- Commands can be executed for different image formats (PPM, JPG, PNG) with the same syntax.
-- Example for JPG format:
-    - `load images/small_4x3.jpg small`
-    - `brighten 10 small small-brighter`
+- *Save an Image for JPG*:
+    - `save <image_path> <image_name>`
+    - Example: `save res/testImage.jpg testImage`
+- *Save an Image for PPM*:
+    - `save <image_path> <image_name>`
+    - Example: `save res/testImage.ppm testImage`
+- *Brighten an Image*:
+    - `brighten <increment> <source_image> <dest_image>`
+    - Example: `brighten 10 testImage testImage-brighter`
+- *Darken an Image*:
+    - ` brighten <-increment> <source_image> <dest_image>`
+    - Example: `brighten -10 testImage testImage-brighter`
+- *Horizontal Flip*:
+    - `horizontal-flip <source_image> <dest_image>`
+    - Example: `horizontal-flip testImage testImage-horizontal-flipped`
+- *Vertical Flip*:
+    - `vertical-flip <source_image> <dest_image>`
+    - Example: `vertical-flip testImage testImage-vertical-flipped`
+- *Blur an Image*:
+    - `blur <source_image> <dest_image>`
+    - Example: `blur testImage testImage-blurred`
+- *Sharpen an Image*:
+    - `sharpen <source_image> <dest_image>`
+    - Example: `sharpen testImage testImage-sharpened`
+- *Sepia an Image*:
+    - `sepia <source_image> <dest_image>`
+    - Example: `sepia testImage testImage-sepia`
+- *Red Component of an Image*:
+    - `red-component <source_image> <dest_image>`
+    - Example: `red-component testImage testImage-red`
+- *Green Component of an Image*:
+    - `green-component <source_image> <dest_image>`
+    - Example: `green-component testImage testImage-green` 
+- *Blue Component of an Image*:
+    - `blue-component <source_image> <dest_image>`
+    - Example: `blue-component testImage testImage-blue`
+- *Value Component of an Image*:
+    - `value-component <source_image> <dest_image>`
+    - Example: `value-component testImage testImage-value`
+- *Intensity Component of an Image*:
+    - `intensity-component <source_image> <dest_image>`
+    - Example: `intensity-component testImage testImage-intensity`
+- *Luma Component of an Image*:
+    - `luma-component <source_image> <dest_image>`
+    - Example: `luma-component testImage testImage-luma`
+- *RGB Split of an Image*:
+    - `rgb-split <source_image> <dest_red_image> <dest_green_image> <dest_blue_image>`
+    - Example: `rgb-split testImage testImage-rgb-split`
+- *RGB Combine of an Image*:
+    - `rgb-combine <combined_image> <red_image> <green_image> <blue_image>`
+    - Example: `rgb-combine combined_image testImage-red testImage-green testImage-blue`
+- *Compress an Image*:
+    - `compress <compression_percentage> <source_image> <dest_image>`
+    - Example: `compress 50 testImage testImage-compressed`
+- *Histogram of an Image*:
+    - `histogram <source_image> <dest_image>`
+    - Example: `histogram testImage testImage-histogram`
+- *Color Correct an Image*:
+    - `color-correct <source_image> <dest_image>`
+    - Example: `color-correct testImage testImage-color-corrected`
+- *Levels Adjust an Image*:
+   - `levels-adjust <b> <m> <w> <source_image> <dest_image>`
+   - Example: `levels-adjust 20 100 255 testImage testImage-levels-adjusted`
+- *Levels Adjust an Image with Split*:
+   - `levels-adjust <b> <m> <w> <source_image> <dest_image> split <splitPercentage>`
+   - Example: `levels-adjust 20 100 255 testImage testImage-levels-adjusted split 50`
+- *Color Correct an Image with Split*:
+   - `color-correct <source_image> <dest_image> split <splitPercentage>`
+   - Example: `color-correct testImage testImage-color-corrected split 50`
+- *Blur an Image with Split*:
+   - `blur <source_image> <dest_image> split <splitPercentage>`
+   - Example: `blur testImage testImage-blurred split 50`
+- *Sharpen an Image with Split*:
+   - `sharpen <source_image> <dest_image> split <splitPercentage>`
+   - Example: `sharpen testImage testImage-sharpened split 50`
+- *Sepia an Image with Split*:
+   - `sepia <source_image> <dest_image> split <splitPercentage>`
+   - Example: `sepia testImage testImage-sepia split 50`
+- *Greyscale an Image with Split*:
+   - `greyscale <source_image> <dest_image> split <splitPercentage>`
+   - Example: `greyscale testImage testImage-greyscale split 50`
+
+Commands can be executed for different image formats (PPM, JPG, PNG) with the same syntax.
