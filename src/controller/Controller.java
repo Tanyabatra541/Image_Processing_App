@@ -1,4 +1,5 @@
 package controller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -8,7 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
-import model.ImageOperations;
+
+import model.imageOperations;
 import model.JPGImage;
 import model.PNGImage;
 import model.PPMImage;
@@ -17,20 +19,20 @@ import view.IView;
 import static java.lang.System.exit;
 
 /**
- * The `Controller` class serves as the controller in the MVC
- * architectural pattern. It handles user interactions from the view, processes user input, and
- * communicates with the model and view components.
+ * The `Controller` class serves as the controller in the MVC architectural pattern.
+ * It handles user interactions from the view, processes user input, and communicates with the
+ * model and view components.
  */
 public class Controller implements ActionListener {
 
   private String input;
   private final String result;
 
-  public static ImageOperations imageObj = null;
+  public static imageOperations imageObj = null;
   private final IView view;
 
   /**
-   * Constructs a new controller.Controller.controller.Controller instance.
+   * Constructs a new Controller instance.
    *
    * @param v The view to interact with.
    */
@@ -124,7 +126,10 @@ public class Controller implements ActionListener {
     return result;
   }
 
-  public static String[] parts;
+  /**
+   * The parts of the command entered by the user.
+   */
+  public static String[] PARTS;
 
   /**
    * Parses the file and executes each line as a command and decides what operation is to be
@@ -134,18 +139,18 @@ public class Controller implements ActionListener {
    * @throws IOException If an I/O error occurs while executing the command.
    */
   public static void parseAndExecute(String command) throws IOException {
-    parts = command.split(" ");
-    if (parts.length < 2) {
+    PARTS = command.split(" ");
+    if (PARTS.length < 2) {
       System.out.println("Invalid command: " + command);
       return;
     }
 
-    String cmd = parts[0];
-    String arg1 = parts[1];
-    String arg2 = parts.length > 2 ? parts[2] : null;
+    String cmd = PARTS[0];
+    String arg1 = PARTS[1];
+    String arg2 = PARTS.length > 2 ? PARTS[2] : null;
     String extension = identifyFileFormat(arg1);
 
-    if (!Objects.equals(parts[0], "run")) {
+    if (!Objects.equals(PARTS[0], "run")) {
 
       if (extension != null) {
         if ((extension.equalsIgnoreCase("png"))) {
@@ -169,12 +174,12 @@ public class Controller implements ActionListener {
         imageObj.saveImage(arg1, arg2);
         break;
       case "horizontal-flip":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'horizontal-flip' command: Usage is 'horizontal-flip "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.horizontalFlipImage(sourceImageName, destImageName);
         }
         break;
@@ -182,175 +187,177 @@ public class Controller implements ActionListener {
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
-        if (parts.length > 3 && parts[3].equals("split")) {
-          int splitPercentage = Integer.parseInt(parts[4]);
+        if (PARTS.length > 3 && PARTS[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(PARTS[4]);
           imageObj.sharpenImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.sharpenImage(arg1, arg2, 0);
         }
         break;
       case "blur":
-        if (parts.length > 3 && parts[3].equals("split")) {
-          int splitPercentage = Integer.parseInt(parts[4]);
+        if (PARTS.length > 3 && PARTS[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(PARTS[4]);
           imageObj.blurImage(arg1, arg2, splitPercentage);
         } else {
-          imageObj.blurImage(arg1, arg2,0);
+          imageObj.blurImage(arg1, arg2, 0);
         }
         break;
       case "brighten":
-        if (parts.length < 4) {
+        if (PARTS.length < 4) {
           System.out.println("Invalid 'brighten' command: Usage is 'brighten increment "
                   + "source-image-name dest-image-name'");
         } else {
-          int increment = Integer.parseInt(parts[1]);
-          String sourceImageName = parts[2];
-          String destImageName = parts[3];
+          int increment = Integer.parseInt(PARTS[1]);
+          String sourceImageName = PARTS[2];
+          String destImageName = PARTS[3];
           imageObj.brightenImage(sourceImageName, destImageName, increment);
         }
         break;
       case "sepia":
-        if (parts.length > 3 && parts[3].equals("split")) {
-          int splitPercentage = Integer.parseInt(parts[4]);
+        if (PARTS.length > 3 && PARTS[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(PARTS[4]);
           imageObj.sepiaImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.sepiaImage(arg1, arg2, 0);
         }
         break;
       case "rgb-combine":
-        if (parts.length < 5) {
+        if (PARTS.length < 5) {
           System.out.println("Invalid 'rgb-combine' command: Usage is 'rgb-combine "
                   + "combined-image red-image green-image blue-image'");
         } else {
-          String combinedImageName = parts[1];
-          String redImageName = parts[2];
-          String greenImageName = parts[3];
-          String blueImageName = parts[4];
+          String combinedImageName = PARTS[1];
+          String redImageName = PARTS[2];
+          String greenImageName = PARTS[3];
+          String blueImageName = PARTS[4];
           imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName, blueImageName);
         }
         break;
       case "rgb-split":
-        if (parts.length < 4) {
+        if (PARTS.length < 4) {
           System.out.println("Invalid 'rgb-split' command: Usage is 'rgb-split image-name "
                   + "dest-image-name-red dest-image-name-green dest-image-name-blue'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageNameRed = parts[2];
-          String destImageNameGreen = parts[3];
-          String destImageNameBlue = parts[4];
+          String sourceImageName = PARTS[1];
+          String destImageNameRed = PARTS[2];
+          String destImageNameGreen = PARTS[3];
+          String destImageNameBlue = PARTS[4];
           imageObj.rgbSplitImage(sourceImageName, destImageNameRed, destImageNameGreen,
                   destImageNameBlue);
         }
         break;
 
       case "red-component":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'extract-component' command: Usage is 'red-component "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "red");
         }
         break;
 
       case "green-component":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'extract-component' command: Usage is 'green-component "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "green");
         }
         break;
       case "blue-component":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'blue-component' command: Usage is 'blue-component "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "blue");
         }
         break;
 
       case "value-component":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'value-component' command: Usage is 'value-component "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "value");
         }
         break;
       case "intensity-component":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'intensity-component' command: Usage is 'intensity-component"
                   + " source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "intensity");
         }
         break;
       case "luma-component":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'luma-component' command: Usage is 'luma-component "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
       case "color-correct":
-        if (parts.length > 3 && parts[3].equals("split")) {
-          int splitPercentage = Integer.parseInt(parts[4]);
+        if (PARTS.length > 3 && PARTS[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(PARTS[4]);
           imageObj.colorCorrectImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.colorCorrectImage(arg1, arg2, 0);
         }
         break;
       case "histogram":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'histogram' command: Usage is 'histogram "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
           imageObj.createHistogram(sourceImageName, destImageName);
         }
         break;
 
       case "levels-adjust":
-        if (parts.length < 6) {
+        if (PARTS.length < 6) {
           System.out.println("Invalid 'levels-adjust' command: Usage is 'levels-adjust "
                   + "b m w source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[4];
-          String destImageName = parts[5];
-          int b = Integer.parseInt(parts[1]);
-          int m = Integer.parseInt(parts[2]);
-          int w = Integer.parseInt(parts[3]);
-          if (parts.length > 6 && parts[6].equals("split")) {
-            int splitPercentage = Integer.parseInt(parts[7]);
-            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName, splitPercentage);
+          String sourceImageName = PARTS[4];
+          String destImageName = PARTS[5];
+          int b = Integer.parseInt(PARTS[1]);
+          int m = Integer.parseInt(PARTS[2]);
+          int w = Integer.parseInt(PARTS[3]);
+          if (PARTS.length > 6 && PARTS[6].equals("split")) {
+            int splitPercentage = Integer.parseInt(PARTS[7]);
+            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
+                    splitPercentage);
           } else {
-            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName, 0);
+            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
+                    0);
           }
         }
         break;
 
       case "greyscale":
-        if (parts.length < 3) {
+        if (PARTS.length < 3) {
           System.out.println("Invalid 'brighten' command: Usage is 'greyscale "
                   + "source-image-name dest-image-name'");
         } else {
-          String sourceImageName = parts[1];
-          String destImageName = parts[2];
-          if (parts.length > 3 && parts[3].equals("split")) {
-            int splitPercentage = Integer.parseInt(parts[4]);
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
+          if (PARTS.length > 3 && PARTS[3].equals("split")) {
+            int splitPercentage = Integer.parseInt(PARTS[4]);
             imageObj.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
           } else {
             imageObj.convertToGrayscale(sourceImageName, destImageName, 0);
@@ -359,13 +366,13 @@ public class Controller implements ActionListener {
         break;
 
       case "compress":
-        double percentage = Double.parseDouble(parts[1]);
-        String sourceImageName = parts[2];
-        String destImageName = parts[3];
-        imageObj.compress(sourceImageName,destImageName,percentage);
+        double percentage = Double.parseDouble(PARTS[1]);
+        String sourceImageName = PARTS[2];
+        String destImageName = PARTS[3];
+        imageObj.compress(sourceImageName, destImageName, percentage);
         break;
       case "-file":
-        String scriptFilename = parts[1];
+        String scriptFilename = PARTS[1];
         executeScriptFromFile(scriptFilename);
         exit(0);
         break;

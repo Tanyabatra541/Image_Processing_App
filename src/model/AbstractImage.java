@@ -6,9 +6,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The `AbstractImage` class is a class that implements the `ImageOperations` interface. It provides
+ * functionality to apply various image operations like blue, sharpen, brighten, sepia, color
+ * correct, levels adjust, etc.
+ */
+public abstract class AbstractImage implements imageOperations {
 
-public abstract class AbstractImage implements ImageOperations {
-
+  /**
+   * The `imageMap` is a map that stores the name of the image as the key and the image content as
+   * the value.
+   */
   public static final Map<String, ImageContent> imageMap = new HashMap<>();
 
 
@@ -19,7 +27,6 @@ public abstract class AbstractImage implements ImageOperations {
           -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
           -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
   };
-
 
   protected float[] gaussianKernel = {
           1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
@@ -177,6 +184,7 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sharpened image.
+   * @param splitPercentage The percentage of the image to be sharpened.
    */
   @Override
   public void sharpenImage(String sourceName, String destName, int splitPercentage) {
@@ -254,6 +262,7 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sharpened image.
+   * @param splitPercentage The percentage of the image to be blurred.
    */
   @Override
   public void blurImage(String sourceName, String destName, int splitPercentage) {
@@ -372,6 +381,7 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination sharpened image.
+   * @param splitPercentage The percentage of the image to be sepia-toned.
    */
   @Override
   public void sepiaImage(String sourceName, String destName, int splitPercentage) {
@@ -728,6 +738,7 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @param sourceName The name of the source image.
    * @param destName   The name of the destination color-corrected image.
+   * @param splitPercentage The percentage of the image to be color corrected.
    */
   @Override
   public void colorCorrectImage(String sourceName, String destName, int splitPercentage) {

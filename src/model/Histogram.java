@@ -95,14 +95,6 @@ public class Histogram {
     return histogramImage;
   }
 
-  /**
-   * Draws a histogram line for a specific color channel.
-   *
-   * @param g2d    The graphics context for drawing.
-   * @param values The array of histogram values for a color channel.
-   * @param width  The width of the histogram image.
-   * @param height The height of the histogram image.
-   */
   private void drawHistogramLine(Graphics2D g2d, int[] values, int width, int height) {
     g2d.setStroke(new BasicStroke(1.0f));
     for (int i = 1; i < values.length; i++) {

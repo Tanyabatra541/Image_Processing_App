@@ -91,7 +91,6 @@ class Compression {
     double threshold = calculateThreshold(compressionPercentage);
     applyThreshold(threshold);
     inverseTransformColorChannels(sourceImage.length, sourceImage[0].length);
-    //unpad outside
   }
 
 
