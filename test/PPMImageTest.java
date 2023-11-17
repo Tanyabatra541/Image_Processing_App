@@ -1,4 +1,5 @@
 import model.Histogram;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -595,7 +596,8 @@ public class PPMImageTest {
             "intensity");
 
     // Get the extracted red component data
-    int[][][] extractedIntensityComponent = ppmImage.getRgbDataMap("intensity-component-img");
+    int[][][] extractedIntensityComponent = ppmImage.getRgbDataMap(
+            "intensity-component-img");
 
     // Check if the extracted red component matches the expected result
     for (int y = 0; y < expectedIntensityComponent.length; y++) {
@@ -722,7 +724,8 @@ public class PPMImageTest {
 
   @Test
   public void testExtractComponentWithInvalidSourceName() {
-    ppmImage.extractComponent("nonExistentImage", "destName", "red");
+    ppmImage.extractComponent("nonExistentImage", "destName",
+            "red");
 
 
     String expectedErrorMessage = "Source image not found: nonExistentImage";
@@ -753,7 +756,8 @@ public class PPMImageTest {
 
   @Test
   public void testRGBSplitImageWithInvalidSourceName() {
-    ppmImage.rgbSplitImage("ghy", "destNameRed", "destNameGreen", "destNameBlue");
+    ppmImage.rgbSplitImage("ghy", "destNameRed",
+            "destNameGreen", "destNameBlue");
 
     String expectedErrorMessage = "Source image not found: ghy";
 
@@ -789,15 +793,15 @@ public class PPMImageTest {
   @Test
   public void testCompressby90() throws IOException {
 
-    ppmImage.compress(image3Name, "compressed-90-img",90);
+    ppmImage.compress(image3Name, "compressed-90-img", 90);
 
 
     int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-90-img");
 
 
     int[][][] expectedCompressedImage = {
-            {{0, 215, 0},{0, 215, 0}, {0, 0, 0}},
-            {{0, 215, 0},{0, 215, 0}, {0, 0, 0}},
+            {{0, 215, 0}, {0, 215, 0}, {0, 0, 0}},
+            {{0, 215, 0}, {0, 215, 0}, {0, 0, 0}},
             {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
     };
 
@@ -819,14 +823,14 @@ public class PPMImageTest {
   public void testCompressby50() throws IOException {
 
 
-    ppmImage.compress(image3Name, "compressed-50-img",50);
+    ppmImage.compress(image3Name, "compressed-50-img", 50);
 
     int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-50-img");
 
 
     int[][][] expectedCompressedImage = {
-            {{255, 215, 115},{100, 215, 115}, {0, 0, 255}},
-            {{255, 215, 115},{100, 215, 115}, {0, 0, 255}},
+            {{255, 215, 115}, {100, 215, 115}, {0, 0, 255}},
+            {{255, 215, 115}, {100, 215, 115}, {0, 0, 255}},
             {{222, 212, 255}, {222, 212, 255}, {255, 255, 255}}
     };
 
@@ -847,15 +851,15 @@ public class PPMImageTest {
   @Test
   public void testCompressby10() throws IOException {
 
-    ppmImage.compress(image3Name, "compressed-10-img",10);
+    ppmImage.compress(image3Name, "compressed-10-img", 10);
 
 
     int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-10-img");
 
 
     int[][][] expectedCompressedImage = {
-            {{255, 200, 80},{100, 255, 150}, {95, 100, 255}},
-            {{255, 150, 150},{100, 255, 80}, {95, 100, 255}},
+            {{255, 200, 80}, {100, 255, 150}, {95, 100, 255}},
+            {{255, 150, 150}, {100, 255, 80}, {95, 100, 255}},
             {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
     };
 
@@ -876,7 +880,7 @@ public class PPMImageTest {
   @Test
   public void testCompressby0() throws IOException {
 
-    ppmImage.compress(image3Name, "compressed-0-img",0);
+    ppmImage.compress(image3Name, "compressed-0-img", 0);
 
 
     int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-0-img");
@@ -904,7 +908,7 @@ public class PPMImageTest {
   @Test
   public void testCompressbyNegative() throws IOException {
 
-    ppmImage.compress(image3Name, "compressed-0-img",-5);
+    ppmImage.compress(image3Name, "compressed-0-img", -5);
     assertEquals("Compression percentage must be between 0 and 100.\n" +
             "Error in compressing output3 by -5.0 %", outContent.toString().trim());
   }
@@ -921,7 +925,6 @@ public class PPMImageTest {
             {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
             {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
     };
-
 
 
     for (int y = 0; y < compressedImage.length; y++) {
@@ -945,13 +948,16 @@ public class PPMImageTest {
             {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
     };
 
-    createAndSavePPM(nonPowerOfTwoImage, "nonPowerOfTwoImage", "nonPowerOfTwoImage.png");
+    createAndSavePPM(nonPowerOfTwoImage, "nonPowerOfTwoImage",
+            "nonPowerOfTwoImage.png");
 
     // Try compressing the non-power-of-two image with 50% compression
-    ppmImage.compress("nonPowerOfTwoImage", "compressed-non-power-of-two-img", 50);
+    ppmImage.compress("nonPowerOfTwoImage", "compressed-non-power-of-two-img",
+            50);
 
     // Verify that the compression was successful and the image dimensions remain the same
-    int[][][] compressedImage = ppmImage.getRgbDataMap("compressed-non-power-of-two-img");
+    int[][][] compressedImage = ppmImage.getRgbDataMap(
+            "compressed-non-power-of-two-img");
 
     assertEquals(nonPowerOfTwoImage.length, compressedImage.length);
     assertEquals(nonPowerOfTwoImage[0].length, compressedImage[0].length);
@@ -973,7 +979,8 @@ public class PPMImageTest {
     createAndSavePPM(largeImage, "largeImage", "largeImage.png");
 
 
-    ppmImage.compress("largeImage", "compressedLargeImage", 50);
+    ppmImage.compress("largeImage", "compressedLargeImage",
+            50);
 
     int[][][] result = ppmImage.getRgbDataMap("compressedLargeImage");
 
@@ -992,16 +999,36 @@ public class PPMImageTest {
 
 
     int[][][] expectedBlurredImageData = {
-            {{145, 114, 148,}, {163, 149, 92,}, {119, 161, 119,}, {113, 115, 171,}, {155, 80, 159,}, {160, 32, 192,}, {96, 255, 128,}, {224, 64, 32,}, {128, 160, 160,}, {192, 128, 96,},},
-            {{105, 168, 138,}, {135, 161, 106,}, {143, 151, 103,}, {159, 127, 135,}, {165, 122, 147,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,}, {96, 160, 64,}, {160, 224, 255,},},
-            {{90, 155, 142,}, {124, 135, 134,}, {152, 117, 108,}, {159, 135, 119,}, {153, 156, 155,}, {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,}, {32, 96, 255,}, {192, 64, 128,},},
-            {{113, 117, 150,}, {141, 131, 140,}, {157, 109, 114,}, {148, 122, 127,}, {134, 152, 163,}, {96, 224, 160,}, {128, 192, 64,}, {160, 255, 32,}, {224, 64, 160,}, {255, 128, 96,},},
-            {{137, 103, 140,}, {157, 129, 146,}, {157, 119, 124,}, {148, 109, 129,}, {118, 136, 163,}, {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,}, {32, 96, 255,}, {192, 64, 128,},},
-            {{151, 113, 128,}, {159, 115, 140,}, {153, 131, 124,}, {154, 129, 115,}, {120, 150, 137,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,}, {96, 160, 64,}, {160, 224, 255,},},
-            {{160, 139, 104,}, {164, 123, 112,}, {158, 141, 118,}, {150, 161, 116,}, {128, 185, 108,}, {128, 192, 64,}, {160, 255, 32,}, {224, 64, 160,}, {255, 128, 96,}, {32, 192, 96,},},
-            {{168, 133, 94,}, {164, 137, 110,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,}, {160, 255, 32,}, {224, 64, 160,}, {255, 128, 96,}, {32, 192, 96,}, {128, 64, 224,},},
-            {{164, 136, 116,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,}, {169, 181, 84,}, {224, 64, 160,}, {255, 128, 96,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,},},
-            {{162, 152, 120,}, {134, 184, 122,}, {128, 209, 90,}, {158, 197, 74,}, {203, 143, 102,}, {255, 128, 96,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,}, {96, 255, 128,},}
+            {{145, 114, 148,}, {163, 149, 92,}, {119, 161, 119,}, {113, 115, 171,}, {155, 80, 159,},
+                    {160, 32, 192,}, {96, 255, 128,}, {224, 64, 32,}, {128, 160, 160,},
+                    {192, 128, 96,},},
+            {{105, 168, 138,}, {135, 161, 106,}, {143, 151, 103,}, {159, 127, 135,},
+                    {165, 122, 147,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,},
+                    {96, 160, 64,}, {160, 224, 255,},},
+            {{90, 155, 142,}, {124, 135, 134,}, {152, 117, 108,}, {159, 135, 119,},
+                    {153, 156, 155,}, {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,},
+                    {32, 96, 255,}, {192, 64, 128,},},
+            {{113, 117, 150,}, {141, 131, 140,}, {157, 109, 114,}, {148, 122, 127,},
+                    {134, 152, 163,}, {96, 224, 160,}, {128, 192, 64,}, {160, 255, 32,},
+                    {224, 64, 160,}, {255, 128, 96,},},
+            {{137, 103, 140,}, {157, 129, 146,}, {157, 119, 124,}, {148, 109, 129,},
+                    {118, 136, 163,}, {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,},
+                    {32, 96, 255,}, {192, 64, 128,},},
+            {{151, 113, 128,}, {159, 115, 140,}, {153, 131, 124,}, {154, 129, 115,},
+                    {120, 150, 137,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,},
+                    {96, 160, 64,}, {160, 224, 255,},},
+            {{160, 139, 104,}, {164, 123, 112,}, {158, 141, 118,}, {150, 161, 116,},
+                    {128, 185, 108,}, {128, 192, 64,}, {160, 255, 32,}, {224, 64, 160,},
+                    {255, 128, 96,}, {32, 192, 96,},},
+            {{168, 133, 94,}, {164, 137, 110,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,},
+                    {160, 255, 32,}, {224, 64, 160,}, {255, 128, 96,}, {32, 192, 96,},
+                    {128, 64, 224,},},
+            {{164, 136, 116,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,}, {169, 181, 84,},
+                    {224, 64, 160,}, {255, 128, 96,}, {32, 192, 96,}, {128, 64, 224,},
+                    {160, 32, 128,},},
+            {{162, 152, 120,}, {134, 184, 122,}, {128, 209, 90,}, {158, 197, 74,}, {203, 143, 102,},
+                    {255, 128, 96,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,},
+                    {96, 255, 128,},}
     };
 
     for (int y = 0; y < blurredImageData.length; y++) {
@@ -1029,16 +1056,36 @@ public class PPMImageTest {
 
 
     int[][][] expectedBlurredImageData = {
-            {{145, 114, 148, },{163, 149, 92, },{119, 161, 119, },{113, 115, 171, },{155, 80, 159, },{141, 107, 152, },{136, 135, 132, },{160, 119, 100, },{158, 132, 115, },{168, 154, 135, },},
-            {{105, 168, 138, },{135, 161, 106, },{143, 151, 103, },{159, 127, 135, },{165, 122, 147, },{135, 125, 145, },{135, 113, 138, },{135, 107, 123, },{126, 132, 139, },{154, 156, 171, },},
-            {{90, 155, 142, },{124, 135, 134, },{152, 117, 108, },{159, 135, 119, },{153, 156, 155, },{143, 144, 145, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
-            {{113, 117, 150, },{141, 131, 140, },{157, 109, 114, },{148, 122, 127, },{134, 152, 163, },{139, 154, 143, },{151, 171, 88, },{135, 171, 103, },{147, 119, 151, },{199, 92, 135, },},
-            {{137, 103, 140, },{157, 129, 146, },{157, 119, 124, },{148, 109, 129, },{118, 136, 163, },{119, 142, 149, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
-            {{151, 113, 128, },{159, 115, 140, },{153, 131, 124, },{154, 129, 115, },{120, 150, 137, },{105, 157, 133, },{141, 123, 126, },{147, 105, 129, },{131, 132, 139, },{131, 166, 167, },},
-            {{160, 139, 104, },{164, 123, 112, },{158, 141, 118, },{150, 161, 116, },{128, 185, 108, },{126, 193, 94, },{165, 149, 106, },{189, 113, 118, },{155, 136, 119, },{105, 164, 147, },},
-            {{168, 133, 94, },{164, 137, 110, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{111, 102, 158, },},
-            {{164, 136, 116, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{117, 103, 154, },{130, 93, 156, },},
-            {{162, 152, 120, },{134, 184, 122, },{128, 209, 90, },{158, 197, 74, },{203, 143, 102, },{197, 127, 112, },{131, 140, 124, },{111, 102, 158, },{130, 93, 156, },{122, 159, 134, }}
+            {{145, 114, 148,}, {163, 149, 92,}, {119, 161, 119,}, {113, 115, 171,}, {155, 80, 159,},
+                    {141, 107, 152,}, {136, 135, 132,}, {160, 119, 100,}, {158, 132, 115,},
+                    {168, 154, 135,},},
+            {{105, 168, 138,}, {135, 161, 106,}, {143, 151, 103,}, {159, 127, 135,},
+                    {165, 122, 147,}, {135, 125, 145,}, {135, 113, 138,}, {135, 107, 123,},
+                    {126, 132, 139,}, {154, 156, 171,},},
+            {{90, 155, 142,}, {124, 135, 134,}, {152, 117, 108,}, {159, 135, 119,},
+                    {153, 156, 155,}, {143, 144, 145,}, {147, 139, 110,}, {127, 141, 119,},
+                    {125, 123, 155,}, {173, 116, 159,},},
+            {{113, 117, 150,}, {141, 131, 140,}, {157, 109, 114,}, {148, 122, 127,},
+                    {134, 152, 163,}, {139, 154, 143,}, {151, 171, 88,}, {135, 171, 103,},
+                    {147, 119, 151,}, {199, 92, 135,},},
+            {{137, 103, 140,}, {157, 129, 146,}, {157, 119, 124,}, {148, 109, 129,},
+                    {118, 136, 163,}, {119, 142, 149,}, {147, 139, 110,}, {127, 141, 119,},
+                    {125, 123, 155,}, {173, 116, 159,},},
+            {{151, 113, 128,}, {159, 115, 140,}, {153, 131, 124,}, {154, 129, 115,},
+                    {120, 150, 137,}, {105, 157, 133,}, {141, 123, 126,}, {147, 105, 129,},
+                    {131, 132, 139,}, {131, 166, 167,},},
+            {{160, 139, 104,}, {164, 123, 112,}, {158, 141, 118,}, {150, 161, 116,},
+                    {128, 185, 108,}, {126, 193, 94,}, {165, 149, 106,}, {189, 113, 118,},
+                    {155, 136, 119,}, {105, 164, 147,},},
+            {{168, 133, 94,}, {164, 137, 110,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,},
+                    {169, 181, 84,}, {197, 143, 102,}, {177, 131, 116,}, {131, 126, 134,},
+                    {111, 102, 158,},},
+            {{164, 136, 116,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,}, {169, 181, 84,},
+                    {197, 143, 102,}, {177, 131, 116,}, {131, 126, 134,}, {117, 103, 154,},
+                    {130, 93, 156,},},
+            {{162, 152, 120,}, {134, 184, 122,}, {128, 209, 90,}, {158, 197, 74,}, {203, 143, 102,},
+                    {197, 127, 112,}, {131, 140, 124,}, {111, 102, 158,}, {130, 93, 156,},
+                    {122, 159, 134,}}
     };
 
     for (int y = 0; y < blurredImageData.length; y++) {
@@ -1064,16 +1111,36 @@ public class PPMImageTest {
 
 
     int[][][] expectedBlurredImageData = {
-            {{145, 114, 148, },{163, 149, 92, },{119, 161, 119, },{113, 115, 171, },{155, 80, 159, },{141, 107, 152, },{136, 135, 132, },{160, 119, 100, },{158, 132, 115, },{168, 154, 135, },},
-            {{105, 168, 138, },{135, 161, 106, },{143, 151, 103, },{159, 127, 135, },{165, 122, 147, },{135, 125, 145, },{135, 113, 138, },{135, 107, 123, },{126, 132, 139, },{154, 156, 171, },},
-            {{90, 155, 142, },{124, 135, 134, },{152, 117, 108, },{159, 135, 119, },{153, 156, 155, },{143, 144, 145, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
-            {{113, 117, 150, },{141, 131, 140, },{157, 109, 114, },{148, 122, 127, },{134, 152, 163, },{139, 154, 143, },{151, 171, 88, },{135, 171, 103, },{147, 119, 151, },{199, 92, 135, },},
-            {{137, 103, 140, },{157, 129, 146, },{157, 119, 124, },{148, 109, 129, },{118, 136, 163, },{119, 142, 149, },{147, 139, 110, },{127, 141, 119, },{125, 123, 155, },{173, 116, 159, },},
-            {{151, 113, 128, },{159, 115, 140, },{153, 131, 124, },{154, 129, 115, },{120, 150, 137, },{105, 157, 133, },{141, 123, 126, },{147, 105, 129, },{131, 132, 139, },{131, 166, 167, },},
-            {{160, 139, 104, },{164, 123, 112, },{158, 141, 118, },{150, 161, 116, },{128, 185, 108, },{126, 193, 94, },{165, 149, 106, },{189, 113, 118, },{155, 136, 119, },{105, 164, 147, },},
-            {{168, 133, 94, },{164, 137, 110, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{111, 102, 158, },},
-            {{164, 136, 116, },{150, 160, 122, },{134, 189, 112, },{138, 203, 88, },{169, 181, 84, },{197, 143, 102, },{177, 131, 116, },{131, 126, 134, },{117, 103, 154, },{130, 93, 156, },},
-            {{162, 152, 120, },{134, 184, 122, },{128, 209, 90, },{158, 197, 74, },{203, 143, 102, },{197, 127, 112, },{131, 140, 124, },{111, 102, 158, },{130, 93, 156, },{122, 159, 134, }}
+            {{145, 114, 148,}, {163, 149, 92,}, {119, 161, 119,}, {113, 115, 171,}, {155, 80, 159,},
+                    {141, 107, 152,}, {136, 135, 132,}, {160, 119, 100,}, {158, 132, 115,},
+                    {168, 154, 135,},},
+            {{105, 168, 138,}, {135, 161, 106,}, {143, 151, 103,}, {159, 127, 135,},
+                    {165, 122, 147,}, {135, 125, 145,}, {135, 113, 138,}, {135, 107, 123,},
+                    {126, 132, 139,}, {154, 156, 171,},},
+            {{90, 155, 142,}, {124, 135, 134,}, {152, 117, 108,}, {159, 135, 119,},
+                    {153, 156, 155,}, {143, 144, 145,}, {147, 139, 110,}, {127, 141, 119,},
+                    {125, 123, 155,}, {173, 116, 159,},},
+            {{113, 117, 150,}, {141, 131, 140,}, {157, 109, 114,}, {148, 122, 127,},
+                    {134, 152, 163,}, {139, 154, 143,}, {151, 171, 88,}, {135, 171, 103,},
+                    {147, 119, 151,}, {199, 92, 135,},},
+            {{137, 103, 140,}, {157, 129, 146,}, {157, 119, 124,}, {148, 109, 129,},
+                    {118, 136, 163,}, {119, 142, 149,}, {147, 139, 110,}, {127, 141, 119,},
+                    {125, 123, 155,}, {173, 116, 159,},},
+            {{151, 113, 128,}, {159, 115, 140,}, {153, 131, 124,}, {154, 129, 115,},
+                    {120, 150, 137,}, {105, 157, 133,}, {141, 123, 126,}, {147, 105, 129,},
+                    {131, 132, 139,}, {131, 166, 167,},},
+            {{160, 139, 104,}, {164, 123, 112,}, {158, 141, 118,}, {150, 161, 116,},
+                    {128, 185, 108,}, {126, 193, 94,}, {165, 149, 106,}, {189, 113, 118,},
+                    {155, 136, 119,}, {105, 164, 147,},},
+            {{168, 133, 94,}, {164, 137, 110,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,},
+                    {169, 181, 84,}, {197, 143, 102,}, {177, 131, 116,}, {131, 126, 134,},
+                    {111, 102, 158,},},
+            {{164, 136, 116,}, {150, 160, 122,}, {134, 189, 112,}, {138, 203, 88,}, {169, 181, 84,},
+                    {197, 143, 102,}, {177, 131, 116,}, {131, 126, 134,}, {117, 103, 154,},
+                    {130, 93, 156,},},
+            {{162, 152, 120,}, {134, 184, 122,}, {128, 209, 90,}, {158, 197, 74,}, {203, 143, 102,},
+                    {197, 127, 112,}, {131, 140, 124,}, {111, 102, 158,}, {130, 93, 156,},
+                    {122, 159, 134,}}
     };
 
     for (int y = 0; y < blurredImageData.length; y++) {
@@ -1101,16 +1168,26 @@ public class PPMImageTest {
 
 
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {180, 75, 40,}, {220, 167, 0,}, {160, 255, 251,}, {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {223, 12, 52,}, {132, 96, 163,}, {116, 148, 239,}, {96, 224, 160,}, {128, 192, 64,}, {160, 255, 32,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {179, 75, 92,}, {196, 31, 83,}, {8, 152, 255,}, {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {191, 135, 112,}, {168, 64, 103,}, {80, 108, 199,}, {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {180, 108, 136,}, {172, 192, 88,}, {56, 255, 80,}, {128, 192, 64,}, {160, 255, 32,}, {224, 64, 160,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {184, 124, 112,}, {56, 255, 160,}, {116, 255, 32,}, {160, 255, 32,}, {224, 64, 160,}, {255, 128, 96,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},}
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {180, 75, 40,}, {220, 167, 0,}, {160, 255, 251,},
+                    {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {223, 12, 52,}, {132, 96, 163,}, {116, 148, 239,},
+                    {96, 224, 160,}, {128, 192, 64,}, {160, 255, 32,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {179, 75, 92,}, {196, 31, 83,}, {8, 152, 255,},
+                    {128, 64, 192,}, {255, 128, 32,}, {64, 192, 128,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {191, 135, 112,}, {168, 64, 103,}, {80, 108, 199,},
+                    {32, 192, 96,}, {128, 64, 224,}, {160, 32, 128,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {180, 108, 136,}, {172, 192, 88,}, {56, 255, 80,},
+                    {128, 192, 64,}, {160, 255, 32,}, {224, 64, 160,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {184, 124, 112,}, {56, 255, 160,}, {116, 255, 32,},
+                    {160, 255, 32,}, {224, 64, 160,}, {255, 128, 96,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},}
     };
 
     for (int y = 0; y < expectedSharpenedImageData.length; y++) {
@@ -1139,16 +1216,26 @@ public class PPMImageTest {
 
 
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {180, 75, 40,}, {220, 167, 0,}, {160, 255, 251,}, {163, 136, 180,}, {195, 175, 0,}, {68, 179, 84,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {223, 12, 52,}, {132, 96, 163,}, {116, 148, 239,}, {143, 255, 191,}, {179, 255, 0,}, {155, 255, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {179, 75, 92,}, {196, 31, 83,}, {8, 152, 255,}, {71, 88, 239,}, {203, 135, 0,}, {68, 155, 104,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {191, 135, 112,}, {168, 64, 103,}, {80, 108, 199,}, {0, 220, 163,}, {136, 12, 188,}, {171, 0, 131,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {180, 108, 136,}, {172, 192, 88,}, {56, 255, 80,}, {64, 255, 64,}, {232, 198, 8,}, {255, 51, 108,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {184, 124, 112,}, {56, 255, 160,}, {116, 255, 32,}, {204, 255, 0,}, {255, 115, 88,}, {255, 132, 68,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}}
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {180, 75, 40,}, {220, 167, 0,}, {160, 255, 251,},
+                    {163, 136, 180,}, {195, 175, 0,}, {68, 179, 84,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {223, 12, 52,}, {132, 96, 163,}, {116, 148, 239,},
+                    {143, 255, 191,}, {179, 255, 0,}, {155, 255, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {179, 75, 92,}, {196, 31, 83,}, {8, 152, 255,}, {71, 88, 239,},
+                    {203, 135, 0,}, {68, 155, 104,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {191, 135, 112,}, {168, 64, 103,}, {80, 108, 199,},
+                    {0, 220, 163,}, {136, 12, 188,}, {171, 0, 131,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {180, 108, 136,}, {172, 192, 88,}, {56, 255, 80,},
+                    {64, 255, 64,}, {232, 198, 8,}, {255, 51, 108,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {184, 124, 112,}, {56, 255, 160,}, {116, 255, 32,},
+                    {204, 255, 0,}, {255, 115, 88,}, {255, 132, 68,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}}
     };
 
     for (int y = 0; y < expectedSharpenedImageData.length; y++) {
@@ -1176,16 +1263,26 @@ public class PPMImageTest {
 
 
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {180, 75, 40,}, {220, 167, 0,}, {160, 255, 251,}, {163, 136, 180,}, {195, 175, 0,}, {68, 179, 84,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {223, 12, 52,}, {132, 96, 163,}, {116, 148, 239,}, {143, 255, 191,}, {179, 255, 0,}, {155, 255, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {179, 75, 92,}, {196, 31, 83,}, {8, 152, 255,}, {71, 88, 239,}, {203, 135, 0,}, {68, 155, 104,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {191, 135, 112,}, {168, 64, 103,}, {80, 108, 199,}, {0, 220, 163,}, {136, 12, 188,}, {171, 0, 131,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {180, 108, 136,}, {172, 192, 88,}, {56, 255, 80,}, {64, 255, 64,}, {232, 198, 8,}, {255, 51, 108,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {184, 124, 112,}, {56, 255, 160,}, {116, 255, 32,}, {204, 255, 0,}, {255, 115, 88,}, {255, 132, 68,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
-            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}}
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {180, 75, 40,}, {220, 167, 0,}, {160, 255, 251,},
+                    {163, 136, 180,}, {195, 175, 0,}, {68, 179, 84,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {223, 12, 52,}, {132, 96, 163,}, {116, 148, 239,},
+                    {143, 255, 191,}, {179, 255, 0,}, {155, 255, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {179, 75, 92,}, {196, 31, 83,}, {8, 152, 255,}, {71, 88, 239,},
+                    {203, 135, 0,}, {68, 155, 104,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {191, 135, 112,}, {168, 64, 103,}, {80, 108, 199,},
+                    {0, 220, 163,}, {136, 12, 188,}, {171, 0, 131,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {180, 108, 136,}, {172, 192, 88,}, {56, 255, 80,},
+                    {64, 255, 64,}, {232, 198, 8,}, {255, 51, 108,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {184, 124, 112,}, {56, 255, 160,}, {116, 255, 32,},
+                    {204, 255, 0,}, {255, 115, 88,}, {255, 132, 68,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,},
+                    {0, 0, 0,}, {0, 0, 0,}, {0, 0, 0,}}
     };
 
     for (int y = 0; y < expectedSharpenedImageData.length; y++) {
@@ -1212,10 +1309,9 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{100, 88, 69, },{196, 174, 136, },},
-            {{48, 42, 33, },{255, 255, 238, },}
+            {{100, 88, 69,}, {196, 174, 136,},},
+            {{48, 42, 33,}, {255, 255, 238,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1252,7 +1348,7 @@ public class PPMImageTest {
 
         for (int c = 0; c < 3; c++) {
 
-         assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
+          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
         }
 
       }
@@ -1273,7 +1369,6 @@ public class PPMImageTest {
             {{255, 0, 0,}, {0, 255, 0,},},
             {{0, 0, 255,}, {255, 255, 255,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1300,8 +1395,8 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{245, 10, 10, },{10, 245, 10, },},
-            {{10, 10, 245, },{245, 245, 245, },}
+            {{245, 10, 10,}, {10, 245, 10,},},
+            {{10, 10, 245,}, {245, 245, 245,},}
     };
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1328,10 +1423,9 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{255, 0, 0, },{0, 255, 0, },},
-            {{0, 0, 255, },{255, 255, 255, }}
+            {{255, 0, 0,}, {0, 255, 0,},},
+            {{0, 0, 255,}, {255, 255, 255,}}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1362,7 +1456,6 @@ public class PPMImageTest {
     };
 
 
-
     for (int y = 0; y < sepiaImageData.length; y++) {
 
       for (int x = 0; x < sepiaImageData[y].length; x++) {
@@ -1380,7 +1473,8 @@ public class PPMImageTest {
   @Test
   public void testLevelAdjustment1() {
 
-    ppmImage.applyLevelsAdjustment(20, 100, 255, imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(20, 100, 255, imageName,
+            "color-correct-img");
 
 
     int[][][] sepiaImageData = ppmImage.getRgbDataMap("color-correct-img");
@@ -1390,7 +1484,6 @@ public class PPMImageTest {
             {{255, 0, 0,}, {0, 255, 0,},},
             {{0, 0, 255,}, {255, 255, 255,}}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1410,7 +1503,8 @@ public class PPMImageTest {
   @Test
   public void testLevelAdjustment2() {
 
-    ppmImage.applyLevelsAdjustment(0, 128, 255, imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(0, 128, 255, imageName,
+            "color-correct-img");
 
 
     int[][][] sepiaImageData = ppmImage.getRgbDataMap("color-correct-img");
@@ -1420,7 +1514,6 @@ public class PPMImageTest {
             {{255, 0, 0,}, {0, 255, 0,},},
             {{0, 0, 255,}, {255, 255, 255,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1440,14 +1533,16 @@ public class PPMImageTest {
   @Test
   public void testLevelAdjustment3() {
 
-    ppmImage.applyLevelsAdjustment(0,0,0,imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(0, 0, 0, imageName,
+            "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment4() {
 
-    ppmImage.applyLevelsAdjustment(255,255,255,imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(255, 255, 255, imageName,
+            "color-correct-img");
 
 
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
@@ -1456,35 +1551,40 @@ public class PPMImageTest {
   @Test
   public void testLevelAdjustment5() {
 
-    ppmImage.applyLevelsAdjustment(0,50,0,imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(0, 50, 0, imageName,
+            "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment6() {
 
-    ppmImage.applyLevelsAdjustment(150,100,70,imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(150, 100, 70, imageName,
+            "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment7() {
 
-    ppmImage.applyLevelsAdjustment(0,20,500,imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(0, 20, 500, imageName,
+            "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment8() {
 
-    ppmImage.applyLevelsAdjustment(-3,20,70,imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(-3, 20, 70, imageName,
+            "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustmentWithSplit() {
 
-    ppmImage.applyLevelsAdjustment(20, 100, 255, imageName, "color-correct-img", 50);
+    ppmImage.applyLevelsAdjustment(20, 100, 255, imageName,
+            "color-correct-img", 50);
 
 
     int[][][] sepiaImageData = ppmImage.getRgbDataMap("color-correct-img");
@@ -1494,7 +1594,6 @@ public class PPMImageTest {
             {{255, 0, 0,}, {0, 255, 0,},},
             {{0, 0, 255,}, {255, 255, 255,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1521,10 +1620,9 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{245, 10, 10, },{10, 245, 10, },},
-            {{10, 10, 245, },{245, 245, 245, }}
+            {{245, 10, 10,}, {10, 245, 10,},},
+            {{10, 10, 245,}, {245, 245, 245,}}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1550,10 +1648,9 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{54, 54, 54, },{182, 182, 182, },},
-            {{18, 18, 18, },{254, 254, 254, },},
+            {{54, 54, 54,}, {182, 182, 182,},},
+            {{18, 18, 18,}, {254, 254, 254,},},
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1579,8 +1676,8 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{54, 54, 54, },{182, 182, 182, },},
-            {{18, 18, 18, },{254, 254, 254, }}
+            {{54, 54, 54,}, {182, 182, 182,},},
+            {{18, 18, 18,}, {254, 254, 254,}}
     };
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1606,10 +1703,9 @@ public class PPMImageTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{54, 54, 54, },{182, 182, 182, },},
-            {{18, 18, 18, },{254, 254, 254, }}
+            {{54, 54, 54,}, {182, 182, 182,},},
+            {{18, 18, 18,}, {254, 254, 254,}}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1632,10 +1728,10 @@ public class PPMImageTest {
 
     histogram.createHistogram(rgbMatrix2);
 
-    assertEquals(24,histogram.calculateMaxCount());
-    assertEquals(128,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(64,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(96,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(24, histogram.calculateMaxCount());
+    assertEquals(128, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(64, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(96, histogram.findPeakValue(histogram.histogramB));
 
   }
 
@@ -1648,13 +1744,14 @@ public class PPMImageTest {
             {{0, 0, 0}, {0, 0, 0}}
     };
     histogram.createHistogram(rgbEmptyMatrix);
-    assertEquals(4,histogram.calculateMaxCount());
-    assertEquals(0,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(4, histogram.calculateMaxCount());
+    assertEquals(0, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
   }
+
   @Test
   public void testHistogramValues() throws IOException {
 
@@ -1664,11 +1761,11 @@ public class PPMImageTest {
             {{3, 0, 0}, {5, 0, 0}}
     };
     histogram.createHistogram(rgbEmptyMatrix);
-    assertEquals(4,histogram.calculateMaxCount());
+    assertEquals(4, histogram.calculateMaxCount());
 
-    assertEquals(1,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(1, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(1, histogram.histogramR[1]);
@@ -1687,11 +1784,11 @@ public class PPMImageTest {
             {{1, 2, 0}, {1, 2, 7}}
     };
     histogram.createHistogram(rgbEmptyMatrix);
-    assertEquals(4,histogram.calculateMaxCount());
+    assertEquals(4, histogram.calculateMaxCount());
 
-    assertEquals(1,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(2,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(1, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(2, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(2, histogram.histogramG[2]);
@@ -1781,11 +1878,11 @@ public class PPMImageTest {
     Histogram sourceHistogram = new Histogram(0, 255);
 
     sourceHistogram.createHistogram(sourceImageData);
-    assertEquals(2,sourceHistogram.calculateMaxCount());
+    assertEquals(2, sourceHistogram.calculateMaxCount());
 
-    assertEquals(0,sourceHistogram.findPeakValue(sourceHistogram.histogramR));
-    assertEquals(0,sourceHistogram.findPeakValue(sourceHistogram.histogramG));
-    assertEquals(0,sourceHistogram.findPeakValue(sourceHistogram.histogramB));
+    assertEquals(0, sourceHistogram.findPeakValue(sourceHistogram.histogramR));
+    assertEquals(0, sourceHistogram.findPeakValue(sourceHistogram.histogramG));
+    assertEquals(0, sourceHistogram.findPeakValue(sourceHistogram.histogramB));
 
     assertEquals(2, sourceHistogram.histogramR[0]);
     assertEquals(2, sourceHistogram.histogramR[255]);
@@ -1802,11 +1899,11 @@ public class PPMImageTest {
     Histogram histogram = new Histogram(0, 255);
 
     histogram.createHistogram(imageData);
-    assertEquals(2,histogram.calculateMaxCount());
+    assertEquals(2, histogram.calculateMaxCount());
 
-    assertEquals(10,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(10,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(10,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(0, histogram.histogramR[0]);
@@ -1828,18 +1925,18 @@ public class PPMImageTest {
   public void testColorCorrectionHistogram2() {
 
     int[][][] imageData = {
-            {{245, 10, 10, },{10, 245, 10, },},
-            {{10, 10, 245, },{245, 245, 245, },}
+            {{245, 10, 10,}, {10, 245, 10,},},
+            {{10, 10, 245,}, {245, 245, 245,},}
     };
 
     Histogram histogram = new Histogram(0, 255);
 
     histogram.createHistogram(imageData);
-    assertEquals(2,histogram.calculateMaxCount());
+    assertEquals(2, histogram.calculateMaxCount());
 
-    assertEquals(10,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(10,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(10,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramB));
 
     assertEquals(2, histogram.histogramR[10]);
     assertEquals(2, histogram.histogramR[245]);
@@ -1859,11 +1956,11 @@ public class PPMImageTest {
     Histogram sourceHistogram = new Histogram(0, 255);
     int[][][] sourceImageData = ppmImage.getRgbDataMap(imageName);
     sourceHistogram.createHistogram(sourceImageData);
-    assertEquals(2,sourceHistogram.calculateMaxCount());
+    assertEquals(2, sourceHistogram.calculateMaxCount());
 
-    assertEquals(0,sourceHistogram.findPeakValue(sourceHistogram.histogramR));
-    assertEquals(0,sourceHistogram.findPeakValue(sourceHistogram.histogramG));
-    assertEquals(0,sourceHistogram.findPeakValue(sourceHistogram.histogramB));
+    assertEquals(0, sourceHistogram.findPeakValue(sourceHistogram.histogramR));
+    assertEquals(0, sourceHistogram.findPeakValue(sourceHistogram.histogramG));
+    assertEquals(0, sourceHistogram.findPeakValue(sourceHistogram.histogramB));
 
     assertEquals(2, sourceHistogram.histogramR[0]);
     assertEquals(2, sourceHistogram.histogramR[255]);
@@ -1874,7 +1971,8 @@ public class PPMImageTest {
     assertEquals(2, sourceHistogram.histogramB[0]);
     assertEquals(2, sourceHistogram.histogramB[255]);
 
-    ppmImage.applyLevelsAdjustment(20, 100, 255, imageName, "color-correct-img");
+    ppmImage.applyLevelsAdjustment(20, 100, 255, imageName,
+            "color-correct-img");
 
 
     int[][][] imageData = ppmImage.getRgbDataMap("color-correct-img");
@@ -1883,11 +1981,11 @@ public class PPMImageTest {
     Histogram histogram = new Histogram(0, 255);
 
     histogram.createHistogram(imageData);
-    assertEquals(2,histogram.calculateMaxCount());
+    assertEquals(2, histogram.calculateMaxCount());
 
-    assertEquals(0,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(2, histogram.histogramR[0]);
@@ -1901,7 +1999,6 @@ public class PPMImageTest {
 
 
   }
-
 
 
 }

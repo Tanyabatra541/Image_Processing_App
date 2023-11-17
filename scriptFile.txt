@@ -43,17 +43,11 @@ blur testImage testImage-blur
 #save blurred testImage
 save res/testImage-blur.png testImage-blur
 
-#sharpen testImage
+#sharpen test-Image
 sharpen testImage testImage-sharp
 
 #save sharpened testImage
 save res/testImage-sharp.png testImage-sharp
-
-#brighten by 50 testImage
-sharpen testImage testImage-bright
-
-#save brightened testImage
-save res/testImage-bright.png testImage-bright
 
 #sepia testImage
 sepia testImage testImage-sepia
@@ -121,7 +115,7 @@ compress 50 testImage compress-testImage
 #save compressed testImage
 save res/compress-testImage.png compress-testImage
 
-#histogram testImage
+#histogram test-Image
 histogram testImage histogram-testImage
 
 #save histogram testImage

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 
 import model.Histogram;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,7 +79,6 @@ public class ControllerTest {
           {{255, 150, 150}, {100, 255, 80}, {110, 110, 255}},
           {{190, 170, 255}, {255, 255, 255}, {255, 255, 255}}
   };
-
 
 
   @Before
@@ -371,8 +371,6 @@ public class ControllerTest {
             {{0, 0, 63}, {0, 0, 164}},
             {{0, 0, 50}, {0, 0, 246}}
     };
-
-
 
 
     // Get the extracted red component data
@@ -682,8 +680,8 @@ public class ControllerTest {
 
 
     int[][][] expectedCompressedImage = {
-            {{0, 0, 201},{0, 0, 201}, {0, 0, 0}},
-            {{0, 0, 201},{0, 0, 201}, {0, 0, 0}},
+            {{0, 0, 201}, {0, 0, 201}, {0, 0, 0}},
+            {{0, 0, 201}, {0, 0, 201}, {0, 0, 0}},
             {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
     };
 
@@ -691,7 +689,6 @@ public class ControllerTest {
     for (int y = 0; y < compressedImage.length; y++) {
       for (int x = 0; x < compressedImage[y].length; x++) {
         for (int c = 0; c < 3; c++) {
-
 
 
           assertEquals(expectedCompressedImage[y][x][c], compressedImage[y][x][c]);
@@ -707,7 +704,6 @@ public class ControllerTest {
   public void testCompressby50() throws IOException {
 
 
-
     controller.parseAndExecute("load " + image3Path + " " + image3Name);
     controller.parseAndExecute("compress 50 " + image3Name + " compressed-50-img");
 
@@ -715,8 +711,8 @@ public class ControllerTest {
 
 
     int[][][] expectedCompressedImage = {
-            {{174, 200, 201},{174, 200, 201}, {0, 116, 195}},
-            {{174, 200, 201},{174, 200, 201}, {0, 116, 195}},
+            {{174, 200, 201}, {174, 200, 201}, {0, 116, 195}},
+            {{174, 200, 201}, {174, 200, 201}, {0, 116, 195}},
             {{216, 230, 190}, {216, 230, 190}, {0, 242, 0}}
     };
 
@@ -746,8 +742,8 @@ public class ControllerTest {
 
 
     int[][][] expectedCompressedImage = {
-            {{181, 207, 213},{167, 193, 199}, {89, 102, 180}},
-            {{167, 193, 188},{181, 207, 202}, {118, 131, 209}},
+            {{181, 207, 213}, {167, 193, 199}, {89, 102, 180}},
+            {{167, 193, 188}, {181, 207, 202}, {118, 131, 209}},
             {{187, 206, 160}, {246, 255, 219}, {228, 242, 229}}
     };
 
@@ -821,7 +817,6 @@ public class ControllerTest {
             {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}},
             {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}
     };
-
 
 
     for (int y = 0; y < compressedImage.length; y++) {
@@ -903,8 +898,8 @@ public class ControllerTest {
 
 
     int[][][] expectedBlurredImageData = {
-            {{93, 89, 90, },{167, 163, 164, },},
-            {{99, 95, 96, },{249, 245, 246, },}
+            {{93, 89, 90,}, {167, 163, 164,},},
+            {{99, 95, 96,}, {249, 245, 246,},}
     };
 
     for (int y = 0; y < blurredImageData.length; y++) {
@@ -987,8 +982,8 @@ public class ControllerTest {
 
 
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0, },{0, 0, 0, },},
-            {{0, 0, 0, },{0, 0, 0, },}    };
+            {{0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,},}};
 
     for (int y = 0; y < sharpenedImageData.length; y++) {
 
@@ -1014,8 +1009,8 @@ public class ControllerTest {
 
 
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0, },{0, 0, 0, },},
-            {{0, 0, 0, },{0, 0, 0, },}
+            {{0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,},}
     };
 
     for (int y = 0; y < sharpenedImageData.length; y++) {
@@ -1070,10 +1065,9 @@ public class ControllerTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{85, 76, 59, },{221, 197, 153, },},
-            {{67, 60, 47, },{255, 255, 230, },}
+            {{85, 76, 59,}, {221, 197, 153,},},
+            {{67, 60, 47,}, {255, 255, 230,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1099,9 +1093,8 @@ public class ControllerTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{66, 62, 63, },{221, 197, 153, },},
-            {{53, 49, 50, },{255, 255, 230, },}};
-
+            {{66, 62, 63,}, {221, 197, 153,},},
+            {{53, 49, 50,}, {255, 255, 230,},}};
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1127,8 +1120,8 @@ public class ControllerTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{66, 62, 63, },{167, 163, 164, },},
-            {{53, 49, 50, },{249, 245, 246, },}
+            {{66, 62, 63,}, {167, 163, 164,},},
+            {{53, 49, 50,}, {249, 245, 246,},}
     };
 
 
@@ -1156,10 +1149,9 @@ public class ControllerTest {
 
 
     int[][][] expectedSepiaImageData = {
-            { {63, 63, 63, },{164, 164, 164, },},
-            {{50, 50, 50, },{246, 246, 246, },}
+            {{63, 63, 63,}, {164, 164, 164,},},
+            {{50, 50, 50,}, {246, 246, 246,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1186,10 +1178,9 @@ public class ControllerTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{63, 63, 63, },{164, 164, 164, },},
-            {{50, 50, 50, },{246, 246, 246, },}
+            {{63, 63, 63,}, {164, 164, 164,},},
+            {{50, 50, 50,}, {246, 246, 246,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1215,10 +1206,9 @@ public class ControllerTest {
 
 
     int[][][] expectedSepiaImageData = {
-            {{63, 63, 63, },{164, 164, 164, },},
-            {{50, 50, 50, },{246, 246, 246, },}
+            {{63, 63, 63,}, {164, 164, 164,},},
+            {{50, 50, 50,}, {246, 246, 246,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1237,17 +1227,16 @@ public class ControllerTest {
   @Test
   public void testLevelAdjustment1() {
 
-    pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(20, 100, 255, imageName, "color-correct-img");
 
 
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
 
     int[][][] expectedSepiaImageData = {
-            {{78, 72, 74, },{167, 163, 164, },},
-            {{57, 51, 52, },{249, 245, 246, },}
+            {{78, 72, 74,}, {167, 163, 164,},},
+            {{57, 51, 52,}, {249, 245, 246,},}
     };
-
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1278,7 +1267,6 @@ public class ControllerTest {
     };
 
 
-
     for (int y = 0; y < sepiaImageData.length; y++) {
 
       for (int x = 0; x < sepiaImageData[y].length; x++) {
@@ -1296,15 +1284,16 @@ public class ControllerTest {
   @Test
   public void testLevelAdjustment3() {
 
-    pngJpgImage.applyLevelsAdjustment(0,0,0,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(0, 0, 0, imageName, "color-correct-img");
 
 
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
+
   @Test
   public void testLevelAdjustment4() {
 
-    pngJpgImage.applyLevelsAdjustment(255,255,255,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(255, 255, 255, imageName, "color-correct-img");
 
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
@@ -1313,44 +1302,43 @@ public class ControllerTest {
   @Test
   public void testLevelAdjustment5() {
 
-    pngJpgImage.applyLevelsAdjustment(0,50,0,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(0, 50, 0, imageName, "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment6() {
 
-    pngJpgImage.applyLevelsAdjustment(150,100,70,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(150, 100, 70, imageName, "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment7() {
 
-    pngJpgImage.applyLevelsAdjustment(0,20,500,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(0, 20, 500, imageName, "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustment8() {
 
-    pngJpgImage.applyLevelsAdjustment(-3,20,70,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(-3, 20, 70, imageName, "color-correct-img");
     assertEquals("Invalid shadow, mid, highlight points", outContent.toString().trim());
   }
 
   @Test
   public void testLevelAdjustmentWithSplit() {
 
-    pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img", 50);
+    pngJpgImage.applyLevelsAdjustment(20, 100, 255, imageName, "color-correct-img", 50);
 
 
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
 
     int[][][] expectedSepiaImageData = {
-            {{78, 72, 74, },{202, 198, 199, },},
-            {{57, 51, 52, },{253, 251, 251, },}};
-
+            {{78, 72, 74,}, {202, 198, 199,},},
+            {{57, 51, 52,}, {253, 251, 251,},}};
 
 
     for (int y = 0; y < sepiaImageData.length; y++) {
@@ -1365,6 +1353,7 @@ public class ControllerTest {
     }
 
   }
+
   @Test
   public void testColorCorrection() {
 
@@ -1375,10 +1364,9 @@ public class ControllerTest {
 
 
     int[][][] expectedImageData = {
-            {{63, 63, 63, },{164, 164, 164, },},
-            {{50, 50, 50, },{245, 245, 245, }}
+            {{63, 63, 63,}, {164, 164, 164,},},
+            {{50, 50, 50,}, {245, 245, 245,}}
     };
-
 
 
     for (int y = 0; y < imageData.length; y++) {
@@ -1404,10 +1392,9 @@ public class ControllerTest {
 
 
     int[][][] expectedImageData = {
-            {{62, 62, 62, },{163, 163, 163, },},
-            {{49, 49, 49, },{245, 245, 245, }}
+            {{62, 62, 62,}, {163, 163, 163,},},
+            {{49, 49, 49,}, {245, 245, 245,}}
     };
-
 
 
     for (int y = 0; y < imageData.length; y++) {
@@ -1433,10 +1420,9 @@ public class ControllerTest {
 
 
     int[][][] expectedImageData = {
-            {{62, 62, 62, },{167, 163, 164, },},
-            {{49, 49, 49, },{249, 245, 246, },}
+            {{62, 62, 62,}, {167, 163, 164,},},
+            {{49, 49, 49,}, {249, 245, 246,},}
     };
-
 
 
     for (int y = 0; y < imageData.length; y++) {
@@ -1462,10 +1448,9 @@ public class ControllerTest {
 
 
     int[][][] expectedImageData = {
-            {{62, 62, 62, },{163, 163, 163, },},
-            {{49, 49, 49, },{245, 245, 245, },}
+            {{62, 62, 62,}, {163, 163, 163,},},
+            {{49, 49, 49,}, {245, 245, 245,},}
     };
-
 
 
     for (int y = 0; y < imageData.length; y++) {
@@ -1489,10 +1474,10 @@ public class ControllerTest {
 
     histogram.createHistogram(rgbMatrix2);
 
-    assertEquals(24,histogram.calculateMaxCount());
-    assertEquals(128,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(64,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(96,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(24, histogram.calculateMaxCount());
+    assertEquals(128, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(64, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(96, histogram.findPeakValue(histogram.histogramB));
 
   }
 
@@ -1505,13 +1490,14 @@ public class ControllerTest {
             {{0, 0, 0}, {0, 0, 0}}
     };
     histogram.createHistogram(rgbEmptyMatrix);
-    assertEquals(4,histogram.calculateMaxCount());
-    assertEquals(0,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(4, histogram.calculateMaxCount());
+    assertEquals(0, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
   }
+
   @Test
   public void testHistogramValues() throws IOException {
 
@@ -1521,11 +1507,11 @@ public class ControllerTest {
             {{3, 0, 0}, {5, 0, 0}}
     };
     histogram.createHistogram(rgbEmptyMatrix);
-    assertEquals(4,histogram.calculateMaxCount());
+    assertEquals(4, histogram.calculateMaxCount());
 
-    assertEquals(1,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(1, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(1, histogram.histogramR[1]);
@@ -1544,11 +1530,11 @@ public class ControllerTest {
             {{1, 2, 0}, {1, 2, 7}}
     };
     histogram.createHistogram(rgbEmptyMatrix);
-    assertEquals(4,histogram.calculateMaxCount());
+    assertEquals(4, histogram.calculateMaxCount());
 
-    assertEquals(1,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(2,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(0,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(1, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(2, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(0, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(2, histogram.histogramG[2]);
@@ -1642,11 +1628,11 @@ public class ControllerTest {
     Histogram histogram = new Histogram(0, 255);
 
     histogram.createHistogram(imageData);
-    assertEquals(1,histogram.calculateMaxCount());
+    assertEquals(1, histogram.calculateMaxCount());
 
-    assertEquals(50,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(50,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(50,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(50, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(50, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(50, histogram.findPeakValue(histogram.histogramB));
 
 
     assertEquals(1, histogram.histogramR[63]);
@@ -1659,27 +1645,24 @@ public class ControllerTest {
     assertEquals(1, histogram.histogramG[245]);
 
 
-
-
-
   }
 
   @Test
   public void testColorCorrectionHistogram2() {
 
     int[][][] imageData = {
-            {{245, 10, 10, },{10, 245, 10, },},
-            {{10, 10, 245, },{245, 245, 245, },}
+            {{245, 10, 10,}, {10, 245, 10,},},
+            {{10, 10, 245,}, {245, 245, 245,},}
     };
 
     Histogram histogram = new Histogram(0, 255);
 
     histogram.createHistogram(imageData);
-    assertEquals(2,histogram.calculateMaxCount());
+    assertEquals(2, histogram.calculateMaxCount());
 
-    assertEquals(10,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(10,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(10,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(10, histogram.findPeakValue(histogram.histogramB));
 
     assertEquals(2, histogram.histogramR[10]);
     assertEquals(2, histogram.histogramR[245]);
@@ -1700,11 +1683,11 @@ public class ControllerTest {
     Histogram sourceHistogram = new Histogram(0, 255);
     int[][][] sourceImageData = pngJpgImage.getRgbDataMap(imageName);
     sourceHistogram.createHistogram(sourceImageData);
-    assertEquals(1,sourceHistogram.calculateMaxCount());
+    assertEquals(1, sourceHistogram.calculateMaxCount());
 
-    assertEquals(53,sourceHistogram.findPeakValue(sourceHistogram.histogramR));
-    assertEquals(49,sourceHistogram.findPeakValue(sourceHistogram.histogramG));
-    assertEquals(50,sourceHistogram.findPeakValue(sourceHistogram.histogramB));
+    assertEquals(53, sourceHistogram.findPeakValue(sourceHistogram.histogramR));
+    assertEquals(49, sourceHistogram.findPeakValue(sourceHistogram.histogramG));
+    assertEquals(50, sourceHistogram.findPeakValue(sourceHistogram.histogramB));
 
 
     assertEquals(1, sourceHistogram.histogramR[53]);
@@ -1731,11 +1714,11 @@ public class ControllerTest {
     Histogram histogram = new Histogram(0, 255);
 
     histogram.createHistogram(imageData);
-    assertEquals(1,histogram.calculateMaxCount());
+    assertEquals(1, histogram.calculateMaxCount());
 
-    assertEquals(57,histogram.findPeakValue(histogram.histogramR));
-    assertEquals(51,histogram.findPeakValue(histogram.histogramG));
-    assertEquals(52,histogram.findPeakValue(histogram.histogramB));
+    assertEquals(57, histogram.findPeakValue(histogram.histogramR));
+    assertEquals(51, histogram.findPeakValue(histogram.histogramG));
+    assertEquals(52, histogram.findPeakValue(histogram.histogramB));
 
     assertEquals(1, histogram.histogramR[57]);
     assertEquals(1, histogram.histogramR[78]);
@@ -1744,8 +1727,6 @@ public class ControllerTest {
 
 
   }
-
-
 
 
 }
