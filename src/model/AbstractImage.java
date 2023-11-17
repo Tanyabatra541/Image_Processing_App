@@ -129,7 +129,7 @@ public abstract class AbstractImage implements ImageOperations {
   }
 
 
-  private void sharpenImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
+  private void applyConvolutionHelper(String sourceImageName, String destImageName, int splitPercentage, float[] kernel) {
     ImageContent sourceImage = imageMap.get(sourceImageName);
     if (sourceImage == null) {
       System.out.println("Source image not found: " + sourceImageName);
@@ -140,42 +140,57 @@ public abstract class AbstractImage implements ImageOperations {
 
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
-    int[][][] sharpenedRGBData = new int[height][width][3];
+    int[][][] resultRGBData = new int[height][width][3];
 
     int splitPosition = width * splitPercentage / 100;
 
-    for (int y = 2; y < height - 2; y++) {
-      for (int x = 2; x < width - 2; x++) {
+    int kernelSize = (int) Math.sqrt(kernel.length);
+    int kernelRadius = kernelSize / 2;
+
+    for (int y = kernelRadius; y < height - kernelRadius; y++) {
+      for (int x = kernelRadius; x < width - kernelRadius; x++) {
         for (int channel = 0; channel < 3; channel++) {
           float sum = 0.0f;
-          for (int ky = -2; ky <= 2; ky++) {
-            for (int kx = -2; kx <= 2; kx++) {
+          int kernelIndex = 0;
+          for (int ky = -kernelRadius; ky <= kernelRadius; ky++) {
+            for (int kx = -kernelRadius; kx <= kernelRadius; kx++) {
               int pixelX = Math.min(width - 1, Math.max(0, x + kx));
               int pixelY = Math.min(height - 1, Math.max(0, y + ky));
-              float kernelValue = sharpeningKernel[(ky + 2) * 5 + (kx + 2)];
+              float kernelValue = kernel[kernelIndex];
               int pixelValue = sourceRGBData[pixelY][pixelX][channel];
               sum += kernelValue * pixelValue;
+              kernelIndex++;
             }
           }
           int newValue = Math.min(255, Math.max(0, (int) sum));
           if (splitPercentage == 0 || x < splitPosition) {
-            sharpenedRGBData[y][x][channel] = newValue;
+            resultRGBData[y][x][channel] = newValue;
           } else {
             // Copy the original image data to the destination image for the other side
-            sharpenedRGBData[y][x][channel] = sourceRGBData[y][x][channel];
+            resultRGBData[y][x][channel] = sourceRGBData[y][x][channel];
           }
         }
       }
     }
 
-    createPPMContent(width, height, sharpenedRGBData);
+    createPPMContent(width, height, resultRGBData);
 
-    ImageContent sharpenedImage = new ImageContent(destImageName, sharpenedRGBData);
-    imageMap.put(destImageName, sharpenedImage);
+    ImageContent resultImage = new ImageContent(destImageName, resultRGBData);
+    imageMap.put(destImageName, resultImage);
 
-    System.out.println("Image sharpening by " + splitPercentage + "% completed. Sharpened image "
-            + "saved as " + destImageName);
+    System.out.println("Convolution operation completed. Result image saved as " + destImageName);
   }
+
+  // Example usage in the sharpening function
+  private void sharpenImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
+    applyConvolutionHelper(sourceImageName, destImageName, splitPercentage, sharpeningKernel);
+  }
+
+  // Example usage in the blurring function
+  private void blurImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
+    applyConvolutionHelper(sourceImageName, destImageName, splitPercentage, gaussianKernel);
+  }
+
 
   /**
    * Applies a sharpening kernel to a particular percentage of the source image depending on the
@@ -203,56 +218,6 @@ public abstract class AbstractImage implements ImageOperations {
     sharpenImageHelper(sourceName, destName, 0);
   }
 
-
-  private void blurImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
-    ImageContent sourceImage = imageMap.get(sourceImageName);
-    if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-      return;
-    }
-
-    int[][][] sourceRGBData = imageMap.get(sourceImageName).getRgbDataMap();
-
-    int height = sourceRGBData.length;
-    int width = sourceRGBData[0].length;
-    int[][][] blurredRGBData = new int[height][width][3];
-
-    int splitPosition = width * splitPercentage / 100;
-
-    for (int y = 1; y < height - 1; y++) {
-      for (int x = 1; x < width - 1; x++) {
-        for (int channel = 0; channel < 3; channel++) {
-          float sum = 0.0f;
-          int kernelIndex = 0;
-          for (int ky = -1; ky <= 1; ky++) {
-            for (int kx = -1; kx <= 1; kx++) {
-              int pixelX = Math.min(width - 1, Math.max(0, x + kx));
-              int pixelY = Math.min(height - 1, Math.max(0, y + ky));
-              float kernelValue = gaussianKernel[kernelIndex];
-              int pixelValue = sourceRGBData[pixelY][pixelX][channel];
-              sum += kernelValue * pixelValue;
-              kernelIndex++;
-            }
-          }
-          int newValue = Math.min(255, Math.max(0, (int) sum));
-          if (splitPercentage == 0 || x < splitPosition) {
-            blurredRGBData[y][x][channel] = newValue;
-          } else {
-            // Copy the original image data to the destination image for the other side
-            blurredRGBData[y][x][channel] = sourceRGBData[y][x][channel];
-          }
-        }
-      }
-    }
-
-    createPPMContent(width, height, blurredRGBData);
-
-    ImageContent blurredImage = new ImageContent(destImageName, blurredRGBData);
-    imageMap.put(destImageName, blurredImage);
-
-    System.out.println("Image blurring by " + splitPercentage + "% completed. Blurred image saved "
-            + "as " + destImageName);
-  }
 
 
   /**
