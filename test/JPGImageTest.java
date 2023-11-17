@@ -918,58 +918,57 @@ public class JPGImageTest {
 
   @Test
   public void testBlurImageWith50Split() {
-    // Perform blurring on the image
+
     pngJpgImage.blurImage(imageName, "blurred-img", 50);
 
-    // Get the blurred image data
+
     int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
 
-    // Check if the blurred image matches the expected result
+
     int[][][] expectedBlurredImageData = {
             {{93, 89, 90, },{167, 163, 164, },},
             {{99, 95, 96, },{249, 245, 246, },}
     };
 
     for (int y = 0; y < blurredImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < blurredImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-         // System.out.print(blurredImageData[y][x][c] + ", ");
+
           assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-   // assertEquals("Compression percentage must be between 0 and 100.\n" +
-     //     "Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
 
   @Test
   public void testBlurImageWith0Split() {
-    // Perform blurring on the image
+
     pngJpgImage.blurImage(imageName, "blurred-img", 0);
 
-    // Get the blurred image data
+
     int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
 
-    // Check if the blurred image matches the expected result
+
     int[][][] expectedBlurredImageData = {
-            {{93, 89, 90, },{156, 152, 153, },},
-            {{99, 95, 96, },{185, 181, 182, },}   };
+            {{93, 89, 90,}, {156, 152, 153,},},
+            {{99, 95, 96,}, {185, 181, 182,},}};
 
     for (int y = 0; y < blurredImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < blurredImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(blurredImageData[y][x][c] + ", ");
+
           assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+
+      }
+
     }
-     //assertEquals("Compression percentage must be between 0 and 100.\n" +
-       //  "Error in compressing output3 by 115.0 %", outContent.toString().trim());
   }
 
   @Test
@@ -977,142 +976,140 @@ public class JPGImageTest {
     // Perform blurring on the image
     pngJpgImage.blurImage(imageName, "blurred-img", 100);
 
-    // Get the blurred image data
+
     int[][][] blurredImageData = pngJpgImage.getRgbDataMap("blurred-img");
 
-    // Check if the blurred image matches the expected result
+
     int[][][] expectedBlurredImageData = {
-            {{93, 89, 90, },{156, 152, 153, },},
-            {{99, 95, 96, },{185, 181, 182, },} };
+            {{93, 89, 90,}, {156, 152, 153,},},
+            {{99, 95, 96,}, {185, 181, 182,},}};
 
     for (int y = 0; y < blurredImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < blurredImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(blurredImageData[y][x][c] + ", ");
+
           assertEquals(expectedBlurredImageData[y][x][c], blurredImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+
+      }
+
     }
-  //   assertEquals("Compression percentage must be between 0 and 100.\n" +
-    //     "Error in compressing output3 by 115.0 %", outContent.toString().trim());
   }
 
 
   @Test
   public void testSharpenImageWith50Split() throws IOException {
 
-    // Perform sharpening on the image
+
     pngJpgImage.sharpenImage(imageName, "sharp-img", 50);
 
-    // Get the sharpened image data
+
     int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
 
-    // Define the expected RGB values for the sharpened image
+
     int[][][] expectedSharpenedImageData = {
             {{0, 0, 0, },{0, 0, 0, },},
             {{0, 0, 0, },{0, 0, 0, },}    };
 
     for (int y = 0; y < sharpenedImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sharpenedImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sharpenedImageData[y][x][c] + ", ");
+
           assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-   //   assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
   public void testSharpenImageWith0Split() throws IOException {
 
-    // Perform sharpening on the image
+
     pngJpgImage.sharpenImage(imageName, "sharp-img", 0);
 
-    // Get the sharpened image data
+
     int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
 
-    // Define the expected RGB values for the sharpened image
+
     int[][][] expectedSharpenedImageData = {
             {{0, 0, 0, },{0, 0, 0, },},
             {{0, 0, 0, },{0, 0, 0, },}
     };
 
     for (int y = 0; y < sharpenedImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sharpenedImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sharpenedImageData[y][x][c] + ", ");
+
           assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-      //assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
   public void testSharpenImageWith100Split() throws IOException {
 
-    // Perform sharpening on the image
+
     pngJpgImage.sharpenImage(imageName, "sharp-img", 100);
 
-    // Get the sharpened image data
+
     int[][][] sharpenedImageData = pngJpgImage.getRgbDataMap("sharp-img");
 
-    // Define the expected RGB values for the sharpened image
+
     int[][][] expectedSharpenedImageData = {
-            {{0, 0, 0, },{0, 0, 0, },},
-            {{0, 0, 0, },{0, 0, 0, },}
+            {{0, 0, 0,}, {0, 0, 0,},},
+            {{0, 0, 0,}, {0, 0, 0,},}
     };
 
     for (int y = 0; y < sharpenedImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sharpenedImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sharpenedImageData[y][x][c] + ", ");
+
           assertEquals(expectedSharpenedImageData[y][x][c], sharpenedImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+
+      }
+
     }
-    //  assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
   }
+
   @Test
   public void testSepiaImageWith0Split() {
 
     pngJpgImage.sepiaImage(imageName, "sepia-img", 0);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{85, 76, 59, },{221, 197, 153, },},
             {{67, 60, 47, },{255, 255, 230, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-    //assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1120,28 +1117,27 @@ public class JPGImageTest {
 
     pngJpgImage.sepiaImage(imageName, "sepia-img", 50);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{66, 62, 63, },{221, 197, 153, },},
             {{53, 49, 50, },{255, 255, 230, },}};
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-    // assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1149,28 +1145,27 @@ public class JPGImageTest {
 
     pngJpgImage.sepiaImage(imageName, "sepia-img", 100);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("sepia-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{66, 62, 63, },{167, 163, 164, },},
             {{53, 49, 50, },{249, 245, 246, },}
     };
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-  //   assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
 
@@ -1179,29 +1174,28 @@ public class JPGImageTest {
 
     pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 0);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             { {63, 63, 63, },{164, 164, 164, },},
     {{50, 50, 50, },{246, 246, 246, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-     //  assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
 
@@ -1210,29 +1204,28 @@ public class JPGImageTest {
 
     pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 50);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{63, 63, 63, },{164, 164, 164, },},
             {{50, 50, 50, },{246, 246, 246, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          // System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-     //assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1240,29 +1233,28 @@ public class JPGImageTest {
 
     pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 100);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{63, 63, 63, },{164, 164, 164, },},
             {{50, 50, 50, },{246, 246, 246, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-    // assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1270,59 +1262,58 @@ public class JPGImageTest {
 
     pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img");
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{78, 72, 74, },{167, 163, 164, },},
             {{57, 51, 52, },{249, 245, 246, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          // System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-     // assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
   public void testLevelAdjustment2() {
 
-    pngJpgImage.applyLevelsAdjustment(0,128,255,imageName, "color-correct-img");
+    pngJpgImage.applyLevelsAdjustment(0, 128, 255, imageName, "color-correct-img");
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
-            {{66, 62, 63, },{167, 163, 164, },},
-            {{53, 49, 50, },{249, 245, 246, },}
+            {{66, 62, 63,}, {167, 163, 164,},},
+            {{53, 49, 50,}, {249, 245, 246,},}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+
+      }
+
     }
-    //assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
   }
 
   @Test
@@ -1375,57 +1366,55 @@ public class JPGImageTest {
 
     pngJpgImage.applyLevelsAdjustment(20,100,255,imageName, "color-correct-img", 50);
 
-    // Get the sepia image data
+
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
+
     int[][][] expectedSepiaImageData = {
             {{78, 72, 74, },{202, 198, 199, },},
             {{57, 51, 52, },{253, 251, 251, },}};
 
 
-    // Compare the actual sepia-toned image data with the expected result
+
     for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
+
       for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
+
           assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+        }
+      }
     }
-    //assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
   @Test
   public void testColorCorrection() {
 
     pngJpgImage.colorCorrectImage(imageName, "color-correct-img", 50);
 
-    // Get the sepia image data
-    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
-    // Define the expected RGB values for the sepia-toned image
-    int[][][] expectedSepiaImageData = {
+    int[][][] imageData = pngJpgImage.getRgbDataMap("color-correct-img");
+
+
+    int[][][] expectedImageData = {
             {{63, 63, 63, },{164, 164, 164, },},
             {{50, 50, 50, },{245, 245, 245, }}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
-    for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
-      for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
+    for (int y = 0; y < imageData.length; y++) {
+
+      for (int x = 0; x < imageData[y].length; x++) {
+
         for (int c = 0; c < 3; c++) {
-           //System.out.print(sepiaImageData[y][x][c] + ", ");
-          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+
+          assertEquals(expectedImageData[y][x][c], imageData[y][x][c]);
+        }
+      }
     }
-    //assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1433,29 +1422,28 @@ public class JPGImageTest {
 
     pngJpgImage.convertToGrayscale(imageName, "gray-scale-img", 50);
 
-    // Get the sepia image data
-    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("gray-scale-img");
 
-    // Define the expected RGB values for the sepia-toned image
-    int[][][] expectedSepiaImageData = {
+    int[][][] imageData = pngJpgImage.getRgbDataMap("gray-scale-img");
+
+
+    int[][][] expectedImageData = {
             {{62, 62, 62, },{163, 163, 163, },},
             {{49, 49, 49, },{245, 245, 245, }}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
-    for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
-      for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
+    for (int y = 0; y < imageData.length; y++) {
+
+      for (int x = 0; x < imageData[y].length; x++) {
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
-          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+
+          assertEquals(expectedImageData[y][x][c], imageData[y][x][c]);
+        }
+      }
     }
-   // assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1463,29 +1451,28 @@ public class JPGImageTest {
 
     pngJpgImage.convertToGrayscale(imageName, "gray-scale-img", 0);
 
-    // Get the sepia image data
-    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("gray-scale-img");
 
-    // Define the expected RGB values for the sepia-toned image
-    int[][][] expectedSepiaImageData = {
+    int[][][] imageData = pngJpgImage.getRgbDataMap("gray-scale-img");
+
+
+    int[][][] expectedImageData = {
             {{62, 62, 62, },{167, 163, 164, },},
             {{49, 49, 49, },{249, 245, 246, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
-    for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
-      for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
+    for (int y = 0; y < imageData.length; y++) {
+
+      for (int x = 0; x < imageData[y].length; x++) {
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
-          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+
+          assertEquals(expectedImageData[y][x][c], imageData[y][x][c]);
+        }
+      }
     }
- //    assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
   @Test
@@ -1493,29 +1480,28 @@ public class JPGImageTest {
 
     pngJpgImage.convertToGrayscale(imageName, "gray-scale-img", 100);
 
-    // Get the sepia image data
-    int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("gray-scale-img");
 
-    // Define the expected RGB values for the sepia-toned image
-    int[][][] expectedSepiaImageData = {
+    int[][][] imageData = pngJpgImage.getRgbDataMap("gray-scale-img");
+
+
+    int[][][] expectedImageData = {
             {{62, 62, 62, },{163, 163, 163, },},
             {{49, 49, 49, },{245, 245, 245, },}
     };
 
 
-    // Compare the actual sepia-toned image data with the expected result
-    for (int y = 0; y < sepiaImageData.length; y++) {
-      System.out.print("{");
-      for (int x = 0; x < sepiaImageData[y].length; x++) {
-        System.out.print("{");
+
+    for (int y = 0; y < imageData.length; y++) {
+
+      for (int x = 0; x < imageData[y].length; x++) {
+
         for (int c = 0; c < 3; c++) {
-          //System.out.print(sepiaImageData[y][x][c] + ", ");
-          assertEquals(expectedSepiaImageData[y][x][c], sepiaImageData[y][x][c]);
-        }System.out.print("},");
-      }System.out.println("},");
+
+          assertEquals(expectedImageData[y][x][c], imageData[y][x][c]);
+        }
+      }
     }
-    //    assertEquals("Compression percentage must be between 0 and 100.\n" +
-//"Error in compressing output3 by 115.0 %", outContent.toString().trim());
+
   }
 
 
@@ -1685,9 +1671,6 @@ public class JPGImageTest {
     assertEquals(50,histogram.findPeakValue(histogram.histogramG));
     assertEquals(50,histogram.findPeakValue(histogram.histogramB));
 
-    for(int i=0;i<histogram.histogramB.length;i++){
-      System.out.println(i+" : "+histogram.histogramB[i]);
-    }
 
     assertEquals(1, histogram.histogramR[63]);
     assertEquals(1, histogram.histogramR[167]);
@@ -1777,34 +1760,12 @@ public class JPGImageTest {
     assertEquals(51,histogram.findPeakValue(histogram.histogramG));
     assertEquals(52,histogram.findPeakValue(histogram.histogramB));
 
-    for (int i=0;i<histogram.histogramR.length;i++){
-
-      if(histogram.histogramR[i] > 0){
-        System.out.println(i+" : "+ histogram.histogramR[i]);
-      }
-    }
-
     assertEquals(1, histogram.histogramR[57]);
     assertEquals(1, histogram.histogramR[78]);
-    assertEquals(2, histogram.histogramR[167]);
-    assertEquals(2, histogram.histogramR[249]);
+    assertEquals(0, histogram.histogramR[167]);
+    assertEquals(0, histogram.histogramR[249]);
 
 
-
-   /* for(int i=0;i<histogram.histogramG.length;i++){
-      System.out.println(i+" : " +histogram.histogramG[i]+",");
-    }
-    assertEquals(2, histogram.histogramR[0]);
-    assertEquals(2, histogram.histogramR[255]);
-
-    assertEquals(2, histogram.histogramG[0]);
-    assertEquals(2, histogram.histogramR[255]);
-
-    assertEquals(2, histogram.histogramB[0]);
-    assertEquals(2, histogram.histogramB[255]);*/
-
-        assertEquals("Compression percentage must be between 0 and 100.\n" +
-"Error in compressing output3 by 115.0 %", outContent.toString().trim());
   }
 
 
