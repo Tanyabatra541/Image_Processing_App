@@ -23,7 +23,7 @@ public class Controller {
 
   private final Reader reader;
 
-  public static ImageOperations imageObj = null;
+  public static ImageOperations IMAGE_OBJ = null;
 
   /**
    * Constructs a new Controller instance.
@@ -34,6 +34,10 @@ public class Controller {
     reader = in;
   }
 
+  /**
+   * Runs the program by continuously prompting the user for commands until the "exit" command is
+   * entered.
+   */
   public void runProgram() {
 
     Scanner scanner = new Scanner(reader);
@@ -91,12 +95,12 @@ public class Controller {
 
       if (extension != null) {
         if ((extension.equalsIgnoreCase("png"))) {
-          imageObj = new PNGImage();
+          IMAGE_OBJ = new PNGImage();
         } else if (extension.equalsIgnoreCase("ppm")) {
-          imageObj = new PPMImage();
+          IMAGE_OBJ = new PPMImage();
         } else if (extension.equalsIgnoreCase("jpg")
                 || (extension.equalsIgnoreCase("jpeg"))) {
-          imageObj = new JPGImage();
+          IMAGE_OBJ = new JPGImage();
         } else {
           System.out.println("Unsupported image format");
         }
@@ -106,10 +110,10 @@ public class Controller {
 
     switch (cmd) {
       case "load":
-        imageObj.loadImage(arg1, arg2);
+        IMAGE_OBJ.loadImage(arg1, arg2);
         break;
       case "save":
-        imageObj.saveImage(arg1, arg2);
+        IMAGE_OBJ.saveImage(arg1, arg2);
         break;
       case "horizontal-flip":
         if (PARTS.length < 3) {
@@ -118,27 +122,27 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          boolean pass = imageObj.horizontalFlipImage(sourceImageName, destImageName);
+          boolean pass = IMAGE_OBJ.horizontalFlipImage(sourceImageName, destImageName);
           passOrFail(pass);
         }
         break;
       case "vertical-flip":
-        imageObj.verticalFlipImage(arg1, arg2);
+        IMAGE_OBJ.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          imageObj.sharpenImage(arg1, arg2, splitPercentage);
+          IMAGE_OBJ.sharpenImage(arg1, arg2, splitPercentage);
         } else {
-          imageObj.sharpenImage(arg1, arg2, 0);
+          IMAGE_OBJ.sharpenImage(arg1, arg2, 0);
         }
         break;
       case "blur":
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          imageObj.blurImage(arg1, arg2, splitPercentage);
+          IMAGE_OBJ.blurImage(arg1, arg2, splitPercentage);
         } else {
-          imageObj.blurImage(arg1, arg2, 0);
+          IMAGE_OBJ.blurImage(arg1, arg2, 0);
         }
         break;
       case "brighten":
@@ -149,15 +153,15 @@ public class Controller {
           int increment = Integer.parseInt(PARTS[1]);
           String sourceImageName = PARTS[2];
           String destImageName = PARTS[3];
-          imageObj.brightenImage(sourceImageName, destImageName, increment);
+          IMAGE_OBJ.brightenImage(sourceImageName, destImageName, increment);
         }
         break;
       case "sepia":
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          imageObj.sepiaImage(arg1, arg2, splitPercentage);
+          IMAGE_OBJ.sepiaImage(arg1, arg2, splitPercentage);
         } else {
-          imageObj.sepiaImage(arg1, arg2, 0);
+          IMAGE_OBJ.sepiaImage(arg1, arg2, 0);
         }
         break;
       case "rgb-combine":
@@ -169,7 +173,8 @@ public class Controller {
           String redImageName = PARTS[2];
           String greenImageName = PARTS[3];
           String blueImageName = PARTS[4];
-          imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName, blueImageName);
+          IMAGE_OBJ.combineRGBImages(combinedImageName, redImageName, greenImageName,
+                  blueImageName);
         }
         break;
       case "rgb-split":
@@ -181,7 +186,7 @@ public class Controller {
           String destImageNameRed = PARTS[2];
           String destImageNameGreen = PARTS[3];
           String destImageNameBlue = PARTS[4];
-          imageObj.rgbSplitImage(sourceImageName, destImageNameRed, destImageNameGreen,
+          IMAGE_OBJ.rgbSplitImage(sourceImageName, destImageNameRed, destImageNameGreen,
                   destImageNameBlue);
         }
         break;
@@ -193,7 +198,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.extractComponent(sourceImageName, destImageName, "red");
+          IMAGE_OBJ.extractComponent(sourceImageName, destImageName, "red");
         }
         break;
 
@@ -204,7 +209,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.extractComponent(sourceImageName, destImageName, "green");
+          IMAGE_OBJ.extractComponent(sourceImageName, destImageName, "green");
         }
         break;
       case "blue-component":
@@ -214,7 +219,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.extractComponent(sourceImageName, destImageName, "blue");
+          IMAGE_OBJ.extractComponent(sourceImageName, destImageName, "blue");
         }
         break;
 
@@ -225,7 +230,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.extractComponent(sourceImageName, destImageName, "value");
+          IMAGE_OBJ.extractComponent(sourceImageName, destImageName, "value");
         }
         break;
       case "intensity-component":
@@ -235,7 +240,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.extractComponent(sourceImageName, destImageName, "intensity");
+          IMAGE_OBJ.extractComponent(sourceImageName, destImageName, "intensity");
         }
         break;
       case "luma-component":
@@ -245,15 +250,15 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.extractComponent(sourceImageName, destImageName, "luma");
+          IMAGE_OBJ.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
       case "color-correct":
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          imageObj.colorCorrectImage(arg1, arg2, splitPercentage);
+          IMAGE_OBJ.colorCorrectImage(arg1, arg2, splitPercentage);
         } else {
-          imageObj.colorCorrectImage(arg1, arg2, 0);
+          IMAGE_OBJ.colorCorrectImage(arg1, arg2, 0);
         }
         break;
       case "histogram":
@@ -263,7 +268,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          imageObj.createHistogram(sourceImageName, destImageName);
+          IMAGE_OBJ.createHistogram(sourceImageName, destImageName);
         }
         break;
 
@@ -279,10 +284,10 @@ public class Controller {
           int w = Integer.parseInt(PARTS[3]);
           if (PARTS.length > 6 && PARTS[6].equals("split")) {
             int splitPercentage = Integer.parseInt(PARTS[7]);
-            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
+            IMAGE_OBJ.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
                     splitPercentage);
           } else {
-            imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
+            IMAGE_OBJ.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
                     0);
           }
         }
@@ -297,9 +302,9 @@ public class Controller {
           String destImageName = PARTS[2];
           if (PARTS.length > 3 && PARTS[3].equals("split")) {
             int splitPercentage = Integer.parseInt(PARTS[4]);
-            imageObj.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
+            IMAGE_OBJ.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
           } else {
-            imageObj.convertToGrayscale(sourceImageName, destImageName, 0);
+            IMAGE_OBJ.convertToGrayscale(sourceImageName, destImageName, 0);
           }
         }
         break;
@@ -308,7 +313,7 @@ public class Controller {
         double percentage = Double.parseDouble(PARTS[1]);
         String sourceImageName = PARTS[2];
         String destImageName = PARTS[3];
-        imageObj.compress(sourceImageName, destImageName, percentage);
+        IMAGE_OBJ.compress(sourceImageName, destImageName, percentage);
         break;
       case "-file":
         String scriptFilename = PARTS[1];

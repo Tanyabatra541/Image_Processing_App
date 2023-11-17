@@ -12,8 +12,8 @@ import javax.imageio.ImageIO;
  */
 public class PNGImage extends AbstractImage {
 
-  public static int height;
-  public static int width;
+  public static int HEIGHT;
+  public static int WIDTH;
 
 
   /**
@@ -61,9 +61,9 @@ public class PNGImage extends AbstractImage {
     if (imageRGBData != null) {
 
       ImageContent image = new ImageContent(imageName, imageRGBData);
-      image.setWidth(width);
-      image.setHeight(height);
-      imageMap.put(imageName, image);
+      image.setWidth(WIDTH);
+      image.setHeight(HEIGHT);
+      IMAGE_MAP.put(imageName, image);
       System.out.println("Loaded image: " + imageName);
     } else {
       System.out.println("Failed to load the image from: " + imagePath);
@@ -91,13 +91,13 @@ public class PNGImage extends AbstractImage {
         return null;
       }
 
-      width = bufferedImage.getWidth();
-      height = bufferedImage.getHeight();
+      WIDTH = bufferedImage.getWidth();
+      HEIGHT = bufferedImage.getHeight();
 
-      int[][][] imageRGBData = new int[height][width][3];
+      int[][][] imageRGBData = new int[HEIGHT][WIDTH][3];
 
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+      for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
           int rgb = bufferedImage.getRGB(x, y);
           imageRGBData[y][x][0] = (rgb >> 16) & 0xFF; // Red component
           imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;  // Green component
@@ -122,7 +122,7 @@ public class PNGImage extends AbstractImage {
   @Override
   public void saveImage(String imagePath, String imageName) {
     // Retrieve ImageContent from imageMap
-    ImageContent imageContent = imageMap.get(imageName);
+    ImageContent imageContent = IMAGE_MAP.get(imageName);
 
     if (imageContent != null) {
       int[][][] rgbData = imageContent.getRgbDataMap();
@@ -164,7 +164,8 @@ public class PNGImage extends AbstractImage {
    * @param pixels  The 2D array representing pixel values of the same image.
    * @return A BufferedImage generated from the provided RGB data and pixel values.
    */
-  protected static BufferedImage convertRGBAndPixelsDataToBufferedImage(int[][][] rgbData, double[][] pixels) {
+  protected static BufferedImage convertRGBAndPixelsDataToBufferedImage(int[][][] rgbData,
+                                                                        double[][] pixels) {
     int height = rgbData.length;
     int width = rgbData[0].length;
 

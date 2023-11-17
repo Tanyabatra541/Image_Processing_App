@@ -1,6 +1,8 @@
 package model;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -23,7 +25,7 @@ public class Histogram {
    * @param maxValue The maximum value for color intensity.
    */
   public Histogram(int minValue, int maxValue) {
-    if(minValue >= maxValue || minValue < 0 || maxValue > 255){
+    if (minValue >= maxValue || minValue < 0 || maxValue > 255) {
       throw new IllegalArgumentException("Invalid Histogram");
 
     }
@@ -131,6 +133,11 @@ public class Histogram {
     return peak;
   }
 
+  /**
+   * Creates a histogram from the RGB data of an image. The histogram is represented by three
+   * arrays, one for each color channel (red, green, and blue).
+   * @param sourceRGBData The RGB data of the source image, represented as a 3D array.
+   */
   public void createHistogram(int[][][] sourceRGBData) {
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
@@ -147,7 +154,6 @@ public class Histogram {
     calculateMaxCount();
 
   }
-
 
 
 }

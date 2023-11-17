@@ -2,6 +2,9 @@ package model;
 
 import java.io.IOException;
 
+/**
+ * This interface represents the operations that can be performed on an image.
+ */
 public interface ImageOperations {
 
   /**
@@ -196,7 +199,8 @@ public interface ImageOperations {
    * @param destImageName   The name of the destination adjusted image.
    * @param splitPercentage The percentage of the image to apply the adjustment to.
    */
-  void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName, int splitPercentage);
+  void applyLevelsAdjustment(int b, int m, int w, String sourceImageName, String destImageName,
+                             int splitPercentage);
 
   /**
    * Levels-adjust the image and saves it in the destination image passed.
