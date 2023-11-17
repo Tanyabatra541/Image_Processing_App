@@ -1,23 +1,21 @@
 package model;
 
 /**
- * The `Model.Model.Model.Model.ImageContent` class represents an image with
- * its associated name and content.
- * This class is used to store image data within the application.
+ * The `ImageContent` class represents an image with its associated name and content.
+ * This class is used to store image data.
  */
 public class ImageContent {
 
   double[][] pixels;
   private final String name;
-  private int[][][] rgbDataMap;
+  private final int[][][] rgbDataMap;
 
   int height;
   int width;
 
- // private int[][][] rgbDataMap;
 
   /**
-   * Constructs an `Model.ImageContent` instance with the specified name and content.
+   * Constructs an `ImageContent` instance with the specified name and content.
    *
    * @param name    The name or identifier of the image.
    * @param content The content data of the image.
@@ -37,7 +35,7 @@ public class ImageContent {
   }
 
   /**
-   * Get the content data of the image.
+   * Get the RGB data of the image.
    *
    * @return The content data of the image.
    */
@@ -45,22 +43,29 @@ public class ImageContent {
     return rgbDataMap;
   }
 
-  public void setRgbDataMap(int[][][] rgbDataMap) {
-    this.rgbDataMap = rgbDataMap;
-  }
-
-  public void setPixels(double[][] pixels) {
-    this.pixels = pixels;
-  }
-
+  /**
+   * Sets the width of the image.
+   *
+   * @param w The width of the image.
+   */
   public void setWidth(int w) {
     this.width = w;
   }
 
+  /**
+   * Sets the height of the image.
+   *
+   * @param h The height of the image.
+   */
   public void setHeight(int h) {
     this.height = h;
   }
 
+  /**
+   * Gets the pixel values of the image.
+   *
+   * @return A 2D array representing the pixel values of the image.
+   */
   public double[][] getPixels() {
     return pixels;
   }

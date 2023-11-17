@@ -24,7 +24,6 @@ public class PPMImage extends AbstractImage {
     int[][][] imageRGBData = readImageRGBData(imagePath);
     ImageContent image = new ImageContent(imageName, imageRGBData);
     imageMap.put(imageName, image);
-    //rgbDataMap.put(imageName, imageRGBData);
     System.out.println("Loaded image: " + imageName);
   }
 
@@ -49,6 +48,12 @@ public class PPMImage extends AbstractImage {
     return ppmContent.toString();
   }
 
+  /**
+   * Reads RGB data from a PPM file and returns a 3D array.
+   *
+   * @param filename The path to the PPM file to be read.
+   * @return A 3D array representing the RGB values of the image.
+   */
   public static int[][][] readImageRGBData(String filename) {
     Scanner sc = null;
 

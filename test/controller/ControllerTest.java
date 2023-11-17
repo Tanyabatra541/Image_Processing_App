@@ -14,14 +14,15 @@ import javax.imageio.ImageIO;
 
 import model.JPGImage;
 //import model.Model;
-import view.IView;
-import view.JFrameView;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
 
 
 /**
@@ -57,7 +58,7 @@ public class ControllerTest {
 
 
   @Before
-  public void setUp() {
+  public void setUp() throws FileNotFoundException {
     pngJpgImage = new JPGImage();
     createAndSaveJPG(originalMatrix, imageName, imagePath);
 
@@ -65,8 +66,8 @@ public class ControllerTest {
 
     System.setOut(new PrintStream(outContent));
 
-    IView view = new JFrameView(null);
-    controller = new Controller(view);
+    Reader in = new FileReader("res/scriptFile.txt");
+    controller = new Controller(in);
 
   }
 
@@ -110,7 +111,7 @@ public class ControllerTest {
 
   @Test
   public void testLoad() throws IOException {
-    controller.parseAndExecute("load " + imagePath + " " + imageName);
+    Controller.parseAndExecute("load " + imagePath + " " + imageName);
 
     // Check if the image was loaded successfully
     assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
@@ -138,8 +139,8 @@ public class ControllerTest {
 
   @Test
   public void testVerticalFlipImage() throws IOException {
-    controller.parseAndExecute("load " + imagePath + " " + imageName);
-    controller.parseAndExecute("vertical-flip " + imageName + " vertical-flip-img");
+    Controller.parseAndExecute("load " + imagePath + " " + imageName);
+    Controller.parseAndExecute("vertical-flip " + imageName + " vertical-flip-img");
 
 
     // Get the flipped image data
@@ -249,8 +250,6 @@ public class ControllerTest {
 
   @Test
   public void testSepiaImage() throws IOException {
-
-
     controller.parseAndExecute("load " + imagePath + " " + imageName);
     controller.parseAndExecute("sepia " + imageName + " sepia-img");
     pngJpgImage.sepiaImage(imageName, "sepia-img", 0);

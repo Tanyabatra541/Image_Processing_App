@@ -1,36 +1,19 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
 /**
- * The `PNGImage` class extends `AbstractImage` and provides specific functionality for
- * working with PNG image files. It includes methods for loading PNG images and saving
- * images in the PNG format.
+ * The `PNGImage` class extends `AbstractImage`. It includes methods for loading PNG images and
+ * saving images in the PNG format.
  */
 public class PNGImage extends AbstractImage {
 
   public static int height;
   public static int width;
-
-  private static String serializeImageData(int[][][] imageData) {
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    for (int y = 0; y < imageData.length; y++) {
-      for (int x = 0; x < imageData[y].length; x++) {
-        int rgb = (imageData[y][x][0] << 16) | (imageData[y][x][1] << 8) | imageData[y][x][2];
-        outputStream.write((rgb >> 16) & 0xFF);
-        outputStream.write((rgb >> 8) & 0xFF);
-        outputStream.write(rgb & 0xFF);
-      }
-    }
-    byte[] imageBytes = outputStream.toByteArray();
-    return Base64.getEncoder().encodeToString(imageBytes);
-  }
 
 
   /**
@@ -70,7 +53,7 @@ public class PNGImage extends AbstractImage {
    */
   @Override
   public void loadImage(String imagePath, String imageName) throws IOException {
-    int[][][] imageRGBData = null;
+    int[][][] imageRGBData;
 
     imageRGBData = convertPNGToRGB(imagePath);
 
@@ -81,7 +64,6 @@ public class PNGImage extends AbstractImage {
       image.setWidth(width);
       image.setHeight(height);
       imageMap.put(imageName, image);
-      //rgbDataMap.put(imageName, imageRGBData);
       System.out.println("Loaded image: " + imageName);
     } else {
       System.out.println("Failed to load the image from: " + imagePath);
@@ -89,6 +71,12 @@ public class PNGImage extends AbstractImage {
   }
 
 
+  /**
+   * Converts a PNG image file to a 3D array representing RGB values.
+   *
+   * @param imagePath The path to the PNG image file.
+   * @return A 3D array representing the RGB values of the image, or null if an error occurs.
+   */
   public static int[][][] convertPNGToRGB(String imagePath) {
     try {
       File imageFile = new File(imagePath);
@@ -132,7 +120,7 @@ public class PNGImage extends AbstractImage {
    * @param imageName The name of the image to be saved.
    */
   @Override
-  public void saveImage(String imagePath, String imageName)  {
+  public void saveImage(String imagePath, String imageName) {
     // Retrieve ImageContent from imageMap
     ImageContent imageContent = imageMap.get(imageName);
 
@@ -169,6 +157,13 @@ public class PNGImage extends AbstractImage {
   }
 
 
+  /**
+   * Converts RGB data and corresponding pixel values to a BufferedImage.
+   *
+   * @param rgbData The 3D array representing the RGB values of an image.
+   * @param pixels  The 2D array representing pixel values of the same image.
+   * @return A BufferedImage generated from the provided RGB data and pixel values.
+   */
   protected static BufferedImage convertRGBAndPixelsDataToBufferedImage(int[][][] rgbData, double[][] pixels) {
     int height = rgbData.length;
     int width = rgbData[0].length;
