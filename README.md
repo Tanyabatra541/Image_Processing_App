@@ -102,8 +102,7 @@ The images are then saved in the res/ folder.
   - levels-adjust/ levels-adjust split
 - To add the split functionality in the existing model, an additional parameter "splitPercentage" 
   was added to levels-adjust, color-correct, blur, sharpen, sepia, and greyscale. But in order to 
-  make
-  program scalable, the main method was made private which takes in the splitPercentage, source 
+  make program scalable, the main method was made private which takes in the splitPercentage, source 
   image, and destination image and then two method-overloaded public functions were added, one 
   which takes in the split functionality into account, the other which does not take split into 
   account (0 is sent as the splitPercentage parameter). This way our previous test cases will not 
