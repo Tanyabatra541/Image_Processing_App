@@ -60,8 +60,7 @@ public abstract class AbstractImage implements ImageOperations {
    * @param destImageName   The name of the destination image.
    */
   @Override
-  public boolean horizontalFlipImage(String sourceImageName, String destImageName) {
-    boolean flag = true;
+  public void horizontalFlipImage(String sourceImageName, String destImageName) {
     ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
 
     if (sourceImage != null) {
@@ -89,12 +88,11 @@ public abstract class AbstractImage implements ImageOperations {
         System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '"
                 + destImageName + "'.");
       } else {
-        flag = false;
+        System.out.println("Flip failed: " + sourceImageName);
       }
     } else {
-      flag = false;
+      System.out.println("Source image not found: " + sourceImageName);
     }
-    return flag;
   }
 
 

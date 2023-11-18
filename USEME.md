@@ -98,5 +98,19 @@ processing application. Each command is detailed with examples and specific cond
 - *Greyscale an Image with Split*:
    - `greyscale <source_image> <dest_image> split <splitPercentage>`
    - Example: `greyscale testImage testImage-greyscale split 50`
+- *Run script file*:
+   - `-file <file_path>`
+   - Example: `-file res/scriptFile.txt`
 
-Commands can be executed for different image formats (PPM, JPG, PNG) with the same syntax.
+Commands can be executed for different image formats (PPM, JPG, JPEG, PNG) with the same syntax.
+
+Conditions:
+1. An image can only be loaded if it exists in the file path specified.
+2. Only file extensions accepted in load are PNG, JPG, JPEG, PPM and txt(for script file). 
+3. Only file extensions accepted in save are PNG, JPG, JPEG and PPM.
+4. Filtration operation can be performed only on an image name which has been already loaded.
+5. The red, blue and green images for the RGB combine command should have already been loaded 
+   before the combine command is executed.
+6. Split can only be performed on color correct, level adjust, blur, sharpen, sepia and greyscale.
+7. Any percentages should lie between 0 and 100.
+8. The b, m and w values of level adjust should lie between 0 and 255.

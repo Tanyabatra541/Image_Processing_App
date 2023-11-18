@@ -31,7 +31,7 @@ public interface ImageOperations {
    * @param sourceImageName The name of the source image.
    * @param destImageName   The name of the destination image.
    */
-  boolean horizontalFlipImage(String sourceImageName, String destImageName);
+  void horizontalFlipImage(String sourceImageName, String destImageName);
 
   /**
    * Flip an image vertically and save it as a new image with the given name.

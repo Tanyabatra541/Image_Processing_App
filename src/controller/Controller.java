@@ -63,14 +63,6 @@ public class Controller {
 
   static Appendable output = new StringBuilder();
 
-  private static void passOrFail(boolean pass) throws IOException {
-    if (pass) {
-      output.append("Operation successful");
-    } else {
-      output.append("Operation failed");
-    }
-
-  }
 
   /**
    * Parses the file and executes each line as a command and decides what operation is to be
@@ -125,8 +117,7 @@ public class Controller {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          boolean pass = IMAGE_OBJ.horizontalFlipImage(sourceImageName, destImageName);
-          passOrFail(pass);
+          IMAGE_OBJ.horizontalFlipImage(sourceImageName, destImageName);
         }
         break;
       case "vertical-flip":
