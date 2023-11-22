@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
-import model.imageOperations;
+import model.ImageOperations;
 import model.JPGImage;
 import model.PNGImage;
 import model.PPMImage;
@@ -28,7 +28,7 @@ public class Controller implements ActionListener {
   private String input;
   private final String result;
 
-  public static imageOperations imageObj = null;
+  public static ImageOperations imageObj = null;
   private final IView view;
 
   /**

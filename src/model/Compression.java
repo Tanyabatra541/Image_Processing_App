@@ -1,6 +1,11 @@
 package model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * The `Compression` class provides methods for compressing images using Haar Wavelet Transform
@@ -134,7 +139,8 @@ class Compression {
     List<Double> sortedList = new ArrayList<>(uniqueValues);
     Collections.sort(sortedList);
     int totalCount = sortedList.size();
-    int cutOffIndex = Math.min(Math.round((float) (compressionPercentage * totalCount) / 100), totalCount - 1);
+    int cutOffIndex = Math.min(Math.round((float) (compressionPercentage * totalCount) / 100),
+            totalCount - 1);
 
     double threshold = sortedList.get(cutOffIndex);
     return threshold;
@@ -191,7 +197,8 @@ class Compression {
     return transformedSequence;
   }
 
-  private double[][] inverseHaarWaveletTransform(double[][] imageArr, int originalRows, int originalCols) {
+  private double[][] inverseHaarWaveletTransform(double[][] imageArr, int originalRows, int
+          originalCols) {
     int rows = imageArr.length;
     int cols = imageArr[0].length;
 

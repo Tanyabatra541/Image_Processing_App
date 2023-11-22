@@ -14,7 +14,7 @@ public class Main {
    * @param args The command-line arguments.
    */
   public static void main(String[] args) {
-    IView view = new JFrameView("Eqqcho a string");
+    IView view = new JFrameView("Echo a string");
     Controller controller = new Controller( view);
   }
 }

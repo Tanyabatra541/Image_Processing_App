@@ -1,6 +1,8 @@
 package model;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -8,9 +10,9 @@ import java.awt.image.BufferedImage;
  * creating histogram images, adding values to the histogram and calculating peak values.
  */
 public class Histogram {
-  int[] histogramR;
-  int[] histogramG;
-  int[] histogramB;
+  public int[] histogramR;
+  public int[] histogramG;
+  public int[] histogramB;
   private final int minValue;
   private final int maxValue;
   private int maxCount;
@@ -23,6 +25,10 @@ public class Histogram {
    * @param maxValue The maximum value for color intensity.
    */
   public Histogram(int minValue, int maxValue) {
+    if (minValue >= maxValue || minValue < 0 || maxValue > 255) {
+      throw new IllegalArgumentException("Invalid Histogram");
+
+    }
     this.minValue = minValue;
     this.maxValue = maxValue;
     this.histogramR = new int[maxValue - minValue + 1];
@@ -52,7 +58,7 @@ public class Histogram {
   /**
    * Calculate the maximum count of all color values in the histogram.
    */
-  public void calculateMaxCount() {
+  public int calculateMaxCount() {
     maxCount = 0;
     for (int i = 0; i < histogramR.length; i++) {
       if (histogramR[i] > maxCount) {
@@ -65,6 +71,7 @@ public class Histogram {
         maxCount = histogramB[i];
       }
     }
+    return maxCount;
   }
 
   /**
@@ -125,5 +132,28 @@ public class Histogram {
 
     return peak;
   }
+
+  /**
+   * Creates a histogram from the RGB data of an image. The histogram is represented by three
+   * arrays, one for each color channel (red, green, and blue).
+   * @param sourceRGBData The RGB data of the source image, represented as a 3D array.
+   */
+  public void createHistogram(int[][][] sourceRGBData) {
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+
+        int redValue = sourceRGBData[y][x][0];
+        int greenValue = sourceRGBData[y][x][1];
+        int blueValue = sourceRGBData[y][x][2];
+        addValue(redValue, greenValue, blueValue);
+
+      }
+    }
+    calculateMaxCount();
+
+  }
+
 
 }

@@ -23,7 +23,7 @@ public class PPMImage extends AbstractImage {
   public void loadImage(String imagePath, String imageName) {
     int[][][] imageRGBData = readImageRGBData(imagePath);
     ImageContent image = new ImageContent(imageName, imageRGBData);
-    imageMap.put(imageName, image);
+    IMAGE_MAP.put(imageName, image);
     System.out.println("Loaded image: " + imageName);
   }
 
@@ -102,7 +102,7 @@ public class PPMImage extends AbstractImage {
    */
   @Override
   public void saveImage(String imagePath, String imageName) {
-    ImageContent image = imageMap.get(imageName);
+    ImageContent image = IMAGE_MAP.get(imageName);
 
 
     if (image != null) {
