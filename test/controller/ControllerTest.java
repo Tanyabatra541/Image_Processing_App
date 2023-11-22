@@ -5,9 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
-import model.Histogram;
-
 import model.PNGImage;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -1036,9 +1035,9 @@ public class ControllerTest {
   public void testLevelAdjustment1() throws IOException {
 
 
-
     controller.parseAndExecute("load " + imagePath + " " + imageName);
-    controller.parseAndExecute("levels-adjust 20 100 255 " + imageName + " color-correct-img split 0");
+    controller.parseAndExecute("levels-adjust 20 100 255 " + imageName
+            + " color-correct-img split 0");
 
     int[][][] sepiaImageData = pngJpgImage.getRgbDataMap("color-correct-img");
 
@@ -1086,11 +1085,11 @@ public class ControllerTest {
   @Test
   public void testRunScriptFile() throws IOException {
 
-    controller.parseAndExecute("-file scriptFile.txt");
+    Controller.parseAndExecute("-file res/scriptFile.txt");
 
     File savedFile = new File("res/testImage-brighter.png");
     assertTrue("Image file should exist after saving.", savedFile.exists());
-    savedFile = new File("res/ttestImage-blur.png");
+    savedFile = new File("res/testImage-blur.png");
     assertTrue("Image file should exist after saving.", savedFile.exists());
 
     // Clean up: Delete the saved file after the test

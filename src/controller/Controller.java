@@ -93,10 +93,9 @@ public class Controller {
         } else if (extension.equalsIgnoreCase("jpg")
                 || (extension.equalsIgnoreCase("jpeg"))) {
           IMAGE_OBJ = new JPGImage();
-        } else if (extension.equalsIgnoreCase("txt")){
+        } else if (extension.equalsIgnoreCase("txt")) {
           System.out.println("Executing script file");
-        }
-        else {
+        } else {
           System.out.println("Unsupported image format");
         }
       }
