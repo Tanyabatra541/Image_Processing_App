@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
@@ -101,13 +102,43 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 //      System.out.println("Invalid index: " + index);
 //    }
 //  }
+public static BufferedImage readPPM(String filePath) throws IOException {
+  String command ="load "+ filePath+" destPPM";
+
+  System.out.println(command);
+  try {
+    Controller.parseAndExecute(command);
+    command = "save destPPM.png destPPM";
+    Controller.parseAndExecute(command);
+  } catch (IOException e) {
+    throw new RuntimeException(e);
+  }
+  System.out.println("Image saved");
+  return ImageIO.read(new File("destPPM.png"));
+}
+
+
 
   public void setImg2(int index, String imgPath) {
     if (index >= 0 && index < images.length) {
       try {
         System.out.println("Loading image: " + imgPath);
         // Load the new image using ImageIO to ensure proper loading
-        BufferedImage newImage = ImageIO.read(new File(imgPath));
+        //BufferedImage newImaBufferedImage newImage = readPPM(imgPath);ge = ImageIO.read(new File(imgPath));
+        BufferedImage newImage;
+
+        if (imgPath.toLowerCase().endsWith(".ppm")) {
+          // If the file is a PPM, use custom method to read it
+          newImage = readPPM(imgPath);
+        } else {
+          // Otherwise, use ImageIO to read other image formats
+          try {
+            newImage = ImageIO.read(new File(imgPath));
+          } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception (e.g., log the error or show a message)
+            return; // Exit the method or handle the error as needed
+          }
+        }
 
         System.out.println("hellooooo");
 
