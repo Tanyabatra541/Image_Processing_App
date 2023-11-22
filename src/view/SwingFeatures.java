@@ -16,6 +16,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class SwingFeatures {
 
   public static void main(String[] args) {
+//    SwingFeaturesFrame.setDefaultLookAndFeelDecorated(false);
+//    SwingFeaturesFrame frame = new SwingFeaturesFrame();
+
     SwingFeaturesFrame.setDefaultLookAndFeelDecorated(false);
     SwingFeaturesFrame frame = new SwingFeaturesFrame();
 
@@ -24,9 +27,9 @@ public class SwingFeatures {
 
     try {
       // Set cross-platform Java L&F (also called "Metal")
-      UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//      UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
-      //UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName());
+      UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName());
 
       //   UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
       //    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");

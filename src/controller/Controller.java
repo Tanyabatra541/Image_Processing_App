@@ -14,7 +14,7 @@ import model.ImageOperations;
 import model.JPGImage;
 import model.PNGImage;
 import model.PPMImage;
-import view.IView;
+//import view.IView;
 
 import static java.lang.System.exit;
 
@@ -23,108 +23,110 @@ import static java.lang.System.exit;
  * It handles user interactions from the view, processes user input, and communicates with the
  * model and view components.
  */
-public class Controller implements ActionListener {
+public class Controller {
+
+  private static String lastSavedImagePath;
 
   private String input;
   private final String result;
 
   public static ImageOperations imageObj = null;
-  private final IView view;
+//  private final IView view;
 
-  /**
-   * Constructs a new Controller instance.
-   *
-   * @param v The view to interact with.
-   */
-  public Controller(IView v) {
-    view = v;
-    view.setListener(this);
-    view.display();
+//  /**
+//   * Constructs a new Controller instance.
+//   *
+//   * @param v The view to interact with.
+//   */
+  public Controller() {
+//    view = v;
+//    view.setListener(this);
+//    view.display();
     input = "";
     result = "";
 
   }
 
-  /**
-   * Handles user actions, such as button clicks and text input.
-   *
-   * @param e An ActionEvent representing the user's action.
-   */
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    if (Objects.equals(e.getActionCommand(), "Execute Button")) {
-      // Read the text from the input textField
-      String inputText = view.getInputString();
-      // Check if the input text represents a file path
-      File file = new File(inputText);
-      if (file.exists() && file.isFile()) {
-        try {
-          // Read the contents of the file and display them in the view
-          StringBuilder fileContents;
-          fileContents = new StringBuilder();
-          try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-              fileContents.append(line).append("\n");
-            }
-          }
-          // Pass the file contents to the model for processing
-          executeScriptFromFile(inputText);
-          // Display any output or result from the model in the view
-          String result = getResult(); // This method depends on your model structure
-          view.setEchoOutput(result);
-        } catch (IOException ex) {
-          // Handle any exceptions that occur during file reading
-          view.setEchoOutput("Error reading the file: " + ex.getMessage());
-        }
-      } else {
-        // Send the text to the model
-        setString(inputText);
-        // Clear the input textField
-        view.clearInputString();
-        // Finally, echo the string in the view
-        String text = getString();
-        view.setEchoOutput(text);
-      }
-    } else if (Objects.equals(e.getActionCommand(), "Exit Button")) {
-      view.closeOrDispose();
-      Scanner scanner = new Scanner(System.in);
-      while (true) {
-        System.out.print("Enter a command (or type 'exit' to quit): ");
-        String command = scanner.nextLine();
-        if (command.equals("exit")) {
-          break;
-        }
-        try {
-          parseAndExecute(command);
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    }
-  }
+//  /**
+//   * Handles user actions, such as button clicks and text input.
+//   *
+//   * @param e An ActionEvent representing the user's action.
+//   */
+//  @Override
+//  public void actionPerformed(ActionEvent e) {
+//    if (Objects.equals(e.getActionCommand(), "Execute Button")) {
+//      // Read the text from the input textField
+//      String inputText = view.getInputString();
+//      // Check if the input text represents a file path
+//      File file = new File(inputText);
+//      if (file.exists() && file.isFile()) {
+//        try {
+//          // Read the contents of the file and display them in the view
+//          StringBuilder fileContents;
+//          fileContents = new StringBuilder();
+//          try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//              fileContents.append(line).append("\n");
+//            }
+//          }
+//          // Pass the file contents to the model for processing
+//          executeScriptFromFile(inputText);
+//          // Display any output or result from the model in the view
+//          String result = getResult(); // This method depends on your model structure
+//          view.setEchoOutput(result);
+//        } catch (IOException ex) {
+//          // Handle any exceptions that occur during file reading
+//          view.setEchoOutput("Error reading the file: " + ex.getMessage());
+//        }
+//      } else {
+//        // Send the text to the model
+//        setString(inputText);
+//        // Clear the input textField
+//        view.clearInputString();
+//        // Finally, echo the string in the view
+//        String text = getString();
+//        view.setEchoOutput(text);
+//      }
+//    } else if (Objects.equals(e.getActionCommand(), "Exit Button")) {
+//      view.closeOrDispose();
+//      Scanner scanner = new Scanner(System.in);
+//      while (true) {
+//        System.out.print("Enter a command (or type 'exit' to quit): ");
+//        String command = scanner.nextLine();
+//        if (command.equals("exit")) {
+//          break;
+//        }
+//        try {
+//          parseAndExecute(command);
+//        } catch (IOException ex) {
+//          throw new RuntimeException(ex);
+//        }
+//      }
+//    }
+//  }
 
-  private void setString(String i) {
-    input = i;
-  }
-
-  /**
-   * Gets the input string.
-   *
-   * @return The input string.
-   */
-  private String getString() {
-    return input;
-  }
-
-  /**
-   * Retrieves the result from processing commands, if available.
-   *
-   * @return The result string obtained from command execution.
-   */
-  private String getResult() {
-    return result;
-  }
+//  private void setString(String i) {
+//    input = i;
+//  }
+//
+//  /**
+//   * Gets the input string.
+//   *
+//   * @return The input string.
+//   */
+//  private String getString() {
+//    return input;
+//  }
+//
+//  /**
+//   * Retrieves the result from processing commands, if available.
+//   *
+//   * @return The result string obtained from command execution.
+//   */
+//  private String getResult() {
+//    return result;
+//  }
 
   /**
    * The parts of the command entered by the user.
@@ -139,6 +141,7 @@ public class Controller implements ActionListener {
    * @throws IOException If an I/O error occurs while executing the command.
    */
   public static void parseAndExecute(String command) throws IOException {
+    System.out.println("Executing command: " + command);
     PARTS = command.split(" ");
     if (PARTS.length < 2) {
       System.out.println("Invalid command: " + command);
@@ -172,6 +175,7 @@ public class Controller implements ActionListener {
         break;
       case "save":
         imageObj.saveImage(arg1, arg2);
+        lastSavedImagePath = arg2 + "." + extension;
         break;
       case "horizontal-flip":
         if (PARTS.length < 3) {
@@ -431,5 +435,10 @@ public class Controller implements ActionListener {
       return null;
     }
   }
+
+  public static String getLastSavedImagePath() {
+    return lastSavedImagePath;
+  }
+
 }
 

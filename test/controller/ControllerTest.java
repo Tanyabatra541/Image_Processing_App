@@ -14,8 +14,8 @@ import javax.imageio.ImageIO;
 
 import model.JPGImage;
 //import model.Model;
-import view.IView;
-import view.JFrameView;
+//import view.IView;
+//import view.JFrameView;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -65,8 +65,8 @@ public class ControllerTest {
 
     System.setOut(new PrintStream(outContent));
 
-    IView view = new JFrameView(null);
-    controller = new Controller(view);
+//    IView view = new JFrameView(null);
+    controller = new Controller();
 
   }
 
