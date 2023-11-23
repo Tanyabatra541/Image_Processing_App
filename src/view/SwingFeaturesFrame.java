@@ -74,6 +74,29 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     }
     System.out.println("Image saved");
     setImg2(1, "dest.png");
+    generateHistogram("dest");
+//      imageLabel[1].repaint();
+    System.out.println("after setImg2");
+
+  }
+
+  private void generateHistogram(String imgName) {
+    // Implement the logic for applying the filter here
+    // You can update the image or perform any other processing
+    // For example, to set the third image to "Apple.png"
+    System.out.println("histogram " + imgName);
+    String command =  "histogram " + imgName+  " hist";
+
+    System.out.println(command);
+    try {
+      Controller.parseAndExecute(command);
+      command = "save hist.png hist";
+      Controller.parseAndExecute(command);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    System.out.println("Image saved");
+    setImg2(2, "hist.png");
 
 //      imageLabel[1].repaint();
     System.out.println("after setImg2");
@@ -468,6 +491,7 @@ public static BufferedImage readPPM(String filePath) throws IOException {
 //            String imgPath = Controller.getLastSavedImagePath();
 //            if(imgPath != null ){
             setImg2(0, f.getAbsolutePath());
+            generateHistogram("img");
 //            }
           } catch (IOException e) {
             throw new RuntimeException(e);
