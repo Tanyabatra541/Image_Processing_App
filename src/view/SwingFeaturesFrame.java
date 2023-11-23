@@ -342,8 +342,8 @@ public static BufferedImage readPPM(String filePath) throws IOException {
 
     comboboxDisplay = new JLabel("Which filter do you want?");
     comboboxPanel.add(comboboxDisplay);
-    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "Blur", "Sharpen", "RGB-split", "Grayscale- Luma", "sepia", "Compress",
-            "Color Correct", "Level Adjust", "Split"};
+    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "rgb-split", "luma-component", "sepia", "compress",
+            "color-correct", "levels-adjust", "Split"};
     JComboBox<String> combobox = new JComboBox<String>();
     //the event listener when an option is selected
     combobox.setActionCommand("Filter options");
