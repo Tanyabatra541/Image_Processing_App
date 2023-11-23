@@ -58,9 +58,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   JScrollPane[] imageScrollPane;
 
   private void applyFilter(String filterName) {
-    // Implement the logic for applying the filter here
-    // You can update the image or perform any other processing
-    // For example, to set the third image to "Apple.png"
+
     System.out.println("hello " + filterName);
     String command = filterName + " img dest";
 
@@ -103,28 +101,6 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
   }
 
-//  public void setImg2(int index, String imgPath) {
-///*    ImageIcon newIcon = new ImageIcon(imgPath);
-//    if (newIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-//      imageLabel[index].setIcon(newIcon);
-//
-//    } else {
-//      System.out.println("Failed to load the image: " + imgPath);
-//    }*/
-//    if (index >= 0 && index < images.length) {
-//      images[index] = imgPath;
-//      imageLabel[index].setIcon(new ImageIcon(imgPath));
-//      imagePanel.repaint();
-//      imageLabel[index].repaint();
-//
-//      // Revalidate the containing panel and its hierarchy
-//      mainPanel.revalidate();
-//      mainPanel.repaint();
-//    } else {
-//      // Handle invalid index
-//      System.out.println("Invalid index: " + index);
-//    }
-//  }
 public static BufferedImage readPPM(String filePath) throws IOException {
   String command ="load "+ filePath+" destPPM";
 
@@ -505,6 +481,14 @@ public static BufferedImage readPPM(String filePath) throws IOException {
         if (retvalue == JFileChooser.APPROVE_OPTION) {
           File f = fchooser.getSelectedFile();
           fileSaveDisplay.setText(f.getAbsolutePath());
+
+          try {
+            String command = "save " + f.getAbsolutePath() + " dest";
+            Controller.parseAndExecute(command);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+          System.out.println("Image saved");
         }
       }
       break;
