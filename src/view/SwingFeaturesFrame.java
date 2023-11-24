@@ -7,12 +7,16 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -80,73 +84,11 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   }
 
 //  public void setImg2(int index, String imgPath) {
-///*    ImageIcon newIcon = new ImageIcon(imgPath);
-//    if (newIcon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-//      imageLabel[index].setIcon(newIcon);
-//
-//    } else {
-//      System.out.println("Failed to load the image: " + imgPath);
-//    }*/
-//    if (index >= 0 && index < images.length) {
-//      images[index] = imgPath;
-//      imageLabel[index].setIcon(new ImageIcon(imgPath));
-//      imagePanel.repaint();
-//      imageLabel[index].repaint();
-//
-//      // Revalidate the containing panel and its hierarchy
-//      mainPanel.revalidate();
-//      mainPanel.repaint();
-//    } else {
-//      // Handle invalid index
-//      System.out.println("Invalid index: " + index);
-//    }
-//  }
-
-  public void setImg2(int index, String imgPath) {
-    if (index >= 0 && index < images.length) {
-      try {
-        System.out.println("Loading image: " + imgPath);
-        // Load the new image using ImageIO to ensure proper loading
-        BufferedImage newImage = ImageIO.read(new File(imgPath));
-
-        System.out.println("hellooooo");
-
-        // Set the loaded image to the JLabel at the specified index
-        imageLabel[index].setIcon(new ImageIcon(newImage));
-
-        // Repaint the components
-        imagePanel.repaint();
-        imageLabel[index].repaint();
-
-        // Revalidate the containing panel and its hierarchy
-        mainPanel.revalidate();
-        mainPanel.repaint();
-      } catch (IOException e) {
-        e.printStackTrace();
-        // Handle the exception (e.g., log the error or show a message)
-      }
-    } else {
-      // Handle invalid index
-      System.out.println("Invalid index: " + index);
-    }
-  }
-
-//  public void setImg2(int index, String imgPath) {
 //    if (index >= 0 && index < images.length) {
 //      try {
 //        System.out.println("Loading image: " + imgPath);
-//        BufferedImage newImage;
-//
-//        // Check the file extension to determine the image format
-//        String fileExtension = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
-//
-//        if (fileExtension.equals("ppm")) {
-//          // Load PPM image using a custom PPM loader
-//          newImage = loadPpmImage(imgPath);
-//        } else {
-//          // Load other image formats using ImageIO
-//          newImage = ImageIO.read(new File(imgPath));
-//        }
+//        // Load the new image using ImageIO to ensure proper loading
+//        BufferedImage newImage = ImageIO.read(new File(imgPath));
 //
 //        System.out.println("hellooooo");
 //
@@ -170,73 +112,111 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 //    }
 //  }
 
-  // Custom method to load PPM images
-//  private BufferedImage loadPpmImage(String imgPath) throws IOException {
-//    BufferedReader reader = new BufferedReader(new FileReader(imgPath));
-//    String line;
-//
-//    // Skip comment lines and find the first non-comment line
-//    do {
-//      line = reader.readLine();
-//    } while (line != null && line.startsWith("#"));
-//
-//    if (line == null) {
-//      throw new IOException("Invalid PPM file format");
-//    }
-//
-//    // The first non-comment line is expected to contain the magic number "P3" or "P6"
-//    String magicNumber = line.trim();
-//    if (!magicNumber.equals("P3") && !magicNumber.equals("P6")) {
-//      throw new IOException("Unsupported PPM format: " + magicNumber);
-//    }
-//
-//    // Read image dimensions
-//    int width = Integer.parseInt(reader.readLine());
-//    int height = Integer.parseInt(reader.readLine());
-//    int maxColorValue = Integer.parseInt(reader.readLine());
-//
-//    // Create BufferedImage with appropriate color model
-//    BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-//
-//    if (magicNumber.equals("P3")) {
-//      // Read ASCII PPM data
-//      for (int y = 0; y < height; y++) {
-//        for (int x = 0; x < width; x++) {
-//          int red = Integer.parseInt(reader.readLine());
-//          int green = Integer.parseInt(reader.readLine());
-//          int blue = Integer.parseInt(reader.readLine());
-//
-//          int rgb = (red << 16) | (green << 8) | blue;
-//          image.setRGB(x, y, rgb);
-//        }
-//      }
-//    } else {
-//      // Read binary PPM data
-//      DataInputStream dataInput = new DataInputStream(new FileInputStream(imgPath));
-//
-//      // Skip the header
-//      dataInput.readLine(); // Skip magic number
-//      dataInput.readLine(); // Skip comment line
-//      dataInput.readLine(); // Skip width, height, and max color value
-//
-//      // Read binary data
-//      for (int y = 0; y < height; y++) {
-//        for (int x = 0; x < width; x++) {
-//          int red = dataInput.readUnsignedByte();
-//          int green = dataInput.readUnsignedByte();
-//          int blue = dataInput.readUnsignedByte();
-//
-//          int rgb = (red << 16) | (green << 8) | blue;
-//          image.setRGB(x, y, rgb);
-//        }
-//      }
-//
-//      dataInput.close();
-//    }
-//
-//    reader.close();
-//    return image;
-//  }
+  public void setImg2(int index, String imgPath) {
+    if (index >= 0 && index < images.length) {
+      try {
+        System.out.println("Loading image: " + imgPath);
+
+        BufferedImage newImage;
+
+        // Check the file extension to determine the image type
+        String extension = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+
+        if (extension.equals("ppm")) {
+          newImage = loadPpmImage(imgPath);
+        } else {
+          // Load the new image using ImageIO for JPG and PNG
+          newImage = ImageIO.read(new File(imgPath));
+        }
+        System.out.println("loadppm function finished");
+        // Set the loaded image to the JLabel at the specified index
+        imageLabel[index].setIcon(new ImageIcon(newImage));
+
+        // Repaint the components
+        imagePanel.repaint();
+        imageLabel[index].repaint();
+
+        // Revalidate the containing panel and its hierarchy
+        mainPanel.revalidate();
+        mainPanel.repaint();
+      } catch (IOException e) {
+        e.printStackTrace();
+        // Handle the exception (e.g., log the error or show a message)
+      }
+    } else {
+      // Handle invalid index
+      System.out.println("Invalid index: " + index);
+    }
+  }
+
+  private BufferedImage loadPpmImage(String imgPath) throws IOException {
+    int[][][] imageRGBData = readImageRGBData(imgPath);
+    String ppmContent = convertToPPMFormat(imageRGBData);
+
+    try (InputStream inputStream = new ByteArrayInputStream(ppmContent.getBytes())) {
+      return ImageIO.read(inputStream);
+    }
+  }
+
+  public static int[][][] readImageRGBData(String filename) throws IOException {
+    Scanner sc = null;
+
+    try {
+      sc = new Scanner(new FileInputStream(filename));
+    } catch (FileNotFoundException e) {
+      throw new IOException("File " + filename + " not found!", e);
+    }
+
+    StringBuilder builder = new StringBuilder();
+    while (sc.hasNextLine()) {
+      String s = sc.nextLine();
+      if (s.charAt(0) != '#') {
+        builder.append(s).append(System.lineSeparator());
+      }
+    }
+
+    sc = new Scanner(builder.toString());
+
+    String token = sc.next();
+    if (!token.equals("P3")) {
+      throw new IOException("Invalid PPM file: plain RAW file should begin with P3");
+    }
+    int width = sc.nextInt();
+    int height = sc.nextInt();
+
+    int[][][] imageRGBData = new int[height][width][3];
+    int maxValue = sc.nextInt(); // Read the maximum color value
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        imageRGBData[i][j][0] = sc.nextInt(); // Red component
+        imageRGBData[i][j][1] = sc.nextInt(); // Green component
+        imageRGBData[i][j][2] = sc.nextInt(); // Blue component
+      }
+    }
+    return imageRGBData;
+  }
+
+  private String convertToPPMFormat(int[][][] imageRGBData) {
+    StringBuilder ppmContent = new StringBuilder();
+    int height = imageRGBData.length;
+    int width = imageRGBData[0].length;
+
+    ppmContent.append("P3\n");
+    ppmContent.append(width).append(" ").append(height).append("\n");
+    ppmContent.append("255\n");
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        ppmContent.append(imageRGBData[i][j][0]).append(" "); // Red component
+        ppmContent.append(imageRGBData[i][j][1]).append(" "); // Green component
+        ppmContent.append(imageRGBData[i][j][2]).append(" "); // Blue component
+      }
+      ppmContent.append("\n");
+    }
+
+    return ppmContent.toString();
+  }
 
 
 
