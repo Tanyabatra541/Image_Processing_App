@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -61,9 +62,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   JScrollPane[] imageScrollPane;
 
   private void applyFilter(String filterName) {
-    // Implement the logic for applying the filter here
-    // You can update the image or perform any other processing
-    // For example, to set the third image to "Apple.png"
+
     System.out.println("hello " + filterName);
     String command = filterName + " img dest";
 
@@ -77,12 +76,94 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     }
     System.out.println("Image saved");
     setImg2(1, "dest.png");
+    generateHistogram("dest");
+//      imageLabel[1].repaint();
+    System.out.println("after setImg2");
+
+  }
+
+  private void generateHistogram(String imgName) {
+    // Implement the logic for applying the filter here
+    // You can update the image or perform any other processing
+    // For example, to set the third image to "Apple.png"
+    System.out.println("histogram " + imgName);
+    String command =  "histogram " + imgName+  " hist";
+
+    System.out.println(command);
+    try {
+      Controller.parseAndExecute(command);
+      command = "save hist.png hist";
+      Controller.parseAndExecute(command);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    System.out.println("Image saved");
+    setImg2(2, "hist.png");
 
 //      imageLabel[1].repaint();
     System.out.println("after setImg2");
 
   }
 
+public static BufferedImage readPPM(String filePath) throws IOException {
+  String command ="load "+ filePath+" destPPM";
+
+  System.out.println(command);
+  try {
+    Controller.parseAndExecute(command);
+    command = "save destPPM.png destPPM";
+    Controller.parseAndExecute(command);
+  } catch (IOException e) {
+    throw new RuntimeException(e);
+  }
+  System.out.println("Image saved");
+  return ImageIO.read(new File("destPPM.png"));
+}
+
+
+
+  public void setImg2(int index, String imgPath) {
+    if (index >= 0 && index < images.length) {
+      try {
+        System.out.println("Loading image: " + imgPath);
+        // Load the new image using ImageIO to ensure proper loading
+        //BufferedImage newImaBufferedImage newImage = readPPM(imgPath);ge = ImageIO.read(new File(imgPath));
+        BufferedImage newImage;
+
+        if (imgPath.toLowerCase().endsWith(".ppm")) {
+          // If the file is a PPM, use custom method to read it
+          newImage = readPPM(imgPath);
+        } else {
+          // Otherwise, use ImageIO to read other image formats
+          try {
+            newImage = ImageIO.read(new File(imgPath));
+          } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception (e.g., log the error or show a message)
+            return; // Exit the method or handle the error as needed
+          }
+        }
+
+        System.out.println("hellooooo");
+
+        // Set the loaded image to the JLabel at the specified index
+        imageLabel[index].setIcon(new ImageIcon(newImage));
+
+        // Repaint the components
+        imagePanel.repaint();
+        imageLabel[index].repaint();
+
+        // Revalidate the containing panel and its hierarchy
+        mainPanel.revalidate();
+        mainPanel.repaint();
+      } catch (IOException e) {
+        e.printStackTrace();
+        // Handle the exception (e.g., log the error or show a message)
+      }
+    } else {
+      // Handle invalid index
+      System.out.println("Invalid index: " + index);
+    }
+  }
 //  public void setImg2(int index, String imgPath) {
 //    if (index >= 0 && index < images.length) {
 //      try {
@@ -112,42 +193,6 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 //    }
 //  }
 
-  public void setImg2(int index, String imgPath) {
-    if (index >= 0 && index < images.length) {
-      try {
-        System.out.println("Loading image: " + imgPath);
-
-        BufferedImage newImage;
-
-        // Check the file extension to determine the image type
-        String extension = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
-
-        if (extension.equals("ppm")) {
-          newImage = loadPpmImage(imgPath);
-        } else {
-          // Load the new image using ImageIO for JPG and PNG
-          newImage = ImageIO.read(new File(imgPath));
-        }
-        System.out.println("loadppm function finished");
-        // Set the loaded image to the JLabel at the specified index
-        imageLabel[index].setIcon(new ImageIcon(newImage));
-
-        // Repaint the components
-        imagePanel.repaint();
-        imageLabel[index].repaint();
-
-        // Revalidate the containing panel and its hierarchy
-        mainPanel.revalidate();
-        mainPanel.repaint();
-      } catch (IOException e) {
-        e.printStackTrace();
-        // Handle the exception (e.g., log the error or show a message)
-      }
-    } else {
-      // Handle invalid index
-      System.out.println("Invalid index: " + index);
-    }
-  }
 
   private BufferedImage loadPpmImage(String imgPath) throws IOException {
     int[][][] imageRGBData = readImageRGBData(imgPath);
@@ -292,8 +337,8 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     comboboxDisplay = new JLabel("Which filter do you want?");
     comboboxPanel.add(comboboxDisplay);
-    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "Blur", "Sharpen", "RGB-split", "Grayscale- Luma", "sepia", "Compress",
-            "Color Correct", "Level Adjust", "Split"};
+    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "rgb-split", "luma-component", "sepia", "compress",
+            "color-correct", "levels-adjust", "Split"};
     JComboBox<String> combobox = new JComboBox<String>();
     //the event listener when an option is selected
     combobox.setActionCommand("Filter options");
@@ -417,6 +462,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 //            String imgPath = Controller.getLastSavedImagePath();
 //            if(imgPath != null ){
             setImg2(0, f.getAbsolutePath());
+            generateHistogram("img");
 //            }
           } catch (IOException e) {
             throw new RuntimeException(e);
@@ -430,6 +476,14 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
         if (retvalue == JFileChooser.APPROVE_OPTION) {
           File f = fchooser.getSelectedFile();
           fileSaveDisplay.setText(f.getAbsolutePath());
+
+          try {
+            String command = "save " + f.getAbsolutePath() + " dest";
+            Controller.parseAndExecute(command);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+          System.out.println("Image saved");
         }
       }
       break;
