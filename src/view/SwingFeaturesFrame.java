@@ -56,11 +56,23 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   private JPanel imagePanel = new JPanel();
   JLabel[] imageLabel;
   JScrollPane[] imageScrollPane;
+  JTextField compressionPercentage;
 
   private void applyFilter(String filterName) {
 
     System.out.println("hello " + filterName);
     String command = filterName + " img dest";
+    if(Objects.equals(filterName, "compress")){
+      String enteredText = compressionPercentage.getText();
+
+      System.out.println("Entered Compression Percentage: " + enteredText);
+command= filterName +" "+enteredText+ " img dest";
+    }else if(Objects.equals(filterName, "levels-adjust")){
+      String enteredText = compressionPercentage.getText();
+//TODO
+      System.out.println("Entered Compression Percentage: " + enteredText);
+      command= filterName +" "+enteredText+ " img dest";
+    }
 
     System.out.println(command);
     try {
@@ -380,7 +392,7 @@ public static BufferedImage readPPM(String filePath) throws IOException {
     comboboxPanel.add(bmwPanel);
     bmwPanel.setVisible(false);
 
-    JTextField compressionPercentage = new JTextField(3);
+    compressionPercentage = new JTextField(3);
 
     compressPanel.add(new JLabel("Enter compression percentage:"));
     compressPanel.add(compressionPercentage);
@@ -430,19 +442,19 @@ public static BufferedImage readPPM(String filePath) throws IOException {
           String selectedFilter = (String) box.getSelectedItem();
           comboboxDisplay.setText("You selected: " + selectedFilter);
           System.out.println("Selected option: " + selectedFilter);
-          if (Objects.equals(selectedFilter, "RGB-split")) {
+          if (Objects.equals(selectedFilter, "rgb-split")) {
 
             bmwPanel.setVisible(true);
           } else {
             bmwPanel.setVisible(false);
           }
-          if (Objects.equals(selectedFilter, "Compress")) {
+          if (Objects.equals(selectedFilter, "compress")) {
 
             compressPanel.setVisible(true);
           } else {
             compressPanel.setVisible(false);
           }
-          if (Objects.equals(selectedFilter, "Split")) {
+          if (Objects.equals(selectedFilter, "split")) {
 //            setImg2(2, "Koala.jpg");
           } else {
             splitPanel.setVisible(false);
