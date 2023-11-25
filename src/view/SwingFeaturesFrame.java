@@ -38,9 +38,7 @@ import controller.Controller;
  */
 
 public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemListener, ListSelectionListener {
-  private JPasswordField pfield;
-  private JButton pButton;
-  private JLabel pDisplay;
+
   private JPanel mainPanel;
   private JPanel bmwPanel = new JPanel();
   private JPanel compressPanel = new JPanel();
@@ -75,7 +73,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   String selectedFilter;
 
   private void createArrowSlider() {
-    JSlider arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+    JSlider arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
     percentageLabel.setBounds(10, 60, 150, 20); // Adjust the bounds as needed
 
@@ -108,7 +106,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     arrowSlider.setBounds(panelWidth-panelHeight, 0, panelWidth, panelHeight);
 
-    //100, 600
+
     // Set the bounds for the slider within the panel
     // arrowSlider.setBounds(554, 0, 600 , sliderHeight);
 
@@ -181,9 +179,7 @@ command= filterName +" "+enteredText+ " img dest";
   }
 
   private void generateHistogram(String imgName) {
-    // Implement the logic for applying the filter here
-    // You can update the image or perform any other processing
-    // For example, to set the third image to "Apple.png"
+
     System.out.println("histogram " + imgName);
     String command =  "histogram " + imgName+  " hist";
 
@@ -198,7 +194,7 @@ command= filterName +" "+enteredText+ " img dest";
     System.out.println("Image saved");
     setImg2(2, "hist.png");
 
-//      imageLabel[1].repaint();
+
     System.out.println("after setImg2");
 
   }
@@ -277,109 +273,6 @@ public static BufferedImage readPPM(String filePath) throws IOException {
       System.out.println("Invalid index: " + index);
     }
   }
-//  public void setImg2(int index, String imgPath) {
-//    if (index >= 0 && index < images.length) {
-//      try {
-//        System.out.println("Loading image: " + imgPath);
-//        // Load the new image using ImageIO to ensure proper loading
-//        BufferedImage newImage = ImageIO.read(new File(imgPath));
-//
-//        System.out.println("hellooooo");
-//
-//        // Set the loaded image to the JLabel at the specified index
-//        imageLabel[index].setIcon(new ImageIcon(newImage));
-//
-//        // Repaint the components
-//        imagePanel.repaint();
-//        imageLabel[index].repaint();
-//
-//        // Revalidate the containing panel and its hierarchy
-//        mainPanel.revalidate();
-//        mainPanel.repaint();
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//        // Handle the exception (e.g., log the error or show a message)
-//      }
-//    } else {
-//      // Handle invalid index
-//      System.out.println("Invalid index: " + index);
-//    }
-//  }
-
-
-  private BufferedImage loadPpmImage(String imgPath) throws IOException {
-    int[][][] imageRGBData = readImageRGBData(imgPath);
-    String ppmContent = convertToPPMFormat(imageRGBData);
-
-    try (InputStream inputStream = new ByteArrayInputStream(ppmContent.getBytes())) {
-      return ImageIO.read(inputStream);
-    }
-  }
-
-  public static int[][][] readImageRGBData(String filename) throws IOException {
-    Scanner sc = null;
-
-    try {
-      sc = new Scanner(new FileInputStream(filename));
-    } catch (FileNotFoundException e) {
-      throw new IOException("File " + filename + " not found!", e);
-    }
-
-    StringBuilder builder = new StringBuilder();
-    while (sc.hasNextLine()) {
-      String s = sc.nextLine();
-      if (s.charAt(0) != '#') {
-        builder.append(s).append(System.lineSeparator());
-      }
-    }
-
-    sc = new Scanner(builder.toString());
-
-    String token = sc.next();
-    if (!token.equals("P3")) {
-      throw new IOException("Invalid PPM file: plain RAW file should begin with P3");
-    }
-    int width = sc.nextInt();
-    int height = sc.nextInt();
-
-    int[][][] imageRGBData = new int[height][width][3];
-    int maxValue = sc.nextInt(); // Read the maximum color value
-
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        imageRGBData[i][j][0] = sc.nextInt(); // Red component
-        imageRGBData[i][j][1] = sc.nextInt(); // Green component
-        imageRGBData[i][j][2] = sc.nextInt(); // Blue component
-      }
-    }
-    return imageRGBData;
-  }
-
-  private String convertToPPMFormat(int[][][] imageRGBData) {
-    StringBuilder ppmContent = new StringBuilder();
-    int height = imageRGBData.length;
-    int width = imageRGBData[0].length;
-
-    ppmContent.append("P3\n");
-    ppmContent.append(width).append(" ").append(height).append("\n");
-    ppmContent.append("255\n");
-
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        ppmContent.append(imageRGBData[i][j][0]).append(" "); // Red component
-        ppmContent.append(imageRGBData[i][j][1]).append(" "); // Green component
-        ppmContent.append(imageRGBData[i][j][2]).append(" "); // Blue component
-      }
-      ppmContent.append("\n");
-    }
-
-    return ppmContent.toString();
-  }
-
-
-
-  // Example usage in your code
-// Assuming your constructor has already called setImg(images) to initialize the images
 
 
   public void setImg(String[] imgList) {
