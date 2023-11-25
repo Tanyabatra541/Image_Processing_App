@@ -21,6 +21,9 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -41,7 +44,6 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   private JPanel mainPanel;
   private JPanel bmwPanel = new JPanel();
   private JPanel compressPanel = new JPanel();
-  private JPanel splitPanel = new JPanel();
   private JPanel comboboxPanel;
   private JScrollPane mainScrollPane;
 
@@ -62,23 +64,95 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   JScrollPane[] imageScrollPane;
   JTextField compressionPercentage;
 
+  JTextField bNumericField;
+
+  JTextField splitField;
+  JTextField mNumericField;
+  JTextField wNumericField;
+  JPanel sliderPanel;
+
+  int sliderValue=0;
+  String selectedFilter;
+
+  private void createArrowSlider() {
+    JSlider arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+    JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
+    percentageLabel.setBounds(10, 60, 150, 20); // Adjust the bounds as needed
+
+    arrowSlider.addChangeListener(e -> {
+      sliderValue = arrowSlider.getValue();
+      percentageLabel.setText("Split Percentage: " + sliderValue + "%");
+      System.out.println("Slider value: " + sliderValue);
+      applyFilter(selectedFilter);
+      // Handle slider value change
+    });
+
+    arrowSlider.setMajorTickSpacing(20);
+    arrowSlider.setMinorTickSpacing(5);
+    arrowSlider.setPaintTicks(true);
+    arrowSlider.setPaintLabels(true);
+
+    // Assuming imageLabel[1] is set at this point
+    JLabel imageLabel = this.imageLabel[1];
+
+    // Create a new panel to hold the slider
+    sliderPanel = new JPanel(null); // Use absolute positioning
+    int panelWidth = 600; // Set your desired width
+    int panelHeight = 50; // Set your desired height
+    sliderPanel.setPreferredSize(new Dimension(panelWidth, panelHeight));
+
+    // Set the bounds for the slider within the panel
+    //arrowSlider.setBounds(554, 0, panelWidth - 150, panelHeight);
+    percentageLabel.setBounds(panelWidth*2, 0, 150, panelHeight);
+
+
+    arrowSlider.setBounds(panelWidth-panelHeight, 0, panelWidth, panelHeight);
+
+    //100, 600
+    // Set the bounds for the slider within the panel
+    // arrowSlider.setBounds(554, 0, 600 , sliderHeight);
+
+    // Add the slider to the new panel
+    sliderPanel.add(arrowSlider);
+    // Add the label to the slider panel
+    sliderPanel.add(percentageLabel);
+
+    // Add the new panel to mainPanel
+    mainPanel.add(sliderPanel);
+    sliderPanel.setVisible(false);
+  }
+
   private void applyFilter(String filterName) {
 
     System.out.println("hello " + filterName);
     String command = filterName + " img dest";
+
+
+
     if(Objects.equals(filterName, "compress")){
       String enteredText = compressionPercentage.getText();
 
       System.out.println("Entered Compression Percentage: " + enteredText);
 command= filterName +" "+enteredText+ " img dest";
     }else if(Objects.equals(filterName, "levels-adjust")){
-      String enteredText = compressionPercentage.getText();
-//TODO
-      System.out.println("Entered Compression Percentage: " + enteredText);
-      command= filterName +" "+enteredText+ " img dest";
+      String bValue = bNumericField.getText();
+      String mValue = mNumericField.getText();
+      String wValue = wNumericField.getText();
+
+// Now you can use these values as needed
+      System.out.println("B Value: " + bValue);
+      System.out.println("M Value: " + mValue);
+      System.out.println("W Value: " + wValue);
+      command= filterName +" "+bValue+ " "+ mValue+ " "+ wValue+ " img dest";
     }
 
-    System.out.println(command);
+
+    //apply split
+    if(sliderValue!=0){
+      command = command.concat(" split "+sliderValue);
+    }
+
+
     try {
       Controller.parseAndExecute(command);
       command = "save dest.png dest";
@@ -91,7 +165,19 @@ command= filterName +" "+enteredText+ " img dest";
     generateHistogram("dest");
 //      imageLabel[1].repaint();
     System.out.println("after setImg2");
-
+    addSlider();
+   // createArrowSlider();
+  }
+  private void addSlider(){
+    if(Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
+            Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
+            Objects.equals(selectedFilter, "sharpen")){
+      sliderPanel.setVisible(true);
+      sliderValue=50;
+    }else{
+      sliderValue=0;
+      sliderPanel.setVisible(false);
+    }
   }
 
   private void generateHistogram(String imgName) {
@@ -155,11 +241,26 @@ public static BufferedImage readPPM(String filePath) throws IOException {
           }
         }
 
-        System.out.println("hellooooo");
 
-        // Set the loaded image to the JLabel at the specified index
-        imageLabel[index].setIcon(new ImageIcon(newImage));
+        if(index==2){
+          System.out.println("hellooooo");
+          // Zoom in the image by 50%
+          int scaledWidth = (int) (newImage.getWidth() * 1.5);
+          int scaledHeight = (int) (newImage.getHeight() * 1.5);
 
+          // Create a scaled version of the image
+          Image scaledImage = newImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+
+          // Set the loaded and scaled image to the JLabel at the specified index
+          imageLabel[index].setIcon(new ImageIcon(scaledImage));
+
+        }else {
+
+          // Set the loaded image to the JLabel at the specified index
+          imageLabel[index].setIcon(new ImageIcon(newImage));
+        }
+// Clear the text (remove the placeholder text)
+        imageLabel[index].setText(null);
         // Repaint the components
         imagePanel.repaint();
         imageLabel[index].repaint();
@@ -287,11 +388,18 @@ public static BufferedImage readPPM(String filePath) throws IOException {
     for (int i = 0; i < imageLabel.length; i++) {
       imageLabel[i] = new JLabel();
       imageScrollPane[i] = new JScrollPane(imageLabel[i]);
-      imageLabel[i].setIcon(new ImageIcon(images[i]));
+     // imageLabel[i].setIcon(new ImageIcon(images[i]));
+      imageLabel[i].setIcon(new ImageIcon("path/to/placeholder-image.png"));
+
+      imageLabel[i].setHorizontalAlignment(JLabel.CENTER); // Set text alignment to the center
+      imageLabel[i].setVerticalAlignment(JLabel.CENTER);
       imageScrollPane[i].setPreferredSize(new Dimension(100, 600));
       imagePanel.add(imageScrollPane[i]);
 
     }
+    imageLabel[0].setText("Please upload image");
+    imageLabel[1].setText("Please select filter");
+    imageLabel[2].setText("Please upload image");
     imageLabel[0].setBorder(BorderFactory.createTitledBorder("Original Image"));
     imageLabel[1].setBorder(BorderFactory.createTitledBorder("Processed Image"));
     imageLabel[2].setBorder(BorderFactory.createTitledBorder("Current Histogram"));
@@ -339,7 +447,7 @@ public static BufferedImage readPPM(String filePath) throws IOException {
     imageScrollPane = new JScrollPane[images.length];
 
     setImg(images);
-
+    createArrowSlider();
     //dialog boxes
 
     comboboxPanel = new JPanel();
@@ -349,7 +457,7 @@ public static BufferedImage readPPM(String filePath) throws IOException {
 
     comboboxDisplay = new JLabel("Which filter do you want?");
     comboboxPanel.add(comboboxDisplay);
-    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "rgb-split", "luma-component", "sepia", "compress",
+    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "red-component", "blue-component", "green-component", "luma-component", "sepia", "compress",
             "color-correct", "levels-adjust", "Split"};
     JComboBox<String> combobox = new JComboBox<String>();
     //the event listener when an option is selected
@@ -367,7 +475,7 @@ public static BufferedImage readPPM(String filePath) throws IOException {
       @Override
       public void actionPerformed(ActionEvent e) {
         // Handle the "Apply Filter" button click event
-        String selectedFilter = (String) combobox.getSelectedItem();
+        selectedFilter = (String) combobox.getSelectedItem();
 
         // Call the applyFilter method with the selected filter option
         applyFilter(selectedFilter);
@@ -376,9 +484,9 @@ public static BufferedImage readPPM(String filePath) throws IOException {
 
     mainPanel.add(applyFilterButton);
 
-    JTextField bNumericField = new JTextField(3);
-    JTextField mNumericField = new JTextField(3);
-    JTextField wNumericField = new JTextField(3);
+     bNumericField = new JTextField(3);
+     mNumericField = new JTextField(3);
+     wNumericField = new JTextField(3);
 
     bmwPanel.add(new JLabel("Enter B, M, W:"));
     bmwPanel.add(bNumericField);
@@ -395,13 +503,8 @@ public static BufferedImage readPPM(String filePath) throws IOException {
     comboboxPanel.add(compressPanel);
     compressPanel.setVisible(false);
 
-    JTextField splitPercentage = new JTextField(3);
 
-    splitPanel.add(new JLabel("Enter compression percentage:"));
-    splitPanel.add(splitPercentage);
 
-    comboboxPanel.add(splitPanel);
-    splitPanel.setVisible(false);
 
 
 //dialog boxes
@@ -436,24 +539,23 @@ public static BufferedImage readPPM(String filePath) throws IOException {
           JComboBox<String> box = (JComboBox<String>) arg0.getSource();
           String selectedFilter = (String) box.getSelectedItem();
           comboboxDisplay.setText("You selected: " + selectedFilter);
-          System.out.println("Selected option: " + selectedFilter);
-          if (Objects.equals(selectedFilter, "rgb-split")) {
 
-            bmwPanel.setVisible(true);
-          } else {
-            bmwPanel.setVisible(false);
-          }
+          System.out.println("Selected option: " + selectedFilter);
           if (Objects.equals(selectedFilter, "compress")) {
 
             compressPanel.setVisible(true);
           } else {
             compressPanel.setVisible(false);
           }
-          if (Objects.equals(selectedFilter, "split")) {
-//            setImg2(2, "Koala.jpg");
+          if (Objects.equals(selectedFilter, "levels-adjust")) {
+
+            bmwPanel.setVisible(true);
           } else {
-            splitPanel.setVisible(false);
+            bmwPanel.setVisible(false);
           }
+
+
+          addSlider();
         }
 
         break;
