@@ -615,6 +615,7 @@ public abstract class AbstractImage implements ImageOperations {
    *
    * @return A map where keys are image names and values are the corresponding RGB data.
    */
+  @Override
   public int[][][] getRgbDataMap(String imageName) {
     return IMAGE_MAP.get(imageName).getRgbDataMap();
   }

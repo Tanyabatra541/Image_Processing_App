@@ -1,11 +1,7 @@
 package controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
@@ -14,6 +10,7 @@ import model.ImageOperations;
 import model.JPGImage;
 import model.PNGImage;
 import model.PPMImage;
+import view.SwingFeaturesFrame;
 //import view.IView;
 
 import static java.lang.System.exit;
@@ -23,7 +20,7 @@ import static java.lang.System.exit;
  * It handles user interactions from the view, processes user input, and communicates with the
  * model and view components.
  */
-public class Controller {
+public class Controller implements ControllerFeatures{
 
   private static String lastSavedImagePath;
 
@@ -31,6 +28,8 @@ public class Controller {
   private final String result;
 
   public static ImageOperations imageObj = null;
+
+  private SwingFeaturesFrame view;
 //  private final IView view;
 
 //  /**
@@ -38,8 +37,8 @@ public class Controller {
 //   *
 //   * @param v The view to interact with.
 //   */
-  public Controller() {
-//    view = v;
+  public Controller(SwingFeaturesFrame v) {
+    view = v;
 //    view.setListener(this);
 //    view.display();
     input = "";
@@ -439,6 +438,51 @@ public class Controller {
   public static String getLastSavedImagePath() {
     return lastSavedImagePath;
   }
+
+  @Override
+  public void addFeaturesToView(ControllerFeatures features) {
+    view.addFeatures(features);
+  }
+
+  @Override
+  public void loadImage(String command, String destImageName) {
+    try {
+      parseAndExecute(command);
+      int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
+      view.updateImageForIndex(destImageData, 0);
+      parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
+      int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
+      view.updateImageForIndex(destHistogramData, 2);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    System.out.println("Loading image: " + command);
+//    parseAndExecute(command);
+  }
+
+  @Override
+  public void saveImage(String command) {
+    try {
+      parseAndExecute(command);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void applyFeatures(String command, String destImageName) {
+    try {
+      parseAndExecute(command);
+      int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
+      view.updateImageForIndex(destImageData, 1);
+      parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
+      int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
+      view.updateImageForIndex(destHistogramData, 2);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
 
 }
 

@@ -6,30 +6,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.*;
 
 import controller.Controller;
+import controller.ControllerFeatures;
 
 /**
  * This class opens the main window, that has different elements illustrated in
@@ -37,7 +26,7 @@ import controller.Controller;
  * not recommended in general.
  */
 
-public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemListener, ListSelectionListener {
+public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSelectionListener {
 
   private JPanel mainPanel;
   private JPanel bmwPanel = new JPanel();
@@ -69,11 +58,18 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   JTextField wNumericField;
   JPanel sliderPanel;
 
-  int sliderValue=0;
+  int sliderValue = 0;
   String selectedFilter;
+  private JButton fileOpenButtonforLoad;
+  private JComboBox<String> combobox;
+  private JButton fileSaveButton;
+  private JButton applyFilterButton;
+  private JSlider arrowSlider;
+
+  private String command;
 
   private void createArrowSlider() {
-    JSlider arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+    arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
     percentageLabel.setBounds(10, 60, 150, 20); // Adjust the bounds as needed
 
@@ -81,10 +77,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       sliderValue = arrowSlider.getValue();
       percentageLabel.setText("Split Percentage: " + sliderValue + "%");
       System.out.println("Slider value: " + sliderValue);
-      applyFilter(selectedFilter);
-      // Handle slider value change
     });
-
     arrowSlider.setMajorTickSpacing(20);
     arrowSlider.setMinorTickSpacing(5);
     arrowSlider.setPaintTicks(true);
@@ -120,53 +113,8 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     sliderPanel.setVisible(false);
   }
 
-  private void applyFilter(String filterName) {
-
-    System.out.println("hello " + filterName);
-    String command = filterName + " img dest";
-
-
-
-    if(Objects.equals(filterName, "compress")){
-      String enteredText = compressionPercentage.getText();
-
-      System.out.println("Entered Compression Percentage: " + enteredText);
-command= filterName +" "+enteredText+ " img dest";
-    }else if(Objects.equals(filterName, "levels-adjust")){
-      String bValue = bNumericField.getText();
-      String mValue = mNumericField.getText();
-      String wValue = wNumericField.getText();
-
-// Now you can use these values as needed
-      System.out.println("B Value: " + bValue);
-      System.out.println("M Value: " + mValue);
-      System.out.println("W Value: " + wValue);
-      command= filterName +" "+bValue+ " "+ mValue+ " "+ wValue+ " img dest";
-    }
-
-
-    //apply split
-    if(sliderValue!=0){
-      command = command.concat(" split "+sliderValue);
-    }
-
-
-    try {
-      Controller.parseAndExecute(command);
-      command = "save dest.png dest";
-      Controller.parseAndExecute(command);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    System.out.println("Image saved");
-    setImg2(1, "dest.png");
-    generateHistogram("dest");
-//      imageLabel[1].repaint();
-    System.out.println("after setImg2");
-    addSlider();
-   // createArrowSlider();
-  }
-  private void addSlider(){
+  private void addSlider() {
+    System.out.println("in slider panel");
     if(Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
             Objects.equals(selectedFilter, "sharpen")){
@@ -178,99 +126,44 @@ command= filterName +" "+enteredText+ " img dest";
     }
   }
 
-  private void generateHistogram(String imgName) {
+  public void updateImageForIndex(int[][][] rgbValues,int index) {
+    BufferedImage image = convertRGBtoBufferedImage(rgbValues);
+    // Zoom in the image by 50%
+    int scaledWidth = (int) (image.getWidth() * 1.5);
+    int scaledHeight = (int) (image.getHeight() * 1.5);
 
-    System.out.println("histogram " + imgName);
-    String command = "histogram " + imgName + " hist";
+    // Create a scaled version of the image
+    Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
 
-    System.out.println(command);
-    try {
-      Controller.parseAndExecute(command);
-      command = "save hist.png hist";
-      Controller.parseAndExecute(command);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    System.out.println("Image saved");
-    setImg2(2, "hist.png");
-
-
-    System.out.println("after setImg2");
-
+    // Set the loaded and scaled image to the JLabel at the specified index
+    imageLabel[index].setIcon(new ImageIcon(scaledImage));
+    imageLabel[index].setText(null);
+    // Repaint the components
+    imagePanel.repaint();
+    imageLabel[index].repaint();
+    mainPanel.revalidate();
+    mainPanel.repaint();
   }
 
-  public static BufferedImage readPPM(String filePath) throws IOException {
-    String command = "load " + filePath + " destPPM";
+  private BufferedImage convertRGBtoBufferedImage(int[][][] rgbData) {
+    int height = rgbData.length;
+    int width = rgbData[0].length;
 
-    System.out.println(command);
-    try {
-      Controller.parseAndExecute(command);
-      command = "save destPPM.png destPPM";
-      Controller.parseAndExecute(command);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    System.out.println("Image saved");
-    return ImageIO.read(new File("destPPM.png"));
-  }
+    BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int r = rgbData[y][x][0];
+        int g = rgbData[y][x][1];
+        int b = rgbData[y][x][2];
 
-  public void setImg2(int index, String imgPath) {
-    if (index >= 0 && index < images.length) {
-      try {
-        System.out.println("Loading image: " + imgPath);
-        // Load the new image using ImageIO to ensure proper loading
-        //BufferedImage newImaBufferedImage newImage = readPPM(imgPath);ge = ImageIO.read(new File(imgPath));
-        BufferedImage newImage;
+        int rgb = (r << 16) | (g << 8) | b;
 
-        if (imgPath.toLowerCase().endsWith(".ppm")) {
-          // If the file is a PPM, use custom method to read it
-          newImage = readPPM(imgPath);
-        } else {
-          // Otherwise, use ImageIO to read other image formats
-          try {
-            newImage = ImageIO.read(new File(imgPath));
-          } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception (e.g., log the error or show a message)
-            return; // Exit the method or handle the error as needed
-          }
-        }
-
-
-        if(index==2){
-          System.out.println("hellooooo");
-          // Zoom in the image by 50%
-          int scaledWidth = (int) (newImage.getWidth() * 1.5);
-          int scaledHeight = (int) (newImage.getHeight() * 1.5);
-
-          // Create a scaled version of the image
-          Image scaledImage = newImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-
-          // Set the loaded and scaled image to the JLabel at the specified index
-          imageLabel[index].setIcon(new ImageIcon(scaledImage));
-
-        }else {
-
-          // Set the loaded image to the JLabel at the specified index
-          imageLabel[index].setIcon(new ImageIcon(newImage));
-        }
-// Clear the text (remove the placeholder text)
-        imageLabel[index].setText(null);
-        // Repaint the components
-        imagePanel.repaint();
-        imageLabel[index].repaint();
-
-        // Revalidate the containing panel and its hierarchy
-        mainPanel.revalidate();
-        mainPanel.repaint();
-      } catch (IOException e) {
-        e.printStackTrace();
-        // Handle the exception (e.g., log the error or show a message)
+        bufferedImage.setRGB(x, y, rgb);
       }
-    } else {
-      // Handle invalid index
-      System.out.println("Invalid index: " + index);
     }
+
+    return bufferedImage;
   }
 
   public void setImg(String[] imgList) {
@@ -279,7 +172,7 @@ command= filterName +" "+enteredText+ " img dest";
     for (int i = 0; i < imageLabel.length; i++) {
       imageLabel[i] = new JLabel();
       imageScrollPane[i] = new JScrollPane(imageLabel[i]);
-     // imageLabel[i].setIcon(new ImageIcon(images[i]));
+      // imageLabel[i].setIcon(new ImageIcon(images[i]));
       imageLabel[i].setIcon(new ImageIcon("path/to/placeholder-image.png"));
 
       imageLabel[i].setHorizontalAlignment(JLabel.CENTER); // Set text alignment to the center
@@ -316,9 +209,7 @@ command= filterName +" "+enteredText+ " img dest";
     JPanel fileopenPanelForLoad = new JPanel();
     fileopenPanelForLoad.setLayout(new FlowLayout());
     dialogBoxesPanelForLoad.add(fileopenPanelForLoad);
-    JButton fileOpenButtonforLoad = new JButton("Open a file");
-    fileOpenButtonforLoad.setActionCommand("Open file");
-    fileOpenButtonforLoad.addActionListener(this);
+    fileOpenButtonforLoad = new JButton("Open a file");
     fileopenPanelForLoad.add(fileOpenButtonforLoad);
     fileOpenDisplay = new JLabel("File path will appear here");
     fileopenPanelForLoad.add(fileOpenDisplay);
@@ -348,10 +239,7 @@ command= filterName +" "+enteredText+ " img dest";
     comboboxPanel.add(comboboxDisplay);
     String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "red-component", "blue-component", "green-component", "luma-component", "sepia", "compress",
             "color-correct", "levels-adjust", "Split"};
-    JComboBox<String> combobox = new JComboBox<String>();
-    //the event listener when an option is selected
-    combobox.setActionCommand("Filter options");
-    combobox.addActionListener(this);
+    combobox = new JComboBox<String>();
     for (int i = 0; i < options.length; i++) {
       combobox.addItem(options[i]);
     }
@@ -359,23 +247,13 @@ command= filterName +" "+enteredText+ " img dest";
     comboboxPanel.add(combobox);
     mainPanel.add(comboboxPanel);
 
-    JButton applyFilterButton = new JButton("Apply Filter");
-    applyFilterButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        // Handle the "Apply Filter" button click event
-        selectedFilter = (String) combobox.getSelectedItem();
-
-        // Call the applyFilter method with the selected filter option
-        applyFilter(selectedFilter);
-      }
-    });
+    applyFilterButton = new JButton("Apply Filter");
 
     mainPanel.add(applyFilterButton);
 
-     bNumericField = new JTextField(3);
-     mNumericField = new JTextField(3);
-     wNumericField = new JTextField(3);
+    bNumericField = new JTextField(3);
+    mNumericField = new JTextField(3);
+    wNumericField = new JTextField(3);
 
     bmwPanel.add(new JLabel("Enter B, M, W:"));
     bmwPanel.add(bNumericField);
@@ -393,9 +271,6 @@ command= filterName +" "+enteredText+ " img dest";
     compressPanel.setVisible(false);
 
 
-
-
-
 //dialog boxes
     JPanel dialogBoxesPanel = new JPanel();
     dialogBoxesPanel.setBorder(BorderFactory.createTitledBorder("Save Processed Image:"));
@@ -407,90 +282,153 @@ command= filterName +" "+enteredText+ " img dest";
     JPanel filesavePanel = new JPanel();
     filesavePanel.setLayout(new FlowLayout());
     dialogBoxesPanel.add(filesavePanel);
-    JButton fileSaveButton = new JButton("Save a file");
-    fileSaveButton.setActionCommand("Save file");
-    fileSaveButton.addActionListener(this);
+    fileSaveButton = new JButton("Save a file");
     filesavePanel.add(fileSaveButton);
     fileSaveDisplay = new JLabel("File path will appear here");
     filesavePanel.add(fileSaveDisplay);
 
+    setVisible(true);
 
   }
 
 
-  @Override
-  public void actionPerformed(ActionEvent arg0) {
-    // TODO Auto-generated method stub
-    switch (arg0.getActionCommand()) {
-      case "Filter options":
-        System.out.println("Filter options");
-        if (arg0.getSource() instanceof JComboBox) {
-          JComboBox<String> box = (JComboBox<String>) arg0.getSource();
-          String selectedFilter = (String) box.getSelectedItem();
-          comboboxDisplay.setText("You selected: " + selectedFilter);
+  public void addFeatures(ControllerFeatures features){
+    fileOpenButtonforLoad.addActionListener(evt -> features.loadImage(openFile(), "img"));
+    applyFilterButton.addActionListener(evt -> features.applyFeatures(filterOptions(), "dest"));
+    fileSaveButton.addActionListener(evt -> features.saveImage(saveFile()));
+    arrowSlider.addChangeListener(e -> {
+      sliderValue = arrowSlider.getValue();
+      System.out.println("Slider value: " + sliderValue);
+      features.applyFeatures(filterOptions(), "dest");
+    });
+  }
 
-          System.out.println("Selected option: " + selectedFilter);
-          if (Objects.equals(selectedFilter, "compress")) {
+  public String openFile(){
+    command = null;
+    final JFileChooser fchooser = new JFileChooser(".");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Images", "jpg", "ppm", "png");
+    fchooser.setFileFilter(filter);
+    int retvalue = fchooser.showOpenDialog(SwingFeaturesFrame.this);
+    if (retvalue == JFileChooser.APPROVE_OPTION) {
+      File f = fchooser.getSelectedFile();
+      fileOpenDisplay.setText(f.getAbsolutePath());
+      System.out.println(f.getAbsolutePath());
 
-            compressPanel.setVisible(true);
-          } else {
-            compressPanel.setVisible(false);
-          }
-          if (Objects.equals(selectedFilter, "levels-adjust")) {
+        command = "load " + f.getAbsolutePath() + " img";
+        System.out.println(command);
+      sliderValue = 0;
+      arrowSlider.setValue(0);
 
-            bmwPanel.setVisible(true);
-          } else {
-            bmwPanel.setVisible(false);
-          }
-
-
-          addSlider();
-        }
-
-        break;
-      case "Open file": {
-        final JFileChooser fchooser = new JFileChooser(".");
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "JPG & GIF Images", "jpg", "gif");
-        fchooser.setFileFilter(filter);
-        int retvalue = fchooser.showOpenDialog(SwingFeaturesFrame.this);
-        if (retvalue == JFileChooser.APPROVE_OPTION) {
-          File f = fchooser.getSelectedFile();
-          fileOpenDisplay.setText(f.getAbsolutePath());
-          System.out.println(f.getAbsolutePath());
-          try {
-            String command = "load " + f.getAbsolutePath() + " img";
-            System.out.println(command);
-            Controller.parseAndExecute(command);
-//            String imgPath = Controller.getLastSavedImagePath();
-//            if(imgPath != null ){
-            setImg2(0, f.getAbsolutePath());
-            generateHistogram("img");
-//            }
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-        }
-      }
-      break;
-      case "Save file": {
-        final JFileChooser fchooser = new JFileChooser(".");
-        int retvalue = fchooser.showSaveDialog(SwingFeaturesFrame.this);
-        if (retvalue == JFileChooser.APPROVE_OPTION) {
-          File f = fchooser.getSelectedFile();
-          fileSaveDisplay.setText(f.getAbsolutePath());
-
-          try {
-            String command = "save " + f.getAbsolutePath() + " dest";
-            Controller.parseAndExecute(command);
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-          System.out.println("Image saved");
-        }
-      }
-      break;
     }
+    return command;
+  }
+
+  public String filterOptions(){
+    selectedFilter = (String) combobox.getSelectedItem();
+    comboboxDisplay.setText("You selected: " + selectedFilter);
+
+    System.out.println("Selected option: " + selectedFilter);
+    compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+    bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+    String command = null;
+    System.out.println("Filter options");
+      switch (Objects.requireNonNull(selectedFilter)){
+        case "horizontal-flip":
+          selectedFilter = "horizontal-flip";
+          command = selectedFilter + " img dest";
+          break;
+        case "vertical-flip":
+          selectedFilter = "vertical-flip";
+          command = selectedFilter + " img dest";
+          break;
+        case "blur":
+          selectedFilter = "blur";
+          command = selectedFilter + " img dest";
+          break;
+        case "sharpen":
+          selectedFilter = "sharpen";
+          break;
+        case "red-component":
+          selectedFilter = "red-component";
+          command = selectedFilter + " img dest";
+          break;
+        case "blue-component":
+          selectedFilter = "blue-component";
+          command = selectedFilter + " img dest";
+          break;
+        case "green-component":
+          selectedFilter = "green-component";
+          command = selectedFilter + " img dest";
+          break;
+        case "luma-component":
+          selectedFilter = "luma-component";
+          command = selectedFilter + " img dest";
+          break;
+        case "sepia":
+          selectedFilter = "sepia";
+          if (sliderValue != 0) {
+            System.out.println("in the if condition");
+            command = selectedFilter + " img dest split "+sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
+          System.out.println("sepia command" + command);
+          break;
+        case "compress":
+          selectedFilter = "compress";
+          String enteredText = compressionPercentage.getText();
+
+          System.out.println("Entered Compression Percentage: " + enteredText);
+          command = selectedFilter + " " + enteredText + " img dest";
+          if (sliderValue != 0) {
+            command = command.concat(" split " + sliderValue);
+          }
+          break;
+        case "color-correct":
+          selectedFilter = "color-correct";
+          command = selectedFilter + " img dest";
+          break;
+        case "levels-adjust":
+          selectedFilter = "levels-adjust";
+          String bValue = bNumericField.getText();
+          String mValue = mNumericField.getText();
+          String wValue = wNumericField.getText();
+
+          // Now you can use these values as needed
+          System.out.println("B Value: " + bValue);
+          System.out.println("M Value: " + mValue);
+          System.out.println("W Value: " + wValue);
+          command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img dest";
+          if (sliderValue != 0) {
+            command = command.concat(" split " + sliderValue);
+          }
+          break;
+        case "Split":
+          selectedFilter = "Split";
+          break;
+        default:
+          selectedFilter = "None";
+          break;
+      }
+      comboboxDisplay.setText("You selected: " + selectedFilter);
+
+      System.out.println("Selected option: " + selectedFilter);
+    addSlider();
+    return command;
+  }
+
+  public String saveFile(){
+    String command = null;
+    final JFileChooser fchooser = new JFileChooser(".");
+    int retvalue = fchooser.showSaveDialog(SwingFeaturesFrame.this);
+    if (retvalue == JFileChooser.APPROVE_OPTION) {
+      File f = fchooser.getSelectedFile();
+      fileSaveDisplay.setText(f.getAbsolutePath());
+      command = "save " + f.getAbsolutePath() + " dest";
+      System.out.println("Image saved");
+    }
+    return command;
   }
 
   @Override

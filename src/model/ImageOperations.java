@@ -222,5 +222,7 @@ public interface ImageOperations {
    */
   void convertToGrayscale(String sourceName, String destName, int splitPercentage);
 
+  int[][][] getRgbDataMap(String imageName);
+
 
 }

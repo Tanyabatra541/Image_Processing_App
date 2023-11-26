@@ -1,8 +1,9 @@
 package view;
 
-import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import controller.Controller;
 
 /**
  * This example shows the different user interface elements in Java Swing.
@@ -19,11 +20,15 @@ public class SwingFeatures {
 //    SwingFeaturesFrame.setDefaultLookAndFeelDecorated(false);
 //    SwingFeaturesFrame frame = new SwingFeaturesFrame();
 
-    SwingFeaturesFrame.setDefaultLookAndFeelDecorated(false);
-    SwingFeaturesFrame frame = new SwingFeaturesFrame();
+//    SwingFeaturesFrame.setDefaultLookAndFeelDecorated(false);
+//    SwingFeaturesFrame frame = new SwingFeaturesFrame();
+//
+//    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    frame.setVisible(true);
 
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setVisible(true);
+    SwingFeaturesFrame frame = new SwingFeaturesFrame();
+    Controller controller = new Controller(frame);
+    controller.addFeaturesToView(controller);
 
     try {
       // Set cross-platform Java L&F (also called "Metal")
