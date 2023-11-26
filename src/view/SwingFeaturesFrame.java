@@ -119,7 +119,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
             Objects.equals(selectedFilter, "sharpen")){
       sliderPanel.setVisible(true);
-      sliderValue=50;
+     // sliderValue=0;
     }else{
       sliderValue=0;
       sliderPanel.setVisible(false);
@@ -300,6 +300,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
       sliderValue = arrowSlider.getValue();
       System.out.println("Slider value: " + sliderValue);
       features.applyFeatures(filterOptions(), "dest");
+
     });
   }
 
@@ -348,6 +349,13 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
           break;
         case "sharpen":
           selectedFilter = "sharpen";
+          if (sliderValue != 0) {
+            System.out.println("in the if condition");
+            command = selectedFilter + " img dest split "+sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
+          System.out.println("sharpen command" + command);
           break;
         case "red-component":
           selectedFilter = "red-component";
