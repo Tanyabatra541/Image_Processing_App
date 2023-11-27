@@ -376,7 +376,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
       System.out.println("Slider value: " + sliderValue);
-      String filterCommand = filterOptions(true);
+      String filterCommand = filterOptions(false);
       if (filterCommand != null) {
         features.applyFeatures(filterCommand, "splitImg");
       } else {
@@ -422,16 +422,37 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   }
 
   public String filterOptions(boolean applyFilter){
+
+    String previousFilter = selectedFilter;
+  /*  if(previousFilter!=null){
+      System.out.println("######33ßdsjhg");
+      JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+              "The current image is not saved. Are you sure you want to proceed?",
+              "Error", JOptionPane.ERROR_MESSAGE);
+      command="error";
+
+    }*/
+    //else {
+      System.out.println("previousFilter" + previousFilter);
+      selectedFilter = (String) combobox.getSelectedItem();
+      comboboxDisplay.setText("You selected: " + selectedFilter);
+      System.out.println("Selected option: " + selectedFilter);
+      compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+      bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+      String command = null;
+
     System.out.println("boolean value" + applyFilter);
     selectedFilter = (String) combobox.getSelectedItem();
     comboboxDisplay.setText("You selected: " + selectedFilter);
 //    System.out.println("Selected option: " + selectedFilter);
     compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
     bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
-    String command = null;
+    command = null;
     System.out.println("Filter options");
       switch (Objects.requireNonNull(selectedFilter)){
+
         case "<None>":
+          command = null;
           break;
         case "horizontal-flip":
           selectedFilter = "horizontal-flip";
@@ -443,16 +464,17 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
           break;
         case "blur":
           selectedFilter = "blur";
-          if(sliderValue != 0) {
-            command = selectedFilter + " img img split " + sliderValue;
+          if (sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
           } else {
             command = selectedFilter + " img img";
           }
           break;
         case "sharpen":
           selectedFilter = "sharpen";
-          if(sliderValue != 0) {
-            command = selectedFilter + " img img split " + sliderValue;
+          if (sliderValue != 0) {
+            System.out.println("in the if condition");
+            command = selectedFilter + " img dest split " + sliderValue;
           } else {
             command = selectedFilter + " img img";
           }
@@ -472,8 +494,8 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
           break;
         case "luma-component":
           selectedFilter = "luma-component";
-          if(sliderValue != 0) {
-            command = selectedFilter + " img img split " + sliderValue;
+          if (sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
           } else {
             command = selectedFilter + " img img";
           }
@@ -483,6 +505,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
           if (sliderValue != 0) {
             System.out.println("in the if condition");
             command = selectedFilter + " img splitImg split "+sliderValue;
+//            command = selectedFilter + " img dest split " + sliderValue;
           } else {
             command = selectedFilter + " img img";
           }
@@ -499,7 +522,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
                 JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                         "Compression Percentage must be between 0 to 100.",
                         "Error", JOptionPane.ERROR_MESSAGE);
-                command="error";
+                command = "error";
                 break;
               }
 
@@ -507,29 +530,33 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
               JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                       "Please enter a valid numeric value for Compression Percentage.",
                       "Error", JOptionPane.ERROR_MESSAGE);
-              command="error";
+              command = "error";
               break;
               // Handle the exception as needed (e.g., show an error message)
             }
-
               System.out.println("Entered Compression Percentage: " + enteredText);
               command = selectedFilter + " " + enteredText + " img img";
               if (sliderValue != 0) {
                 command = command.concat(" split " + sliderValue);
               }
+            System.out.println("Entered Compression Percentage: " + enteredText);
+            command = selectedFilter + " " + enteredText + " img dest";
+            if (sliderValue != 0) {
+              command = command.concat(" split " + sliderValue);
+            }
 
-          }else if(enteredText.isEmpty() && applyFilter){
+          } else if (enteredText.isEmpty() && applyFilter) {
             JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                     "Please enter a value for Compression Percentage.",
                     "Error", JOptionPane.ERROR_MESSAGE);
-            command="error";
+            command = "error";
             // Handle the case where the entered text is empty (e.g., show an error message)
           }
           break;
         case "color-correct":
           selectedFilter = "color-correct";
-          if(sliderValue != 0) {
-            command = selectedFilter + " img img split " + sliderValue;
+          if (sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
           } else {
             command = selectedFilter + " img img";
           }
@@ -556,7 +583,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
                 JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                         "B, M, W must be between 0 to 255.",
                         "Error", JOptionPane.ERROR_MESSAGE);
-                command="error";
+                command = "error";
                 break;
               }
 
@@ -564,7 +591,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
               JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                       "Please enter a valid numeric value for B, M, W.",
                       "Error", JOptionPane.ERROR_MESSAGE);
-              command="error";
+              command = "error";
               break;
               // Handle the exception as needed (e.g., show an error message)
             }
@@ -573,12 +600,11 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
             if (sliderValue != 0) {
               command = command.concat(" split " + sliderValue);
             }
-
-          }else if(applyFilter){
+          } else if ((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter) {
             JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                     "Please enter a value for B, M, W.",
                     "Error", JOptionPane.ERROR_MESSAGE);
-            command="error";
+            command = "error";
             // Handle the case where the entered text is empty (e.g., show an error message)
           }
 
@@ -591,9 +617,11 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       comboboxDisplay.setText("You selected: " + selectedFilter);
 
       System.out.println("Selected option: " + selectedFilter);
+
       if(applyFilter){
         addSlider();
       }
+
 
 
     return command;
