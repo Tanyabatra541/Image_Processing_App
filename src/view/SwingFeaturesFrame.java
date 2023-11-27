@@ -146,10 +146,10 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   public void updateImageForIndex(int[][][] rgbValues,int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
 
-    double scalingFactor = ( 370 / (double) Math.max(image.getWidth(), image.getHeight()));
+//    double scalingFactor = ( 370 / (double) Math.max(image.getWidth(), image.getHeight()));
 
-    int scaledWidth = (int)(image.getWidth() * scalingFactor);
-    int scaledHeight = (int)(image.getHeight() * scalingFactor);
+    int scaledWidth = (int)(image.getWidth() * 1.5);
+    int scaledHeight = (int)(image.getHeight() * 1.5);
 
     // Create a scaled version of the image
     Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -200,7 +200,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       imageLabel[i].setIcon(new ImageIcon("path/to/placeholder-image.png"));
       imageLabel[i].setHorizontalAlignment(JLabel.CENTER); // Set text alignment to the center
       imageLabel[i].setVerticalAlignment(JLabel.CENTER);
-      imageScrollPane[i].setPreferredSize(new Dimension(300, 300));
+      imageScrollPane[i].setPreferredSize(new Dimension(100, 550));
       imagePanel.add(imageScrollPane[i]);
     }
     imageLabel[0].setText("Please upload image");
@@ -215,7 +215,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   public SwingFeaturesFrame() {
     super();
     setTitle("Image Processing");
-    setSize(1200, 700);
+    setSize(1500, 1200);
 
 
     mainPanel = new JPanel();
@@ -337,6 +337,8 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     applyFilterButton.addActionListener(evt -> {
       String filterCommand = filterOptions(true);
+      compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+      bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
        if (fileOpenDisplay.getText()!=null && fileOpenDisplay.getText().equals("File path will appear here")){
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please load image before applying a filter.",
@@ -344,7 +346,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       }else if(filterCommand != null && !filterCommand.equals("error")) {
           features.applyFeatures(filterCommand, "dest");
 
-      }else if(filterCommand == null || !filterCommand.equals("error")){
+      }else if(filterCommand == null){
         // Display an error message if the filter command is null (no image loaded or invalid filter)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please select a valid filter before applying.",
@@ -412,6 +414,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   }
 
   public String filterOptions(boolean applyFilter){
+
     String previousFilter = selectedFilter;
   /*  if(previousFilter!=null){
       System.out.println("######33ßdsjhg");
@@ -429,8 +432,17 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
       bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
       String command = null;
-      System.out.println("Filter options");
-      switch (Objects.requireNonNull(selectedFilter)) {
+
+    System.out.println("boolean value" + applyFilter);
+    selectedFilter = (String) combobox.getSelectedItem();
+    comboboxDisplay.setText("You selected: " + selectedFilter);
+//    System.out.println("Selected option: " + selectedFilter);
+    compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+    bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+    command = null;
+    System.out.println("Filter options");
+      switch (Objects.requireNonNull(selectedFilter)){
+
         case "<None>":
           command = null;
           break;
@@ -453,11 +465,6 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
         case "sharpen":
           selectedFilter = "sharpen";
 
-          if (sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
-          } else {
-            command = selectedFilter + " img dest";
-          }
 
           if (sliderValue != 0) {
             System.out.println("in the if condition");
@@ -582,7 +589,6 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
             if (sliderValue != 0) {
               command = command.concat(" split " + sliderValue);
             }
-
           } else if ((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter) {
             JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                     "Please enter a value for B, M, W.",
@@ -600,8 +606,13 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       comboboxDisplay.setText("You selected: " + selectedFilter);
 
       System.out.println("Selected option: " + selectedFilter);
-      addSlider();
-   // }
+
+      if(applyFilter){
+        addSlider();
+      }
+
+
+
     return command;
   }
 
