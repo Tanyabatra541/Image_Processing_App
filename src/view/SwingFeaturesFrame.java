@@ -8,6 +8,7 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
@@ -26,7 +27,7 @@ import controller.ControllerFeatures;
  * not recommended in general.
  */
 
-public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSelectionListener {
+public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemListener, ListSelectionListener {
 
   private JPanel mainPanel;
   private JPanel bmwPanel = new JPanel();
@@ -65,7 +66,6 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
   private JButton fileSaveButton;
   private JButton applyFilterButton;
   private JSlider arrowSlider;
-
   private String command;
 
   private void createArrowSlider() {
@@ -88,7 +88,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
 
     // Create a new panel to hold the slider
     sliderPanel = new JPanel(null); // Use absolute positioning
-    int panelWidth = 600; // Set your desired width
+    int panelWidth = 400; // Set your desired width
     int panelHeight = 50; // Set your desired height
     sliderPanel.setPreferredSize(new Dimension(panelWidth, panelHeight));
 
@@ -119,7 +119,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
             Objects.equals(selectedFilter, "sharpen")){
       sliderPanel.setVisible(true);
-      sliderValue=50;
+      sliderValue=100;
     }else{
       sliderValue=0;
       sliderPanel.setVisible(false);
@@ -129,8 +129,8 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
   public void updateImageForIndex(int[][][] rgbValues,int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
     // Zoom in the image by 50%
-    int scaledWidth = (int) (image.getWidth() * 1.5);
-    int scaledHeight = (int) (image.getHeight() * 1.5);
+    int scaledWidth = (int) (image.getWidth() * 0.6);
+    int scaledHeight = (int) (image.getHeight() * 0.6);
 
     // Create a scaled version of the image
     Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -148,21 +148,16 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
   private BufferedImage convertRGBtoBufferedImage(int[][][] rgbData) {
     int height = rgbData.length;
     int width = rgbData[0].length;
-
     BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         int r = rgbData[y][x][0];
         int g = rgbData[y][x][1];
         int b = rgbData[y][x][2];
-
         int rgb = (r << 16) | (g << 8) | b;
-
         bufferedImage.setRGB(x, y, rgb);
       }
     }
-
     return bufferedImage;
   }
 
@@ -177,7 +172,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
 
       imageLabel[i].setHorizontalAlignment(JLabel.CENTER); // Set text alignment to the center
       imageLabel[i].setVerticalAlignment(JLabel.CENTER);
-      imageScrollPane[i].setPreferredSize(new Dimension(100, 600));
+      imageScrollPane[i].setPreferredSize(new Dimension(300, 300));
       imagePanel.add(imageScrollPane[i]);
     }
     imageLabel[0].setText("Please upload image");
@@ -191,7 +186,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
   public SwingFeaturesFrame() {
     super();
     setTitle("Image Processing");
-    setSize(1700, 1700);
+    setSize(1200, 700);
 
 
     mainPanel = new JPanel();
@@ -238,7 +233,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
     comboboxDisplay = new JLabel("Which filter do you want?");
     comboboxPanel.add(comboboxDisplay);
     String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "red-component", "blue-component", "green-component", "luma-component", "sepia", "compress",
-            "color-correct", "levels-adjust", "Split"};
+            "color-correct", "levels-adjust"};
     combobox = new JComboBox<String>();
     for (int i = 0; i < options.length; i++) {
       combobox.addItem(options[i]);
@@ -270,6 +265,7 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
     comboboxPanel.add(compressPanel);
     compressPanel.setVisible(false);
 
+    combobox.addItemListener(e -> filterOptions());
 
 //dialog boxes
     JPanel dialogBoxesPanel = new JPanel();
@@ -294,7 +290,18 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
 
   public void addFeatures(ControllerFeatures features){
     fileOpenButtonforLoad.addActionListener(evt -> features.loadImage(openFile(), "img"));
-    applyFilterButton.addActionListener(evt -> features.applyFeatures(filterOptions(), "dest"));
+//    applyFilterButton.addActionListener(evt -> features.applyFeatures(filterOptions(), "dest"));
+    applyFilterButton.addActionListener(evt -> {
+      String filterCommand = filterOptions();
+      if (Objects.equals(selectedFilter, "levels-adjust") && (bNumericField.getText().isEmpty() || mNumericField.getText().isEmpty() || wNumericField.getText().isEmpty())) {
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please enter values for B, M, and W for the 'Levels Adjust' filter.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+      } else {
+        features.applyFeatures(filterCommand, "dest");
+      }
+    });
+
     fileSaveButton.addActionListener(evt -> features.saveImage(saveFile()));
     arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
@@ -327,7 +334,6 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
   public String filterOptions(){
     selectedFilter = (String) combobox.getSelectedItem();
     comboboxDisplay.setText("You selected: " + selectedFilter);
-
     System.out.println("Selected option: " + selectedFilter);
     compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
     bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
@@ -344,10 +350,19 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
           break;
         case "blur":
           selectedFilter = "blur";
-          command = selectedFilter + " img dest";
+          if(sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
           break;
         case "sharpen":
           selectedFilter = "sharpen";
+          if(sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
           break;
         case "red-component":
           selectedFilter = "red-component";
@@ -363,7 +378,11 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
           break;
         case "luma-component":
           selectedFilter = "luma-component";
-          command = selectedFilter + " img dest";
+          if(sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
           break;
         case "sepia":
           selectedFilter = "sepia";
@@ -387,7 +406,11 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
           break;
         case "color-correct":
           selectedFilter = "color-correct";
-          command = selectedFilter + " img dest";
+          if(sliderValue != 0) {
+            command = selectedFilter + " img dest split " + sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
           break;
         case "levels-adjust":
           selectedFilter = "levels-adjust";
@@ -404,9 +427,6 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
             command = command.concat(" split " + sliderValue);
           }
           break;
-        case "Split":
-          selectedFilter = "Split";
-          break;
         default:
           selectedFilter = "None";
           break;
@@ -418,22 +438,30 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
     return command;
   }
 
-  public String saveFile(){
+  public String saveFile() {
     String command = null;
-    final JFileChooser fchooser = new JFileChooser(".");
-    int retvalue = fchooser.showSaveDialog(SwingFeaturesFrame.this);
-    if (retvalue == JFileChooser.APPROVE_OPTION) {
-      File f = fchooser.getSelectedFile();
-      fileSaveDisplay.setText(f.getAbsolutePath());
-      command = "save " + f.getAbsolutePath() + " dest";
-      System.out.println("Image saved");
+    if (fileOpenDisplay.getText().equals("File path will appear here")) {
+      JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+              "Please load an image before attempting to save.",
+              "Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+      final JFileChooser fchooser = new JFileChooser(".");
+      int retvalue = fchooser.showSaveDialog(SwingFeaturesFrame.this);
+      if (retvalue == JFileChooser.APPROVE_OPTION) {
+        File f = fchooser.getSelectedFile();
+        fileSaveDisplay.setText(f.getAbsolutePath());
+        command = "save " + f.getAbsolutePath() + " dest";
+        System.out.println("Image saved");
+      }
     }
     return command;
   }
 
+
   @Override
   public void itemStateChanged(ItemEvent arg0) {
     // TODO Auto-generated method stub
+//    String who = ((JCheckBox) arg0.getItemSelectable()).getActionCommand();
     String who = ((JCheckBox) arg0.getItemSelectable()).getActionCommand();
 
     switch (who) {
@@ -493,4 +521,10 @@ public class SwingFeaturesFrame extends JFrame implements ItemListener, ListSele
     JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
             "The current number item is " + this.listOfIntegers.getSelectedValue(), "Selected integer", JOptionPane.PLAIN_MESSAGE);
   }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+
+  }
+
 }
