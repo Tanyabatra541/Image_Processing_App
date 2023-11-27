@@ -89,11 +89,11 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
     percentageLabel.setBounds(10, 60, 150, 20); // Adjust the bounds as needed
 
-    arrowSlider.addChangeListener(e -> {
+/*    arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
       percentageLabel.setText("Split Percentage: " + sliderValue + "%");
       System.out.println("Slider value: " + sliderValue);
-    });
+    });*/
     arrowSlider.setMajorTickSpacing(20);
     arrowSlider.setMinorTickSpacing(5);
     arrowSlider.setPaintTicks(true);
@@ -135,7 +135,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
             Objects.equals(selectedFilter, "sharpen")){
       sliderPanel.setVisible(true);
-      sliderValue=100;
+      //sliderValue=100;
      // sliderValue=0;
     }else{
       sliderValue=0;
@@ -368,14 +368,14 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
       System.out.println("Slider value: " + sliderValue);
-      String filterCommand = filterOptions(false);
+      String filterCommand = filterOptions(true);
       if (filterCommand != null) {
         features.applyFeatures(filterCommand, "dest");
       } else {
         // Display an error message if the filter command is null (no image loaded or invalid filter)
-        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+       /* JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please move the slider",
-                "Error", JOptionPane.ERROR_MESSAGE);
+                "Error", JOptionPane.ERROR_MESSAGE);*/
       }
     });
   }
@@ -425,6 +425,9 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     }*/
     //else {
+    if(previousFilter!=null && !applyFilter){
+      sliderPanel.setVisible(false);
+    }
       System.out.println("previousFilter" + previousFilter);
       selectedFilter = (String) combobox.getSelectedItem();
       comboboxDisplay.setText("You selected: " + selectedFilter);
@@ -441,6 +444,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
     command = null;
     System.out.println("Filter options");
+    if(applyFilter){
       switch (Objects.requireNonNull(selectedFilter)){
 
         case "<None>":
@@ -607,7 +611,8 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
       System.out.println("Selected option: " + selectedFilter);
 
-      if(applyFilter){
+//sliderValue=0;
+arrowSlider.setValue(0);
         addSlider();
       }
 
