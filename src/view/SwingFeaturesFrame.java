@@ -322,9 +322,12 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     fileOpenButtonforLoad.addActionListener(evt -> {
       String openCommand = openFile();
       System.out.println("openCommand"+openCommand);
-      if (openCommand != null) {
+      if (openCommand != null && !openCommand.equals("error")) {
         features.loadImage(openCommand, "img");
-      } else {
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Image loaded successfully.",
+                "Success", JOptionPane.INFORMATION_MESSAGE);
+      } else if (openCommand == null || !openCommand.equals("error"))  {
         // Display an error message if the open command is null (no image loaded)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please load an image before applying a filter.",
@@ -334,7 +337,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     applyFilterButton.addActionListener(evt -> {
       String filterCommand = filterOptions(true);
-       if (fileOpenDisplay.getText().equals("File path will appear here")){
+       if (fileOpenDisplay.getText()!=null && fileOpenDisplay.getText().equals("File path will appear here")){
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please load image before applying a filter.",
                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -388,11 +391,21 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       System.out.println(f.getAbsolutePath());
       fileExtension = getFileExtension(f.getAbsolutePath());
       System.out.println("Selected fileExtension: " + fileExtension);
+
+      if(!Objects.equals("png", fileExtension)&& !Objects.equals("jpg", fileExtension) && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm", fileExtension)){
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please select png/ jpg/ jpeg/ppm image.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+        fileOpenDisplay.setText(null);
+        imageLabel[0].setIcon(null);
+        imageLabel[2].setIcon(null);
+        command="error";
+      }else {
         command = "load " + f.getAbsolutePath() + " img";
         System.out.println(command);
-      sliderValue = 0;
-      arrowSlider.setValue(0);
-
+        sliderValue = 0;
+        arrowSlider.setValue(0);
+      }
     }
     imageLabel[1].setIcon(null);
     return command;
