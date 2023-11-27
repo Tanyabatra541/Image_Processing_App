@@ -130,10 +130,10 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   public void updateImageForIndex(int[][][] rgbValues,int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
 
-    double scalingFactor = ( 370 / (double) Math.max(image.getWidth(), image.getHeight()));
+//    double scalingFactor = ( 370 / (double) Math.max(image.getWidth(), image.getHeight()));
 
-    int scaledWidth = (int)(image.getWidth() * scalingFactor);
-    int scaledHeight = (int)(image.getHeight() * scalingFactor);
+    int scaledWidth = (int)(image.getWidth() * 1.5);
+    int scaledHeight = (int)(image.getHeight() * 1.5);
 
     // Create a scaled version of the image
     Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -184,7 +184,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       imageLabel[i].setIcon(new ImageIcon("path/to/placeholder-image.png"));
       imageLabel[i].setHorizontalAlignment(JLabel.CENTER); // Set text alignment to the center
       imageLabel[i].setVerticalAlignment(JLabel.CENTER);
-      imageScrollPane[i].setPreferredSize(new Dimension(300, 300));
+      imageScrollPane[i].setPreferredSize(new Dimension(100, 550));
       imagePanel.add(imageScrollPane[i]);
     }
     imageLabel[0].setText("Please upload image");
@@ -199,7 +199,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   public SwingFeaturesFrame() {
     super();
     setTitle("Image Processing");
-    setSize(1200, 700);
+    setSize(1500, 1200);
 
 
     mainPanel = new JPanel();
