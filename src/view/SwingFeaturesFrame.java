@@ -120,6 +120,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
             Objects.equals(selectedFilter, "sharpen")){
       sliderPanel.setVisible(true);
       sliderValue=100;
+     // sliderValue=0;
     }else{
       sliderValue=0;
       sliderPanel.setVisible(false);
@@ -307,6 +308,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       sliderValue = arrowSlider.getValue();
       System.out.println("Slider value: " + sliderValue);
       features.applyFeatures(filterOptions(), "dest");
+
     });
   }
 
@@ -358,11 +360,20 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
           break;
         case "sharpen":
           selectedFilter = "sharpen";
+
           if(sliderValue != 0) {
             command = selectedFilter + " img dest split " + sliderValue;
           } else {
             command = selectedFilter + " img dest";
           }
+
+          if (sliderValue != 0) {
+            System.out.println("in the if condition");
+            command = selectedFilter + " img dest split "+sliderValue;
+          } else {
+            command = selectedFilter + " img dest";
+          }
+          System.out.println("sharpen command" + command);
           break;
         case "red-component":
           selectedFilter = "red-component";
