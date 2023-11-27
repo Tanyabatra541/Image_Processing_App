@@ -475,6 +475,7 @@ public class Controller implements ControllerFeatures{
       parseAndExecute(command);
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
+      System.out.println("*****Applying feature on destImageName: " + destImageName);
       parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
       int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
       view.updateImageForIndex(destHistogramData, 2);

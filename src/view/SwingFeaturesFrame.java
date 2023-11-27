@@ -135,7 +135,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
             Objects.equals(selectedFilter, "sharpen")){
       sliderPanel.setVisible(true);
-      sliderValue=100;
+      sliderValue=0;
      // sliderValue=0;
     }else{
       sliderValue=0;
@@ -344,7 +344,15 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
                 "Please load image before applying a filter.",
                 "Error", JOptionPane.ERROR_MESSAGE);
       }else if(filterCommand != null && !filterCommand.equals("error")) {
-          features.applyFeatures(filterCommand, "dest");
+
+           System.out.println("EEEEEEEEE"+sliderPanel.isVisible());
+           System.out.println("slider value" + sliderValue);
+           if(sliderPanel.isVisible() && sliderValue!=0) {
+             features.applyFeatures(filterCommand, "splitImg");
+           }else{
+              features.applyFeatures(filterCommand, "img");
+           }
+
 
       }else if(filterCommand == null){
         // Display an error message if the filter command is null (no image loaded or invalid filter)
@@ -370,7 +378,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       System.out.println("Slider value: " + sliderValue);
       String filterCommand = filterOptions(true);
       if (filterCommand != null) {
-        features.applyFeatures(filterCommand, "dest");
+        features.applyFeatures(filterCommand, "splitImg");
       } else {
         // Display an error message if the filter command is null (no image loaded or invalid filter)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
@@ -424,60 +432,59 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     System.out.println("Filter options");
       switch (Objects.requireNonNull(selectedFilter)){
         case "<None>":
-          command=null;
           break;
         case "horizontal-flip":
           selectedFilter = "horizontal-flip";
-          command = selectedFilter + " img dest";
+          command = selectedFilter + " img img";
           break;
         case "vertical-flip":
           selectedFilter = "vertical-flip";
-          command = selectedFilter + " img dest";
+          command = selectedFilter + " img img";
           break;
         case "blur":
           selectedFilter = "blur";
           if(sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
+            command = selectedFilter + " img img split " + sliderValue;
           } else {
-            command = selectedFilter + " img dest";
+            command = selectedFilter + " img img";
           }
           break;
         case "sharpen":
           selectedFilter = "sharpen";
           if(sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
+            command = selectedFilter + " img img split " + sliderValue;
           } else {
-            command = selectedFilter + " img dest";
+            command = selectedFilter + " img img";
           }
           System.out.println("sharpen command" + command);
           break;
         case "red-component":
           selectedFilter = "red-component";
-          command = selectedFilter + " img dest";
+          command = selectedFilter + " img img";
           break;
         case "blue-component":
           selectedFilter = "blue-component";
-          command = selectedFilter + " img dest";
+          command = selectedFilter + " img img";
           break;
         case "green-component":
           selectedFilter = "green-component";
-          command = selectedFilter + " img dest";
+          command = selectedFilter + " img img";
           break;
         case "luma-component":
           selectedFilter = "luma-component";
           if(sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
+            command = selectedFilter + " img img split " + sliderValue;
           } else {
-            command = selectedFilter + " img dest";
+            command = selectedFilter + " img img";
           }
           break;
         case "sepia":
           selectedFilter = "sepia";
           if (sliderValue != 0) {
             System.out.println("in the if condition");
-            command = selectedFilter + " img dest split "+sliderValue;
+            command = selectedFilter + " img splitImg split "+sliderValue;
           } else {
-            command = selectedFilter + " img dest";
+            command = selectedFilter + " img img";
           }
           System.out.println("sepia command" + command);
           break;
@@ -506,7 +513,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
             }
 
               System.out.println("Entered Compression Percentage: " + enteredText);
-              command = selectedFilter + " " + enteredText + " img dest";
+              command = selectedFilter + " " + enteredText + " img img";
               if (sliderValue != 0) {
                 command = command.concat(" split " + sliderValue);
               }
@@ -522,9 +529,9 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
         case "color-correct":
           selectedFilter = "color-correct";
           if(sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
+            command = selectedFilter + " img img split " + sliderValue;
           } else {
-            command = selectedFilter + " img dest";
+            command = selectedFilter + " img img";
           }
           break;
         case "levels-adjust":
@@ -562,7 +569,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
               // Handle the exception as needed (e.g., show an error message)
             }
 
-            command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img dest";
+            command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img img";
             if (sliderValue != 0) {
               command = command.concat(" split " + sliderValue);
             }
@@ -612,7 +619,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
           fileSaveDisplay.setText(null);
 command="error";
         }else {
-          command = "save " + f.getAbsolutePath() + " dest";
+          command = "save " + f.getAbsolutePath() + " img";
           System.out.println("Image saved");
         }
       }
