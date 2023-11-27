@@ -129,12 +129,24 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
   public void updateImageForIndex(int[][][] rgbValues,int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
-    // Zoom in the image by 50%
-    int scaledWidth = (int) (image.getWidth() * 0.6);
-    int scaledHeight = (int) (image.getHeight() * 0.6);
+
+    double scalingFactor = ( 370 / (double) Math.max(image.getWidth(), image.getHeight()));
+
+    int scaledWidth = (int)(image.getWidth() * scalingFactor);
+    int scaledHeight = (int)(image.getHeight() * scalingFactor);
 
     // Create a scaled version of the image
     Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+
+
+
+
+    // Zoom in the image by 50%
+//    int scaledWidth = (int) (image.getWidth() * 0.6);
+//    int scaledHeight = (int) (image.getHeight() * 0.6);
+
+    // Create a scaled version of the image
+//    Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
 
     // Set the loaded and scaled image to the JLabel at the specified index
     imageLabel[index].setIcon(new ImageIcon(scaledImage));
@@ -170,7 +182,6 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       imageScrollPane[i] = new JScrollPane(imageLabel[i]);
       // imageLabel[i].setIcon(new ImageIcon(images[i]));
       imageLabel[i].setIcon(new ImageIcon("path/to/placeholder-image.png"));
-
       imageLabel[i].setHorizontalAlignment(JLabel.CENTER); // Set text alignment to the center
       imageLabel[i].setVerticalAlignment(JLabel.CENTER);
       imageScrollPane[i].setPreferredSize(new Dimension(300, 300));
@@ -182,6 +193,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     imageLabel[0].setBorder(BorderFactory.createTitledBorder("Original Image"));
     imageLabel[1].setBorder(BorderFactory.createTitledBorder("Processed Image"));
     imageLabel[2].setBorder(BorderFactory.createTitledBorder("Current Histogram"));
+//    imageScrollPane[1].remove(imageLabel[1]);
   }
 
   public SwingFeaturesFrame() {
@@ -268,7 +280,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     combobox.addItemListener(e -> filterOptions());
 
-//dialog boxes
+    //dialog boxes
     JPanel dialogBoxesPanel = new JPanel();
     dialogBoxesPanel.setBorder(BorderFactory.createTitledBorder("Save Processed Image:"));
     dialogBoxesPanel.setLayout(new BoxLayout(dialogBoxesPanel, BoxLayout.PAGE_AXIS));
@@ -290,25 +302,51 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
 
   public void addFeatures(ControllerFeatures features){
-    fileOpenButtonforLoad.addActionListener(evt -> features.loadImage(openFile(), "img"));
+//    fileOpenButtonforLoad.addActionListener(evt -> features.loadImage(openFile(), "img"));
+    fileOpenButtonforLoad.addActionListener(evt -> {
+      String openCommand = openFile();
+      if (openCommand != null) {
+        features.loadImage(openCommand, "img");
+      } else {
+        // Display an error message if the open command is null (no image loaded)
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please load an image before applying a filter.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+      }
+    });
 //    applyFilterButton.addActionListener(evt -> features.applyFeatures(filterOptions(), "dest"));
     applyFilterButton.addActionListener(evt -> {
       String filterCommand = filterOptions();
-      if (Objects.equals(selectedFilter, "levels-adjust") && (bNumericField.getText().isEmpty() || mNumericField.getText().isEmpty() || wNumericField.getText().isEmpty())) {
-        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                "Please enter values for B, M, and W for the 'Levels Adjust' filter.",
-                "Error", JOptionPane.ERROR_MESSAGE);
-      } else {
+      if (filterCommand != null) {
         features.applyFeatures(filterCommand, "dest");
+      } else {
+        // Display an error message if the filter command is null (no image loaded or invalid filter)
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please select a valid filter before applying.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+      }
+    });
+    fileSaveButton.addActionListener(evt -> {
+      String saveCommand = saveFile();
+      if (saveCommand != null) {
+        features.saveImage(saveCommand);
       }
     });
 
-    fileSaveButton.addActionListener(evt -> features.saveImage(saveFile()));
+
+//    fileSaveButton.addActionListener(evt -> features.saveImage(saveFile()));
     arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
       System.out.println("Slider value: " + sliderValue);
-      features.applyFeatures(filterOptions(), "dest");
-
+      String filterCommand = filterOptions();
+      if (filterCommand != null) {
+        features.applyFeatures(filterCommand, "dest");
+      } else {
+        // Display an error message if the filter command is null (no image loaded or invalid filter)
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please move the slider",
+                "Error", JOptionPane.ERROR_MESSAGE);
+      }
     });
   }
 
@@ -330,6 +368,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       arrowSlider.setValue(0);
 
     }
+    imageLabel[1].setIcon(null);
     return command;
   }
 
