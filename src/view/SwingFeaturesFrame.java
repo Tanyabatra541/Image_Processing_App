@@ -68,6 +68,22 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   private JSlider arrowSlider;
   private String command;
 
+  private String fileExtension;
+
+  public String getFileExtension(String filePath) {
+    if (filePath == null) {
+      return null; // or throw an exception, depending on your requirements
+    }
+
+    int lastDotIndex = filePath.lastIndexOf(".");
+    if (lastDotIndex == -1) {
+      return ""; // No file extension found
+    }
+
+    return filePath.substring(lastDotIndex + 1).toLowerCase();
+  }
+
+
   private void createArrowSlider() {
     arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
@@ -278,7 +294,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     comboboxPanel.add(compressPanel);
     compressPanel.setVisible(false);
 
-    combobox.addItemListener(e -> filterOptions());
+    combobox.addItemListener(e -> filterOptions(false));
 
     //dialog boxes
     JPanel dialogBoxesPanel = new JPanel();
@@ -305,6 +321,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 //    fileOpenButtonforLoad.addActionListener(evt -> features.loadImage(openFile(), "img"));
     fileOpenButtonforLoad.addActionListener(evt -> {
       String openCommand = openFile();
+      System.out.println("openCommand"+openCommand);
       if (openCommand != null) {
         features.loadImage(openCommand, "img");
       } else {
@@ -314,12 +331,17 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
                 "Error", JOptionPane.ERROR_MESSAGE);
       }
     });
-//    applyFilterButton.addActionListener(evt -> features.applyFeatures(filterOptions(), "dest"));
+
     applyFilterButton.addActionListener(evt -> {
-      String filterCommand = filterOptions();
-      if (filterCommand != null) {
-        features.applyFeatures(filterCommand, "dest");
-      } else {
+      String filterCommand = filterOptions(true);
+       if (fileOpenDisplay.getText().equals("File path will appear here")){
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please load image before applying a filter.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+      }else if(filterCommand != null && !filterCommand.equals("error")) {
+          features.applyFeatures(filterCommand, "dest");
+
+      }else if(filterCommand == null || !filterCommand.equals("error")){
         // Display an error message if the filter command is null (no image loaded or invalid filter)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please select a valid filter before applying.",
@@ -328,8 +350,11 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     });
     fileSaveButton.addActionListener(evt -> {
       String saveCommand = saveFile();
-      if (saveCommand != null) {
+      if (saveCommand != null && !saveCommand.equals("error")) {
         features.saveImage(saveCommand);
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Processed Image is saved.",
+                "Success", JOptionPane.INFORMATION_MESSAGE);
       }
     });
 
@@ -338,7 +363,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
       System.out.println("Slider value: " + sliderValue);
-      String filterCommand = filterOptions();
+      String filterCommand = filterOptions(true);
       if (filterCommand != null) {
         features.applyFeatures(filterCommand, "dest");
       } else {
@@ -361,7 +386,8 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       File f = fchooser.getSelectedFile();
       fileOpenDisplay.setText(f.getAbsolutePath());
       System.out.println(f.getAbsolutePath());
-
+      fileExtension = getFileExtension(f.getAbsolutePath());
+      System.out.println("Selected fileExtension: " + fileExtension);
         command = "load " + f.getAbsolutePath() + " img";
         System.out.println(command);
       sliderValue = 0;
@@ -372,7 +398,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     return command;
   }
 
-  public String filterOptions(){
+  public String filterOptions(boolean applyFilter){
     selectedFilter = (String) combobox.getSelectedItem();
     comboboxDisplay.setText("You selected: " + selectedFilter);
     System.out.println("Selected option: " + selectedFilter);
@@ -381,6 +407,9 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     String command = null;
     System.out.println("Filter options");
       switch (Objects.requireNonNull(selectedFilter)){
+        case "<None>":
+          command=null;
+          break;
         case "horizontal-flip":
           selectedFilter = "horizontal-flip";
           command = selectedFilter + " img dest";
@@ -447,11 +476,39 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
         case "compress":
           selectedFilter = "compress";
           String enteredText = compressionPercentage.getText();
+          if (!enteredText.isEmpty()) {
+            try {
+              double numericValue = Double.parseDouble(enteredText);
 
-          System.out.println("Entered Compression Percentage: " + enteredText);
-          command = selectedFilter + " " + enteredText + " img dest";
-          if (sliderValue != 0) {
-            command = command.concat(" split " + sliderValue);
+              if (numericValue < 0 || numericValue > 100) {
+                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                        "Compression Percentage must be between 0 to 100.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                command="error";
+                break;
+              }
+
+            } catch (NumberFormatException e) {
+              JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                      "Please enter a valid numeric value for Compression Percentage.",
+                      "Error", JOptionPane.ERROR_MESSAGE);
+              command="error";
+              break;
+              // Handle the exception as needed (e.g., show an error message)
+            }
+
+              System.out.println("Entered Compression Percentage: " + enteredText);
+              command = selectedFilter + " " + enteredText + " img dest";
+              if (sliderValue != 0) {
+                command = command.concat(" split " + sliderValue);
+              }
+
+          }else if(enteredText.isEmpty() && applyFilter){
+            JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                    "Please enter a value for Compression Percentage.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            command="error";
+            // Handle the case where the entered text is empty (e.g., show an error message)
           }
           break;
         case "color-correct":
@@ -472,10 +529,45 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
           System.out.println("B Value: " + bValue);
           System.out.println("M Value: " + mValue);
           System.out.println("W Value: " + wValue);
-          command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img dest";
-          if (sliderValue != 0) {
-            command = command.concat(" split " + sliderValue);
+
+
+          if (!bValue.isEmpty() && !mValue.isEmpty() && !wValue.isEmpty()) {
+            try {
+              double numericValueB = Double.parseDouble(bValue);
+              double numericValueM = Double.parseDouble(mValue);
+              double numericValueW = Double.parseDouble(wValue);
+
+              if (numericValueB < 0 || numericValueB > 255 || numericValueM < 0 || numericValueM > 255 || numericValueW < 0 || numericValueW > 255) {
+                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                        "B, M, W must be between 0 to 255.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                command="error";
+                break;
+              }
+
+            } catch (NumberFormatException e) {
+              JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                      "Please enter a valid numeric value for B, M, W.",
+                      "Error", JOptionPane.ERROR_MESSAGE);
+              command="error";
+              break;
+              // Handle the exception as needed (e.g., show an error message)
+            }
+
+            command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img dest";
+            if (sliderValue != 0) {
+              command = command.concat(" split " + sliderValue);
+            }
+
+          }else if((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter){
+            JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                    "Please enter a value for B, M, W.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            command="error";
+            // Handle the case where the entered text is empty (e.g., show an error message)
           }
+
+
           break;
         default:
           selectedFilter = "None";
@@ -500,8 +592,17 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       if (retvalue == JFileChooser.APPROVE_OPTION) {
         File f = fchooser.getSelectedFile();
         fileSaveDisplay.setText(f.getAbsolutePath());
-        command = "save " + f.getAbsolutePath() + " dest";
-        System.out.println("Image saved");
+        String ext = getFileExtension(f.getAbsolutePath());
+        if(!Objects.equals(ext, fileExtension)){
+          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                  "Please save in same file format ("+fileExtension+").",
+                  "Error", JOptionPane.ERROR_MESSAGE);
+          fileSaveDisplay.setText(null);
+command="error";
+        }else {
+          command = "save " + f.getAbsolutePath() + " dest";
+          System.out.println("Image saved");
+        }
       }
     }
     return command;
