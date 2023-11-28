@@ -110,10 +110,10 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     // Set the bounds for the slider within the panel
     //arrowSlider.setBounds(554, 0, panelWidth - 150, panelHeight);
-    percentageLabel.setBounds(panelWidth*2, 0, 150, panelHeight);
+    percentageLabel.setBounds(panelWidth * 2, 0, 150, panelHeight);
 
 
-    arrowSlider.setBounds(panelWidth-panelHeight, 0, panelWidth, panelHeight);
+    arrowSlider.setBounds(panelWidth - panelHeight, 0, panelWidth, panelHeight);
 
 
     // Set the bounds for the slider within the panel
@@ -131,30 +131,28 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
   private void addSlider() {
     System.out.println("in slider panel");
-    if(Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
+    if (Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-            Objects.equals(selectedFilter, "sharpen")){
+            Objects.equals(selectedFilter, "sharpen") || Objects.equals(selectedFilter, "luma-component")) {
       sliderPanel.setVisible(true);
-      sliderValue=0;
-     // sliderValue=0;
-    }else{
-      sliderValue=0;
+      sliderValue = 0;
+      // sliderValue=0;
+    } else {
+      sliderValue = 0;
       sliderPanel.setVisible(false);
     }
   }
 
-  public void updateImageForIndex(int[][][] rgbValues,int index) {
+  public void updateImageForIndex(int[][][] rgbValues, int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
 
 //    double scalingFactor = ( 370 / (double) Math.max(image.getWidth(), image.getHeight()));
 
-    int scaledWidth = (int)(image.getWidth() * 1.5);
-    int scaledHeight = (int)(image.getHeight() * 1.5);
+    int scaledWidth = (int) (image.getWidth() * 1.5);
+    int scaledHeight = (int) (image.getHeight() * 1.5);
 
     // Create a scaled version of the image
     Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-
-
 
 
     // Zoom in the image by 50%
@@ -317,17 +315,17 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
   }
 
 
-  public void addFeatures(ControllerFeatures features){
+  public void addFeatures(ControllerFeatures features) {
 //    fileOpenButtonforLoad.addActionListener(evt -> features.loadImage(openFile(), "img"));
     fileOpenButtonforLoad.addActionListener(evt -> {
       String openCommand = openFile();
-      System.out.println("openCommand"+openCommand);
+      System.out.println("openCommand" + openCommand);
       if (openCommand != null && !openCommand.equals("error")) {
         features.loadImage(openCommand, "img");
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Image loaded successfully.",
                 "Success", JOptionPane.INFORMATION_MESSAGE);
-      } else if (openCommand == null || !openCommand.equals("error"))  {
+      } else if (openCommand == null || !openCommand.equals("error")) {
         // Display an error message if the open command is null (no image loaded)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please load an image before applying a filter.",
@@ -339,22 +337,23 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       String filterCommand = filterOptions(true);
       compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
       bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
-       if (fileOpenDisplay.getText()!=null && fileOpenDisplay.getText().equals("File path will appear here")){
+      if (fileOpenDisplay.getText() != null && fileOpenDisplay.getText().equals("File path will appear here")) {
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please load image before applying a filter.",
                 "Error", JOptionPane.ERROR_MESSAGE);
-      }else if(filterCommand != null && !filterCommand.equals("error")) {
+      } else if (filterCommand != null && !filterCommand.equals("error")) {
 
-           System.out.println("EEEEEEEEE"+sliderPanel.isVisible());
-           System.out.println("slider value" + sliderValue);
-           if(sliderPanel.isVisible() && sliderValue!=0) {
-             features.applyFeatures(filterCommand, "splitImg");
-           }else{
-              features.applyFeatures(filterCommand, "img");
-           }
+        System.out.println("EEEEEEEEE" + sliderPanel.isVisible());
+        System.out.println("slider value" + sliderValue);
+        features.applyFeatures(filterCommand, "dest");
+//           if(sliderPanel.isVisible() && sliderValue!=0) {
+//             features.applyFeatures(filterCommand, "splitImg");
+//           }else{
+//              features.applyFeatures(filterCommand, "img");
+//           }
 
 
-      }else if(filterCommand == null){
+      } else if (filterCommand == null) {
         // Display an error message if the filter command is null (no image loaded or invalid filter)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please select a valid filter before applying.",
@@ -378,7 +377,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       System.out.println("Slider value: " + sliderValue);
       String filterCommand = filterOptions(false);
       if (filterCommand != null) {
-        features.applyFeatures(filterCommand, "splitImg");
+        features.applyFeatures(filterCommand, "dest");
       } else {
         // Display an error message if the filter command is null (no image loaded or invalid filter)
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
@@ -388,7 +387,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     });
   }
 
-  public String openFile(){
+  public String openFile() {
     command = null;
     final JFileChooser fchooser = new JFileChooser(".");
     FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -402,15 +401,15 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
       fileExtension = getFileExtension(f.getAbsolutePath());
       System.out.println("Selected fileExtension: " + fileExtension);
 
-      if(!Objects.equals("png", fileExtension)&& !Objects.equals("jpg", fileExtension) && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm", fileExtension)){
+      if (!Objects.equals("png", fileExtension) && !Objects.equals("jpg", fileExtension) && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm", fileExtension)) {
         JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                 "Please select png/ jpg/ jpeg/ppm image.",
                 "Error", JOptionPane.ERROR_MESSAGE);
         fileOpenDisplay.setText(null);
         imageLabel[0].setIcon(null);
         imageLabel[2].setIcon(null);
-        command="error";
-      }else {
+        command = "error";
+      } else {
         command = "load " + f.getAbsolutePath() + " img";
         System.out.println(command);
         sliderValue = 0;
@@ -421,7 +420,7 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     return command;
   }
 
-  public String filterOptions(boolean applyFilter){
+  public String filterOptions(boolean applyFilter) {
 
     String previousFilter = selectedFilter;
   /*  if(previousFilter!=null){
@@ -433,13 +432,13 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
 
     }*/
     //else {
-      System.out.println("previousFilter" + previousFilter);
-      selectedFilter = (String) combobox.getSelectedItem();
-      comboboxDisplay.setText("You selected: " + selectedFilter);
-      System.out.println("Selected option: " + selectedFilter);
-      compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
-      bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
-      String command = null;
+    System.out.println("previousFilter" + previousFilter);
+    selectedFilter = (String) combobox.getSelectedItem();
+    comboboxDisplay.setText("You selected: " + selectedFilter);
+    System.out.println("Selected option: " + selectedFilter);
+    compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+    bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+    String command = null;
 
     System.out.println("boolean value" + applyFilter);
     selectedFilter = (String) combobox.getSelectedItem();
@@ -449,179 +448,172 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
     bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
     command = null;
     System.out.println("Filter options");
-      switch (Objects.requireNonNull(selectedFilter)){
+    switch (Objects.requireNonNull(selectedFilter)) {
 
-        case "<None>":
-          command = null;
-          break;
-        case "horizontal-flip":
-          selectedFilter = "horizontal-flip";
-          command = selectedFilter + " img img";
-          break;
-        case "vertical-flip":
-          selectedFilter = "vertical-flip";
-          command = selectedFilter + " img img";
-          break;
-        case "blur":
-          selectedFilter = "blur";
-          if (sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
-          } else {
-            command = selectedFilter + " img img";
-          }
-          break;
-        case "sharpen":
-          selectedFilter = "sharpen";
-          if (sliderValue != 0) {
-            System.out.println("in the if condition");
-            command = selectedFilter + " img dest split " + sliderValue;
-          } else {
-            command = selectedFilter + " img img";
-          }
-          System.out.println("sharpen command" + command);
-          break;
-        case "red-component":
-          selectedFilter = "red-component";
-          command = selectedFilter + " img img";
-          break;
-        case "blue-component":
-          selectedFilter = "blue-component";
-          command = selectedFilter + " img img";
-          break;
-        case "green-component":
-          selectedFilter = "green-component";
-          command = selectedFilter + " img img";
-          break;
-        case "luma-component":
-          selectedFilter = "luma-component";
-          if (sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
-          } else {
-            command = selectedFilter + " img img";
-          }
-          break;
-        case "sepia":
-          selectedFilter = "sepia";
-          if (sliderValue != 0) {
-            System.out.println("in the if condition");
-            command = selectedFilter + " img splitImg split "+sliderValue;
+      case "<None>":
+        command = null;
+        break;
+      case "horizontal-flip":
+        selectedFilter = "horizontal-flip";
+        command = selectedFilter + " img dest";
+        break;
+      case "vertical-flip":
+        selectedFilter = "vertical-flip";
+        command = selectedFilter + " img dest";
+        break;
+      case "blur":
+        selectedFilter = "blur";
+        if (sliderValue != 0) {
+          command = selectedFilter + " img dest split " + sliderValue;
+        } else {
+          command = selectedFilter + " img dest";
+        }
+        break;
+      case "sharpen":
+        selectedFilter = "sharpen";
+        if (sliderValue != 0) {
+          System.out.println("in the if condition");
+          command = selectedFilter + " img dest split " + sliderValue;
+        } else {
+          command = selectedFilter + " img dest";
+        }
+        System.out.println("sharpen command" + command);
+        break;
+      case "red-component":
+        selectedFilter = "red-component";
+        command = selectedFilter + " img dest";
+        break;
+      case "blue-component":
+        selectedFilter = "blue-component";
+        command = selectedFilter + " img dest";
+        break;
+      case "green-component":
+        selectedFilter = "green-component";
+        command = selectedFilter + " img dest";
+        break;
+      case "luma-component":
+        selectedFilter = "luma-component";
+        if (sliderValue != 0) {
+          command = selectedFilter + " img dest split " + sliderValue;
+        } else {
+          command = selectedFilter + " img dest";
+        }
+        break;
+      case "sepia":
+        selectedFilter = "sepia";
+        if (sliderValue != 0) {
+          System.out.println("in the if condition");
+          command = selectedFilter + " img dest split " + sliderValue;
 //            command = selectedFilter + " img dest split " + sliderValue;
-          } else {
-            command = selectedFilter + " img img";
-          }
-          System.out.println("sepia command" + command);
-          break;
-        case "compress":
-          selectedFilter = "compress";
-          String enteredText = compressionPercentage.getText();
-          if (!enteredText.isEmpty()) {
-            try {
-              double numericValue = Double.parseDouble(enteredText);
+        } else {
+          command = selectedFilter + " img dest";
+        }
+        System.out.println("sepia command" + command);
+        break;
+      case "compress":
+        selectedFilter = "compress";
+        String enteredText = compressionPercentage.getText();
+        if (!enteredText.isEmpty()) {
+          try {
+            double numericValue = Double.parseDouble(enteredText);
 
-              if (numericValue < 0 || numericValue > 100) {
-                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                        "Compression Percentage must be between 0 to 100.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                command = "error";
-                break;
-              }
-
-            } catch (NumberFormatException e) {
+            if (numericValue < 0 || numericValue > 100) {
               JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                      "Please enter a valid numeric value for Compression Percentage.",
+                      "Compression Percentage must be between 0 to 100.",
                       "Error", JOptionPane.ERROR_MESSAGE);
               command = "error";
               break;
-              // Handle the exception as needed (e.g., show an error message)
-            }
-              System.out.println("Entered Compression Percentage: " + enteredText);
-              command = selectedFilter + " " + enteredText + " img img";
-              if (sliderValue != 0) {
-                command = command.concat(" split " + sliderValue);
-              }
-            System.out.println("Entered Compression Percentage: " + enteredText);
-            command = selectedFilter + " " + enteredText + " img dest";
-            if (sliderValue != 0) {
-              command = command.concat(" split " + sliderValue);
             }
 
-          } else if (enteredText.isEmpty() && applyFilter) {
+          } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                    "Please enter a value for Compression Percentage.",
+                    "Please enter a valid numeric value for Compression Percentage.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             command = "error";
-            // Handle the case where the entered text is empty (e.g., show an error message)
+            break;
+            // Handle the exception as needed (e.g., show an error message)
           }
-          break;
-        case "color-correct":
-          selectedFilter = "color-correct";
+          System.out.println("Entered Compression Percentage: " + enteredText);
+          command = selectedFilter + " " + enteredText + " img dest";
           if (sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
-          } else {
-            command = selectedFilter + " img img";
+            command = command.concat(" split " + sliderValue);
           }
-          break;
-        case "levels-adjust":
-          selectedFilter = "levels-adjust";
-          String bValue = bNumericField.getText();
-          String mValue = mNumericField.getText();
-          String wValue = wNumericField.getText();
+        } else if (enteredText.isEmpty() && applyFilter) {
+          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                  "Please enter a value for Compression Percentage.",
+                  "Error", JOptionPane.ERROR_MESSAGE);
+          command = "error";
+          // Handle the case where the entered text is empty (e.g., show an error message)
+        }
+        break;
+      case "color-correct":
+        selectedFilter = "color-correct";
+        if (sliderValue != 0) {
+          command = selectedFilter + " img dest split " + sliderValue;
+        } else {
+          command = selectedFilter + " img dest";
+        }
+        break;
+      case "levels-adjust":
+        selectedFilter = "levels-adjust";
+        String bValue = bNumericField.getText();
+        String mValue = mNumericField.getText();
+        String wValue = wNumericField.getText();
 
-          // Now you can use these values as needed
-          System.out.println("B Value: " + bValue);
-          System.out.println("M Value: " + mValue);
-          System.out.println("W Value: " + wValue);
+        // Now you can use these values as needed
+        System.out.println("B Value: " + bValue);
+        System.out.println("M Value: " + mValue);
+        System.out.println("W Value: " + wValue);
 
 
-          if (!bValue.isEmpty() && !mValue.isEmpty() && !wValue.isEmpty()) {
-            try {
-              double numericValueB = Double.parseDouble(bValue);
-              double numericValueM = Double.parseDouble(mValue);
-              double numericValueW = Double.parseDouble(wValue);
+        if (!bValue.isEmpty() && !mValue.isEmpty() && !wValue.isEmpty()) {
+          try {
+            double numericValueB = Double.parseDouble(bValue);
+            double numericValueM = Double.parseDouble(mValue);
+            double numericValueW = Double.parseDouble(wValue);
 
-              if (numericValueB < 0 || numericValueB > 255 || numericValueM < 0 || numericValueM > 255 || numericValueW < 0 || numericValueW > 255) {
-                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                        "B, M, W must be between 0 to 255.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                command = "error";
-                break;
-              }
-
-            } catch (NumberFormatException e) {
+            if (numericValueB < 0 || numericValueB > 255 || numericValueM < 0 || numericValueM > 255 || numericValueW < 0 || numericValueW > 255) {
               JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                      "Please enter a valid numeric value for B, M, W.",
+                      "B, M, W must be between 0 to 255.",
                       "Error", JOptionPane.ERROR_MESSAGE);
               command = "error";
               break;
-              // Handle the exception as needed (e.g., show an error message)
             }
 
-            command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img img";
-            if (sliderValue != 0) {
-              command = command.concat(" split " + sliderValue);
-            }
-          } else if ((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter) {
+          } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                    "Please enter a value for B, M, W.",
+                    "Please enter a valid numeric value for B, M, W.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             command = "error";
-            // Handle the case where the entered text is empty (e.g., show an error message)
+            break;
+            // Handle the exception as needed (e.g., show an error message)
           }
 
+          command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " img dest";
+          if (sliderValue != 0) {
+            command = command.concat(" split " + sliderValue);
+          }
+        } else if ((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter) {
+          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                  "Please enter a value for B, M, W.",
+                  "Error", JOptionPane.ERROR_MESSAGE);
+          command = "error";
+          // Handle the case where the entered text is empty (e.g., show an error message)
+        }
 
-          break;
-        default:
-          selectedFilter = "None";
-          break;
-      }
-      comboboxDisplay.setText("You selected: " + selectedFilter);
 
-      System.out.println("Selected option: " + selectedFilter);
+        break;
+      default:
+        selectedFilter = "None";
+        break;
+    }
+    comboboxDisplay.setText("You selected: " + selectedFilter);
 
-      if(applyFilter){
-        addSlider();
-      }
+    System.out.println("Selected option: " + selectedFilter);
 
+    if (applyFilter) {
+      addSlider();
+    }
 
 
     return command;
@@ -640,14 +632,14 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener, ItemLi
         File f = fchooser.getSelectedFile();
         fileSaveDisplay.setText(f.getAbsolutePath());
         String ext = getFileExtension(f.getAbsolutePath());
-        if(!Objects.equals(ext, fileExtension)){
+        if (!Objects.equals(ext, fileExtension)) {
           JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                  "Please save in same file format ("+fileExtension+").",
+                  "Please save in same file format (" + fileExtension + ").",
                   "Error", JOptionPane.ERROR_MESSAGE);
           fileSaveDisplay.setText(null);
-command="error";
-        }else {
-          command = "save " + f.getAbsolutePath() + " img";
+          command = "error";
+        } else {
+          command = "save " + f.getAbsolutePath() + " dest";
           System.out.println("Image saved");
         }
       }

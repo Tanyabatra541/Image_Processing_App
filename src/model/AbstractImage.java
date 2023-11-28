@@ -520,8 +520,7 @@ public abstract class AbstractImage implements ImageOperations {
    *                   - "intensity": Convert the image to grayscale using intensity.
    *                   - "value": Extract the value (brightness) component of an image.
    */
-  @Override
-  public void extractComponent(String sourceName, String destName, String component) {
+  private void extractComponentHelper(String sourceName, String destName, String component, int splitPercentage){
     ImageContent sourceImage = IMAGE_MAP.get(sourceName);
     boolean flag = true;
 
@@ -533,6 +532,8 @@ public abstract class AbstractImage implements ImageOperations {
         int width = sourceRGBData[0].length;
 
         int[][][] extractedRGBData = new int[height][width][3];
+
+        int splitPosition = width * splitPercentage / 100;
 
         for (int y = 0; y < height; y++) {
           for (int x = 0; x < width; x++) {
@@ -555,9 +556,11 @@ public abstract class AbstractImage implements ImageOperations {
                 break;
               case "luma":
                 int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
-                r = luma;
-                g = luma;
-                b = luma;
+                if (x <= splitPosition) {
+                  r = luma;
+                  g = luma;
+                  b = luma;
+                }
                 break;
               case "intensity":
                 int intensity = (r + g + b) / 3;
@@ -600,6 +603,16 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
+  @Override
+  public void extractComponent(String sourceName, String destName, String component, int splitPercentage) {
+    extractComponentHelper(sourceName, destName, component, splitPercentage);
+  }
+
+
+  @Override
+  public void extractComponent(String sourceName, String destName, String component) {
+    extractComponentHelper(sourceName, destName, component, 0);
+  }
   /**
    * Get a map of image names to their corresponding ImageContent objects.
    *

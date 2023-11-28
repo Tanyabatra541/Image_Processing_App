@@ -37,10 +37,12 @@ class Compression {
     int width = imageRGBData[0].length;
     initializeArrays(height, width);
 
+    //separating the RGB channels
     double[][] r = new double[height][width];
     double[][] g = new double[height][width];
     double[][] b = new double[height][width];
 
+    // Copy the RGB values from the imageRGBData array into the r, g, and b arrays
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         r[y][x] = imageRGBData[y][x][0];
@@ -68,10 +70,12 @@ class Compression {
   }
 
   private double[][] padImage(double[][] imageArr) {
+    //converting 2D array into a square size with dimensions that are power of 2
     int rows = imageArr.length;
     int cols = imageArr[0].length;
     int maxLen = Math.max(rows, cols);
     int newSize = 1;
+    // Find the smallest power of 2 that is greater than maxLen
     while (newSize < maxLen) {
       newSize <<= 1;
     }

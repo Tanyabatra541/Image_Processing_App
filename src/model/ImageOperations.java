@@ -151,6 +151,8 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+  void extractComponent(String sourceName, String destName, String component, int splitPercentage);
+
   /**
    * Compresses the specified image with the given compression percentage and saves the compressed
    * image with the provided destination name.

@@ -306,7 +306,13 @@ public class Controller implements ControllerFeatures{
         if (PARTS.length < 3) {
           System.out.println("Invalid 'luma-component' command: Usage is 'luma-component "
                   + "source-image-name dest-image-name'");
-        } else {
+        } else if (PARTS.length > 3 && PARTS[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(PARTS[4]);
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
+          imageObj.extractComponent(sourceImageName, destImageName, "luma", splitPercentage);
+        }
+        else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
