@@ -38,11 +38,9 @@ public abstract class AbstractImage implements ImageOperations {
   /**
    * Load an image from a file and store it in the image map.
    *
-   * @param imagePath The file path of the image to load.
-   * @param imageName The name to associate with the loaded image.
    * @throws IOException If an error occurs while loading the image.
    */
-  public abstract void loadImage(String imagePath, String imageName) throws IOException;
+  public abstract void loadImage(String imageName, int[][][] rgb) throws IOException;
 
   /**
    * Save an image to a file using a specific format.
@@ -614,11 +612,25 @@ public abstract class AbstractImage implements ImageOperations {
    * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
    *
    * @return A map where keys are image names and values are the corresponding RGB data.
+   *
    */
   @Override
   public int[][][] getRgbDataMap(String imageName) {
-    return IMAGE_MAP.get(imageName).getRgbDataMap();
+    System.out.println("Getting RGB data for " + imageName);
+    ImageContent image = IMAGE_MAP.get(imageName);
+    if (image != null) {
+      return IMAGE_MAP.get(imageName).getRgbDataMap();
+    } else {
+      System.out.println("Image not found: " + imageName);
+      return null;
+    }
   }
+
+  @Override
+  public double[][] getPixels(String imageName){
+    return IMAGE_MAP.get(imageName).getPixels();
+  }
+
 
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = IMAGE_MAP.get(sourceName);
@@ -962,7 +974,5 @@ public abstract class AbstractImage implements ImageOperations {
       System.out.println("Error in compressing " + imageName + " by " + compressionPercentage
               + " %");
     }
-
   }
-
 }

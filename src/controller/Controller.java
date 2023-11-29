@@ -1,11 +1,19 @@
 package controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
+
+import javax.imageio.ImageIO;
 
 import model.ImageOperations;
 import model.JPGImage;
@@ -29,6 +37,8 @@ public class Controller implements ControllerFeatures{
 
   private Reader reader;
 
+  private String extension;
+
   public Controller(Reader reader) {
     this.reader = reader;
   }
@@ -46,20 +56,19 @@ public class Controller implements ControllerFeatures{
    * @throws IOException If an I/O error occurs while executing the command.
    */
   public void parseAndExecute(String command) throws IOException {
+    int[][][] rgb;
+    double[][] pixels;
     System.out.println("Executing command: " + command);
     PARTS = command.split(" ");
     if (PARTS.length < 2) {
       System.out.println("Invalid command: " + command);
       return;
     }
-
     String cmd = PARTS[0];
     String arg1 = PARTS[1];
     String arg2 = PARTS.length > 2 ? PARTS[2] : null;
-    String extension = identifyFileFormat(arg1);
-
+    extension = identifyFileFormat(arg1);
     if (!Objects.equals(PARTS[0], "run")) {
-
       if (extension != null) {
         if ((extension.equalsIgnoreCase("png"))) {
           imageObj = new PNGImage();
@@ -73,16 +82,15 @@ public class Controller implements ControllerFeatures{
         }
       }
     }
-
     switch (cmd) {
       case "load":
-        //int [][][] rgb = load image(arg1, arg2)
-        //imageObj.loadImage(arg1, rgb);
-        imageObj.loadImage(arg1, arg2);
+        System.out.println("in load");
+        System.out.println("arg1" + arg1);
+        rgb = pngJpgOrPpm(arg1);
+        imageObj.loadImage(arg2, rgb);
         break;
       case "save":
         imageObj.saveImage(arg1, arg2);
-        int[][][] rgb = imageObj.getRgbDataMap(arg2);
         break;
       case "horizontal-flip":
         if (PARTS.length < 3) {
@@ -353,6 +361,99 @@ public class Controller implements ControllerFeatures{
     }
   }
 
+  public int[][][] convertPNGToRGB(String imagePath) {
+    int HEIGHT;
+    int WIDTH;
+    try {
+      File imageFile = new File(imagePath);
+//      URI uri = new URI(imagePath);
+//      File imageFile = new File(uri);
+      if (!imageFile.exists()) {
+        System.out.println("Image file not found: " + imagePath);
+        return null;
+      }
+
+      BufferedImage bufferedImage = ImageIO.read(imageFile);
+      if (bufferedImage == null) {
+        System.out.println("Failed to read image from: " + imagePath);
+        return null;
+      }
+
+      WIDTH = bufferedImage.getWidth();
+      HEIGHT = bufferedImage.getHeight();
+
+      int[][][] imageRGBData = new int[HEIGHT][WIDTH][3];
+
+      for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+          int rgb = bufferedImage.getRGB(x, y);
+          imageRGBData[y][x][0] = (rgb >> 16) & 0xFF; // Red component
+          imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;  // Green component
+          imageRGBData[y][x][2] = rgb & 0xFF;         // Blue component
+        }
+      }
+      return imageRGBData;
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.out.println("Error while converting PNG to RGB: " + imagePath);
+      return null;
+    }
+  }
+
+  public int[][][] readImageRGBData(String filename) {
+    Scanner sc = null;
+
+    try {
+      sc = new Scanner(new FileInputStream(filename));
+//      URI uri = new URI(filename);
+//      sc = new Scanner(new FileInputStream(new File(uri)));
+    } catch (FileNotFoundException e) {
+      System.out.println("File " + filename + " not found!");
+    }
+
+    StringBuilder builder = new StringBuilder();
+    while (sc.hasNextLine()) {
+      String s = sc.nextLine();
+      if (s.charAt(0) != '#') {
+        builder.append(s).append(System.lineSeparator());
+      }
+    }
+
+    sc = new Scanner(builder.toString());
+
+    String token = sc.next();
+    if (!token.equals("P3")) {
+      System.out.println("Invalid PPM file: plain RAW file should begin with P3");
+    }
+    int width = sc.nextInt();
+    int height = sc.nextInt();
+
+    int[][][] imageRGBData = new int[height][width][3];
+    int maxValue = sc.nextInt(); // Read the maximum color value
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        imageRGBData[i][j][0] = sc.nextInt(); // Red component
+        imageRGBData[i][j][1] = sc.nextInt(); // Green component
+        imageRGBData[i][j][2] = sc.nextInt(); // Blue component
+      }
+    }
+    return imageRGBData;
+  }
+
+  private int[][][] pngJpgOrPpm(String imagePath) {
+    System.out.println("in pngJpgOrPpm function" + extension);
+
+    if(Objects.equals(extension, "png") || Objects.equals(extension, "jpg")){
+      System.out.println("in png or jpg");
+      return convertPNGToRGB(imagePath);
+    }
+    else {
+      System.out.println("in ppm");
+      return readImageRGBData(imagePath);
+    }
+  }
+
   @Override
   public void setView(ImageEditorView view) {
     this.view = view;
@@ -360,10 +461,11 @@ public class Controller implements ControllerFeatures{
   }
 
   @Override
-  public void loadImage(String command, String destImageName) {
+  public void load(String command, String destImageName) {
     try {
       parseAndExecute(command);
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
+      System.out.println(Arrays.deepToString(destImageData));
       view.updateImageForIndex(destImageData, 0);
       parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
       int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");

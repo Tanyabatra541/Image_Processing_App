@@ -20,15 +20,9 @@ public class JPGImage extends PNGImage {
   @Override
   public void saveImage(String imagePath, String imageName)  {
     int[][][] rgbData = IMAGE_MAP.get(imageName).getRgbDataMap();
-
-
     if (rgbData != null) {
       BufferedImage bufferedImage = convertRGBDataToBufferedImage(rgbData);
-
       File output = new File(imagePath);
-
-
-
       try {
         ImageIO.write(bufferedImage, "jpg", output);
         System.out.println("Image saved as " + imagePath + " in the png format");

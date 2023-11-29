@@ -10,11 +10,10 @@ public interface ImageOperations {
   /**
    * Load an image from a file and store it in the image map.
    *
-   * @param imagePath The file path of the image to load.
-   * @param imageName The name to associate with the loaded image.
+   * @param rgb The rgb values associated with the loaded image.
    * @throws IOException If an error occurs while loading the image.
    */
-  void loadImage(String imagePath, String imageName) throws IOException;
+  void loadImage(String imageName, int [][][] rgb) throws IOException;
   //instead of image path, we have int[][][]
 
   /**
@@ -224,6 +223,8 @@ public interface ImageOperations {
   void convertToGrayscale(String sourceName, String destName, int splitPercentage);
 
   int[][][] getRgbDataMap(String imageName);
+
+  double[][] getPixels(String imageName);
 
 
 }
