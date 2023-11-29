@@ -442,7 +442,7 @@ String currentName="img";
 
         sourceName=filteredImgName;
       }*/
-      features.applyFeatures(null, sourceName,false);
+      features.applyFeatures(null, sourceName);
       //filteredImgName="filteredImgName";
     /*  previewDialog = new FilterPreviewDialog(this,SwingFeaturesFrame.this, "img");
       previewDialog.setVisible(true);
@@ -543,7 +543,7 @@ currentName=sourceName;
         System.out.println("AAAAAAA"+tempName);
         System.out.println("AAAAAAA"+sourceName);
         System.out.println("AAAAAAA"+destName);
-      features.applyFeatures(filterCommand, destName,false);
+      features.applyFeatures(filterCommand, tempName);
 
 
 
@@ -569,14 +569,14 @@ currentName=sourceName;
           tempName="tempName";
           splitImageName=selectedFilter+"Split";
           filterCommand = filterOptions(true);
-          features.applyFeatures(filterCommand, splitImageName,false);
+          features.applyFeatures(filterCommand, splitImageName);
         }else{
           sliderValue=0;
           arrowSlider.setValue(0);
           sliderPanel.setVisible(false);
 
           filterCommand = filterOptions(true);
-          features.applyFeatures(filterCommand, filteredImgName,false);
+          features.applyFeatures(filterCommand, filteredImgName);
         }
 
       }
