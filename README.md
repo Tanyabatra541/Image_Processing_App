@@ -55,7 +55,7 @@ model.model.JPGImage, and PNGJPGImage,
 each with their unique image manipulation abilities.
 
 **How to run**:
-1. Run the main method in the `Main` class.
+1. Run the ImageEditor method in the `ImageEditor` class.
 2. Enter the file path of the script file in the text field and click execute or click the button 
    Go to command prompt to enter the commands manually.
 3. The resulting images will be saved in the specified file mentioned in the script.
@@ -64,7 +64,7 @@ each with their unique image manipulation abilities.
 
 **Overall Flow**:
 
-The main method initializes the model, view, and controller.
+The ImageEditor method initializes the model, view, and controller.
 The user interacts with the view by entering either the file path or clicking the button
 that redirects them to the command prompt.
 The controller responds to user actions and communicates with the model.

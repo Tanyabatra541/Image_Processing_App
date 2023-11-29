@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 
 import model.JPGImage;
-import view.ImageEditorView;
+import view.SwingFeaturesFrame;
 //import model.Model;
 //import view.IView;
 //import view.JFrameView;
@@ -66,7 +66,8 @@ public class ControllerTest {
 
     System.setOut(new PrintStream(outContent));
 
-    controller = new Controller(null);
+//    IView view = new JFrameView(null);
+    controller = new Controller(new SwingFeaturesFrame());
 
   }
 

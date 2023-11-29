@@ -1,9 +1,8 @@
 package controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -11,7 +10,7 @@ import model.ImageOperations;
 import model.JPGImage;
 import model.PNGImage;
 import model.PPMImage;
-import view.ImageEditorView;
+import view.SwingFeaturesFrame;
 //import view.IView;
 
 import static java.lang.System.exit;
@@ -23,15 +22,110 @@ import static java.lang.System.exit;
  */
 public class Controller implements ControllerFeatures{
 
-  public ImageOperations imageObj = null;
+  private static String lastSavedImagePath;
 
-  private ImageEditorView view;
+  private String input;
+  private final String result;
 
-  private Reader reader;
+  public static ImageOperations imageObj = null;
 
-  public Controller(Reader reader) {
-    this.reader = reader;
+  private SwingFeaturesFrame view;
+//  private final IView view;
+
+//  /**
+//   * Constructs a new Controller instance.
+//   *
+//   * @param v The view to interact with.
+//   */
+  public Controller(SwingFeaturesFrame v) {
+    view = v;
+//    view.setListener(this);
+//    view.display();
+    input = "";
+    result = "";
+
   }
+
+//  /**
+//   * Handles user actions, such as button clicks and text input.
+//   *
+//   * @param e An ActionEvent representing the user's action.
+//   */
+//  @Override
+//  public void actionPerformed(ActionEvent e) {
+//    if (Objects.equals(e.getActionCommand(), "Execute Button")) {
+//      // Read the text from the input textField
+//      String inputText = view.getInputString();
+//      // Check if the input text represents a file path
+//      File file = new File(inputText);
+//      if (file.exists() && file.isFile()) {
+//        try {
+//          // Read the contents of the file and display them in the view
+//          StringBuilder fileContents;
+//          fileContents = new StringBuilder();
+//          try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//              fileContents.append(line).append("\n");
+//            }
+//          }
+//          // Pass the file contents to the model for processing
+//          executeScriptFromFile(inputText);
+//          // Display any output or result from the model in the view
+//          String result = getResult(); // This method depends on your model structure
+//          view.setEchoOutput(result);
+//        } catch (IOException ex) {
+//          // Handle any exceptions that occur during file reading
+//          view.setEchoOutput("Error reading the file: " + ex.getMessage());
+//        }
+//      } else {
+//        // Send the text to the model
+//        setString(inputText);
+//        // Clear the input textField
+//        view.clearInputString();
+//        // Finally, echo the string in the view
+//        String text = getString();
+//        view.setEchoOutput(text);
+//      }
+//    } else if (Objects.equals(e.getActionCommand(), "Exit Button")) {
+//      view.closeOrDispose();
+//      Scanner scanner = new Scanner(System.in);
+//      while (true) {
+//        System.out.print("Enter a command (or type 'exit' to quit): ");
+//        String command = scanner.nextLine();
+//        if (command.equals("exit")) {
+//          break;
+//        }
+//        try {
+//          parseAndExecute(command);
+//        } catch (IOException ex) {
+//          throw new RuntimeException(ex);
+//        }
+//      }
+//    }
+//  }
+
+//  private void setString(String i) {
+//    input = i;
+//  }
+//
+//  /**
+//   * Gets the input string.
+//   *
+//   * @return The input string.
+//   */
+//  private String getString() {
+//    return input;
+//  }
+//
+//  /**
+//   * Retrieves the result from processing commands, if available.
+//   *
+//   * @return The result string obtained from command execution.
+//   */
+//  private String getResult() {
+//    return result;
+//  }
 
   /**
    * The parts of the command entered by the user.
@@ -45,7 +139,7 @@ public class Controller implements ControllerFeatures{
    * @param command The command to parse and execute.
    * @throws IOException If an I/O error occurs while executing the command.
    */
-  public void parseAndExecute(String command) throws IOException {
+  public static void parseAndExecute(String command) throws IOException {
     System.out.println("Executing command: " + command);
     PARTS = command.split(" ");
     if (PARTS.length < 2) {
@@ -82,6 +176,7 @@ public class Controller implements ControllerFeatures{
         break;
       case "save":
         imageObj.saveImage(arg1, arg2);
+        lastSavedImagePath = arg2 + "." + extension;
         int[][][] rgb = imageObj.getRgbDataMap(arg2);
         break;
       case "horizontal-flip":
@@ -284,7 +379,7 @@ public class Controller implements ControllerFeatures{
         break;
       case "-file":
         String scriptFilename = PARTS[1];
-        executeScript(scriptFilename);
+        executeScriptFromFile(scriptFilename);
         exit(0);
         break;
       default:
@@ -294,38 +389,28 @@ public class Controller implements ControllerFeatures{
   }
 
   /**
-   * Executes the commands using given reader
+   * Executes a script loaded from a file, processing each line as a command.
+   *
+   * @param scriptFilename The filename of the script to execute.
    */
-  public void executeCommands() {
+  public static void executeScriptFromFile(String scriptFilename) {
     try {
-      Scanner sc = new Scanner(reader);
+      File scriptFile = new File(scriptFilename);
+      if (!scriptFile.exists()) {
+        System.out.println("Script file not found: " + scriptFilename);
+        return;
+      }
+
+      Scanner sc = new Scanner(scriptFile);
       while (sc.hasNextLine()) {
         String line = sc.nextLine().trim();
         if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
-          parseAndExecute(line);
+          Controller.parseAndExecute(line);
         }
       }
       sc.close();
     } catch (FileNotFoundException e) {
-      System.out.println("Error executing command: " + e.getMessage());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-
-  private void executeScript(String scriptFilename) {
-    try {
-      Scanner sc = new Scanner(new FileReader(scriptFilename));
-      while (sc.hasNextLine()) {
-        String line = sc.nextLine().trim();
-        if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
-          parseAndExecute(line);
-        }
-      }
-      sc.close();
-    } catch (FileNotFoundException e) {
-      System.out.println("Error executing command: " + e.getMessage());
+      System.out.println("Error reading script file: " + e.getMessage());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -353,10 +438,13 @@ public class Controller implements ControllerFeatures{
     }
   }
 
+  public static String getLastSavedImagePath() {
+    return lastSavedImagePath;
+  }
+
   @Override
-  public void setView(ImageEditorView view) {
-    this.view = view;
-    view.addFeatures(this);
+  public void addFeaturesToView(ControllerFeatures features) {
+    view.addFeatures(features);
   }
 
   @Override
