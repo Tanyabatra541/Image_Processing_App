@@ -10,4 +10,5 @@ public interface ControllerFeatures {
   void saveImage(String command);
 
   void applyFeatures(String command, String destinationImageName);
+
 }

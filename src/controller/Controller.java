@@ -29,7 +29,7 @@ import static java.lang.System.exit;
  * It handles user interactions from the view, processes user input, and communicates with the
  * model and view components.
  */
-public class Controller implements ControllerFeatures{
+public class Controller implements ControllerFeatures {
 
   public ImageOperations imageObj = null;
 
@@ -444,11 +444,10 @@ public class Controller implements ControllerFeatures{
   private int[][][] pngJpgOrPpm(String imagePath) {
     System.out.println("in pngJpgOrPpm function" + extension);
 
-    if(Objects.equals(extension, "png") || Objects.equals(extension, "jpg")){
+    if (Objects.equals(extension, "png") || Objects.equals(extension, "jpg")) {
       System.out.println("in png or jpg");
       return convertPNGToRGB(imagePath);
-    }
-    else {
+    } else {
       System.out.println("in ppm");
       return readImageRGBData(imagePath);
     }
@@ -489,11 +488,19 @@ public class Controller implements ControllerFeatures{
   @Override
   public void applyFeatures(String command, String destImageName) {
     try {
-      parseAndExecute(command);
+      System.out.println("applyFeatures(String command" + command);
+      if (command != null) {
+        parseAndExecute(command);
+        /*int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
+        view.updateImageForIndex(destImageData, 1);*/
+        System.out.println("*****Applying feature on destImageName: " + destImageName);
+        parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
+       /* int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
+        view.updateImageForIndex(destHistogramData, 2);*/
+      }
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
-      System.out.println("*****Applying feature on destImageName: " + destImageName);
-      parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
+      System.out.println("Applying feature on destImageName: " + destImageName);
       int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
       view.updateImageForIndex(destHistogramData, 2);
     } catch (IOException e) {
