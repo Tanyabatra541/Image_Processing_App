@@ -374,6 +374,7 @@ String currentName="img";
           System.out.println("YYYYY"+sourceName);
           System.out.println("YYYYY"+currentName);
           //sourceName=currentName;
+          //currentName=sourceName;
           // Add your code for the "Cancel" action here
           applySplitFilter=true;
           isCurrentImageFiltered=false;
@@ -401,8 +402,8 @@ String currentName="img";
            }*//*else{
               features.applyFeatures(filterCommand, "img");
            }*/
-         System.out.println("&&&&&&&&&&&&"+applySplitFilter);
-if(sliderPanel.isVisible() && sliderValue!=0 && !applySplitFilter ){
+
+if(sliderPanel.isVisible() && sliderValue!=0  ){
 
 System.out.println("KKKKKK"+tempName);
   System.out.println("KKKKKK"+sourceName);
@@ -410,12 +411,18 @@ System.out.println("KKKKKK"+tempName);
   features.applyFeatures(filterCommand, destName);
 currentName=sourceName;
 }else{
+  System.out.println("&&&&&&&&&&&&"+applySplitFilter);
+  if(!applySplitFilter){
+    features.applyFeatures(filterCommand, destName);
+  }else{
+    features.applyFeatures(filterCommand, sourceName);
+  }
   System.out.println("sajdhjas"+destName);
   System.out.println("HHH"+tempName);
   System.out.println("HHH"+sourceName);
   System.out.println("HHH"+currentName);
 
-  features.applyFeatures(filterCommand, currentName);
+
 
   //currentName=destName;
 }
