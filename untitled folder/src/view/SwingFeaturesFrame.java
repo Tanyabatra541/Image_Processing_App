@@ -14,6 +14,8 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -82,6 +84,7 @@ String currentName="img";
   String filteredImgName="filteredImg";
   int action=0;
   String splitImageName="splitImage";
+  DocumentListener documentListener;
 
 
   public String getFileExtension(String filePath) {
@@ -330,6 +333,22 @@ String currentName="img";
     bmwPanel.add(mNumericField);
     bmwPanel.add(wNumericField);
     comboboxPanel.add(bmwPanel);
+    ActionListener textFieldListener = new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        // Check if all fields are filled
+        String bText = bNumericField.getText();
+        String mText = mNumericField.getText();
+        String wText = wNumericField.getText();
+
+        if (!bText.isEmpty() && !mText.isEmpty() && !wText.isEmpty()) {
+          // All fields are filled, perform your action here
+          // Example: Display a message
+          JOptionPane.showMessageDialog(SwingFeaturesFrame.this, "All fields are filled!");
+        }
+      }
+    };
+   
     bmwPanel.setVisible(false);
 
     compressionPercentage = new JTextField(3);
@@ -558,6 +577,7 @@ currentName=sourceName;
         if((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
                 Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
                 Objects.equals(selectedFilter, "sharpen") ||  (Objects.equals(selectedFilter, "luma-component")))){
+
           System.out.println("combobox.addItemListener INSIDE SLIDER");
           JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                   "Slide Arrow to view the changes!",
@@ -566,7 +586,9 @@ currentName=sourceName;
           tempName="tempName";
           splitImageName=selectedFilter+"Split";
           filterCommand = filterOptions(true);
-          features.applyFeatures(filterCommand, splitImageName);
+          if(filterCommand!="error") {
+            features.applyFeatures(filterCommand, splitImageName);
+          }
         }else{
           sliderValue=0;
           arrowSlider.setValue(0);
