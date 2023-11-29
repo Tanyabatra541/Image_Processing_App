@@ -212,37 +212,34 @@ String currentName="img";
   private void showHelpDialog() {
     // Create a JDialog for the help popup
     JDialog helpDialog = new JDialog(this, "Help", true);
-    helpDialog.setTitle("Struggling with how to process your image?");
-
     helpDialog.setLayout(new BorderLayout());
 
-    // Add your help text
-    JTextArea helpText = new JTextArea("You can follow these steps:\n" +
-            "1.Load an image of your choice (PNG/JPG/JPEG/PPM) by clicking the 'Open' button.\n" +
-            "2.Change the filter in the dropdown to see how the filter will look on your image.\n" +
-            "3.Hit the 'Apply Filter' button to apply filters of your choice to the image\n" +
-            "(Some images have a special feature to compare with the previous image to help you decide\n" +
-            "if you like the filter. Be sure to hit 'Apply Filter' if you like the filter!)");
-    helpText.setAlignmentX(Component.CENTER_ALIGNMENT);
-    helpText.setAlignmentY(Component.CENTER_ALIGNMENT);
+    // Add your help text with HTML formatting
+    String helpText = "<html><body style='width: 300px; text-align: center;'>" +
+            "<h2>Struggling with how to process your image?</h2>" +
+            "<p>Follow these steps:</p>" +
+            "<ol>" +
+            "<li>Load an image of your choice (PNG/JPG/JPEG/PPM) by clicking the 'Open' button.</li>" +
+            "<li>Change the filter in the dropdown to see how the filter will look on your image.</li>" +
+            "<li>Hit the 'Apply Filter' button to apply filters of your choice to the image.</li>" +
+            "</ol>" +
+            "<p>(Some images have a special feature to compare with the previous image to help you decide " +
+            "if you like the filter. Be sure to hit 'Apply Filter' if you like the filter!) </p>" +
+            "</body></html>";
 
-    helpText.setEditable(false);
+    JEditorPane helpTextPane = new JEditorPane("text/html", helpText);
+    helpTextPane.setEditable(false);
 
     // Add an OK button
     JButton okButton = new JButton("OK");
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        helpDialog.dispose();  // Close the dialog when OK is clicked
-      }
-    });
+    okButton.addActionListener(e -> helpDialog.dispose());  // Close the dialog when OK is clicked
 
     // Add components to the dialog
-    helpDialog.add(helpText, BorderLayout.CENTER);
+    helpDialog.add(new JScrollPane(helpTextPane), BorderLayout.CENTER);
     helpDialog.add(okButton, BorderLayout.SOUTH);
 
     // Set dialog properties
-    helpDialog.setSize(700, 400);
+    helpDialog.setSize(400, 350);
     helpDialog.setLocationRelativeTo(this);
     helpDialog.setVisible(true);
   }
@@ -442,7 +439,7 @@ String currentName="img";
 
         sourceName=filteredImgName;
       }*/
-      features.applyFeatures(null, sourceName,false);
+      features.applyFeatures(null, sourceName);
       //filteredImgName="filteredImgName";
     /*  previewDialog = new FilterPreviewDialog(this,SwingFeaturesFrame.this, "img");
       previewDialog.setVisible(true);
@@ -543,7 +540,7 @@ currentName=sourceName;
         System.out.println("AAAAAAA"+tempName);
         System.out.println("AAAAAAA"+sourceName);
         System.out.println("AAAAAAA"+destName);
-      features.applyFeatures(filterCommand, destName,false);
+      features.applyFeatures(filterCommand, tempName);
 
 
 
@@ -569,14 +566,14 @@ currentName=sourceName;
           tempName="tempName";
           splitImageName=selectedFilter+"Split";
           filterCommand = filterOptions(true);
-          features.applyFeatures(filterCommand, splitImageName,false);
+          features.applyFeatures(filterCommand, splitImageName);
         }else{
           sliderValue=0;
           arrowSlider.setValue(0);
           sliderPanel.setVisible(false);
 
           filterCommand = filterOptions(true);
-          features.applyFeatures(filterCommand, filteredImgName,false);
+          features.applyFeatures(filterCommand, filteredImgName);
         }
 
       }

@@ -501,6 +501,7 @@ public class Controller implements ControllerFeatures {
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
       System.out.println("Applying feature on destImageName: " + destImageName);
+
       int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
       view.updateImageForIndex(destHistogramData, 2);
     } catch (IOException e) {
