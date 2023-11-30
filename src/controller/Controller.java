@@ -86,6 +86,7 @@ public class Controller implements ControllerFeatures {
         if (arg1 != null) {
           rgb = ioImageOperations.load(arg1, extension);
           imageObj.loadImageInMap(arg2, rgb);
+          message="Operation Successful";
         } else {
           message = "Unable to load";
         }
@@ -98,6 +99,7 @@ public class Controller implements ControllerFeatures {
           rgb = imageObj.getRgbDataMap(arg2);
           pixels = imageObj.getPixels(arg2);
           ioImageOperations.save(arg1, arg2, extension, rgb, pixels);
+          message="Operation Successful";
         } else {
           message = "Unable to save";
         }
@@ -113,6 +115,7 @@ public class Controller implements ControllerFeatures {
           } else {
             String destImageName = PARTS[2];
             imageObj.horizontalFlipImage(sourceImageName, destImageName);
+            message="Operation Successful";
           }
         }
         break;
@@ -122,6 +125,7 @@ public class Controller implements ControllerFeatures {
           message = "Source Image not found";
         } else {
           imageObj.verticalFlipImage(sourceImageName, arg2);
+          message="Operation Successful";
         }
         break;
       case "sharpen":
@@ -135,9 +139,11 @@ public class Controller implements ControllerFeatures {
               message = "Split percentage should be between 0 and 100";
             } else {
               imageObj.sharpenImage(sourceImageName, arg2, splitPercentage);
+              message="Operation Successful";
             }
           } else {
             imageObj.sharpenImage(sourceImageName, arg2, 0);
+            message="Operation Successful";
           }
         }
         break;
@@ -152,9 +158,11 @@ public class Controller implements ControllerFeatures {
               message = "Split percentage should be between 0 and 100";
             } else {
               imageObj.blurImage(sourceImageName, arg2, splitPercentage);
+              message="Operation Successful";
             }
           } else {
             imageObj.blurImage(sourceImageName, arg2, 0);
+            message="Operation Successful";
           }
         }
         break;
@@ -170,6 +178,7 @@ public class Controller implements ControllerFeatures {
             int increment = Integer.parseInt(PARTS[1]);
             String destImageName = PARTS[3];
             imageObj.brightenImage(sourceImageName, destImageName, increment);
+            message="Operation Successful";
           }
         }
         break;
@@ -184,9 +193,11 @@ public class Controller implements ControllerFeatures {
               message = "Split percentage should be between 0 and 100";
             } else {
               imageObj.sepiaImage(sourceImageName, arg2, splitPercentage);
+              message="Operation Successful";
             }
           } else {
             imageObj.sepiaImage(sourceImageName, arg2, 0);
+            message="Operation Successful";
           }
         }
         break;
@@ -206,6 +217,7 @@ public class Controller implements ControllerFeatures {
           } else {
             imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName,
                     blueImageName);
+            message="Operation Successful";
           }
         }
         break;
@@ -223,6 +235,7 @@ public class Controller implements ControllerFeatures {
           } else {
             imageObj.rgbSplitImage(sourceImageName, destImageNameRed, destImageNameGreen,
                     destImageNameBlue);
+            message="Operation Successful";
           }
         }
         break;
@@ -238,6 +251,7 @@ public class Controller implements ControllerFeatures {
             message = "Source Image not found";
           } else {
             imageObj.extractComponent(sourceImageName, destImageName, "red");
+            message="Operation Successful";
           }
         }
         break;
@@ -253,6 +267,7 @@ public class Controller implements ControllerFeatures {
             message = "Source Image not found";
           } else {
             imageObj.extractComponent(sourceImageName, destImageName, "green");
+            message="Operation Successful";
           }
         }
         break;
@@ -267,6 +282,7 @@ public class Controller implements ControllerFeatures {
             message = "Source Image not found";
           } else {
             imageObj.extractComponent(sourceImageName, destImageName, "blue");
+            message="Operation Successful";
           }
         }
         break;
@@ -282,6 +298,7 @@ public class Controller implements ControllerFeatures {
             message = "Source Image not found";
           } else {
             imageObj.extractComponent(sourceImageName, destImageName, "value");
+            message="Operation Successful";
           }
         }
         break;
@@ -296,6 +313,7 @@ public class Controller implements ControllerFeatures {
             message = "Source Image not found";
           } else {
             imageObj.extractComponent(sourceImageName, destImageName, "intensity");
+            message="Operation Successful";
           }
         }
         break;
@@ -315,10 +333,12 @@ public class Controller implements ControllerFeatures {
             } else {
               imageObj.extractComponent(sourceImageName, destImageName, "luma",
                       splitPercentage);
+              message="Operation Successful";
             }
           } else {
             String destImageName = PARTS[2];
             imageObj.extractComponent(sourceImageName, destImageName, "luma");
+            message="Operation Successful";
           }
         }
         break;
@@ -333,9 +353,11 @@ public class Controller implements ControllerFeatures {
               message = "Split percentage should be between 0 and 100";
             } else {
               imageObj.colorCorrectImage(sourceImageName, arg2, splitPercentage);
+              message="Operation Successful";
             }
           } else {
             imageObj.colorCorrectImage(sourceImageName, arg2, 0);
+            message="Operation Successful";
           }
         }
         break;
@@ -347,6 +369,7 @@ public class Controller implements ControllerFeatures {
           sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
           imageObj.createHistogram(sourceImageName, destImageName);
+          message="Operation Successful";
         }
         break;
 
@@ -371,10 +394,12 @@ public class Controller implements ControllerFeatures {
                 } else {
                   imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
                           splitPercentage);
+                  message="Operation Successful";
                 }
               } else {
                 imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
                         0);
+                message="Operation Successful";
               }
             } else {
               message = "Invalid shadow, mid, highlight points";
@@ -399,9 +424,11 @@ public class Controller implements ControllerFeatures {
                 message = "Split percentage should be between 0 and 100";
               } else {
                 imageObj.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
+                message="Operation Successful";
               }
             } else {
               imageObj.convertToGrayscale(sourceImageName, destImageName, 0);
+              message="Operation Successful";
             }
           }
         }
@@ -418,6 +445,7 @@ public class Controller implements ControllerFeatures {
           } else {
             String destImageName = PARTS[3];
             imageObj.compress(sourceImageName, destImageName, percentage);
+            message="Operation Successful";
           }
         }
         break;
@@ -548,15 +576,17 @@ public class Controller implements ControllerFeatures {
    * @param destImageName The name of the destination image where the features are applied.
    */
   @Override
-  public void applyFeatures(String command, String destImageName) {
-    String m;
+  public String applyFeatures(String command, String destImageName) {
+    String m = null;
     try {
       System.out.println("applyFeatures(String command" + command);
       if (command != null) {
         m = parseAndExecute(command);
+        System.out.println("&*(&^"+m);
         System.out.println("*****Applying feature on destImageName: " + destImageName);
         m = parseAndExecute("histogram " + destImageName + " " + destImageName
                 + "-histogram");
+        System.out.println("&*(&^"+m);
       }
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
@@ -567,6 +597,7 @@ public class Controller implements ControllerFeatures {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    return m;
   }
 
   /**

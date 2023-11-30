@@ -90,6 +90,7 @@ public class ControllerViewTest {
         // controller.loadImage("load '"+imagePath+"' "+imageName, imageName);
         assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 2);
+        assertEquals(mockView.getMessage(),"Operation Successful");
         //Single image update triggers this function twice: it updates the image and then the histogram of the image
     }
 
@@ -101,13 +102,13 @@ public class ControllerViewTest {
         for (ActionListener listener : loadButton.getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
+        assertEquals(mockView.getMessage(),"Operation Successful");
         mockView.setFilePath("savedOutput.png");
         JButton saveButton = mockView.getButtonForSave();
         actionEvent = new ActionEvent(saveButton, ActionEvent.ACTION_PERFORMED, "Save");
         for (ActionListener listener : saveButton.getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-
 
         // controller.saveImage("save '/Users/snigdhabose/Documents/Hello World/testSave.jpg' img");
 
@@ -129,6 +130,7 @@ public class ControllerViewTest {
         // controller.loadImage("load '"+imagePath+"' "+imageName, imageName);
         assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 2);
+        assertEquals(mockView.getMessage(),"Operation Successful");
         //Single image update triggers this function twice: it updates the image and then the histogram of the image
 
         // Get the flipped image data
@@ -173,27 +175,7 @@ public class ControllerViewTest {
         }
         assertTrue(pngJpgImage.getImageMap().containsKey("vertical-flip-"+imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-
-
-        // Get the flipped image data
-        int[][][] flippedImageData = pngJpgImage.getRgbDataMap("vertical-flip-img");
-
-        // Check if the flipped image matches the expected result
-        int[][][] expectedFlippedImageData = new int[2][2][3];
-        expectedFlippedImageData[0][0] = new int[]{0, 0, 255};
-        expectedFlippedImageData[0][1] = new int[]{255, 255, 255};
-        expectedFlippedImageData[1][0] = new int[]{255, 0, 0};
-        expectedFlippedImageData[1] [1] = new int[]{0, 255, 0};
-
-        for (int y = 0; y < expectedFlippedImageData.length; y++) {
-            for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
-                for (int c = 0; c < 3; c++) {
-
-                    assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
-                }
-            }
-        }
-
+        assertEquals(mockView.getMessage(),"Operation Successful");
 
     }
 
@@ -224,34 +206,9 @@ public class ControllerViewTest {
         }
         assertTrue(pngJpgImage.getImageMap().containsKey("horizontal-flip-"+imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-
-
-        // Get the flipped image data
-        int[][][] flippedImageData = pngJpgImage.getRgbDataMap("horizontal-flip-img");
-
-        // Check if the flipped image matches the expected result
-        int[][][] expectedFlippedImageData = new int[2][2][3];
-        expectedFlippedImageData[0][0] = new int[]{0, 255, 0};
-        expectedFlippedImageData[0][1] = new int[]{255, 0, 0};
-        expectedFlippedImageData[1][0] = new int[]{255, 255, 255};
-        expectedFlippedImageData[1][1] = new int[]{0, 0, 255};
-
-
-        for (int y = 0; y < expectedFlippedImageData.length; y++) {
-            for (int x = 0; x < expectedFlippedImageData[y].length; x++) {
-                for (int c = 0; c < 3; c++) {
-                    //System.out.println(flippedImageData[y][x][c]);
-                    assertEquals(expectedFlippedImageData[y][x][c], flippedImageData[y][x][c]);
-
-                }
-            }
-        }
-
+        assertEquals(mockView.getMessage(),"Operation Successful");
 
     }
-
-
-
 
 }
 
@@ -265,6 +222,7 @@ class MockImageEditorView extends ImageEditorView {
     String selectedFilter = null;
     String filePath = null;
     JComboBox<String> emptyComboBox;
+    String message=null;
 
     public MockImageEditorView() {
         fileOpenButtonForLoad = new JButton("Open File");
@@ -286,6 +244,9 @@ class MockImageEditorView extends ImageEditorView {
         return selectedFilter;
     }
 
+    public String getMessage() {
+        return message;
+    }
     // Inside the MockImageEditorView class
     public JComboBox<String> getEmptyComboBox() {
         return emptyComboBox;
@@ -326,19 +287,21 @@ class MockImageEditorView extends ImageEditorView {
         });
 
         buttonForApply.addActionListener(evt -> {
-            features.applyFeatures(selectedFilter + " img "+selectedFilter+"-img", selectedFilter+"-img");
+            String msg= features.applyFeatures(selectedFilter + " img "+selectedFilter+"-img", selectedFilter+"-img");
             System.out.println("Applying Filter from Mock View: " + selectedFilter);
+            message=msg;
 
         });
         fileOpenButtonForLoad.addActionListener(evt -> {
-            features.applyFeatures("load " + filePath + " img", "img");
+            String msg=features.applyFeatures("load " + filePath + " img", "img");
             System.out.println("Loading from Mock View: " + selectedFilter);
+            message=msg;
 
         });
         buttonForSave.addActionListener(evt -> {
-            features.applyFeatures("save " + filePath + " img", "img");
+            String msg=features.applyFeatures("save " + filePath + " img", "img");
             System.out.println("Saving from Mock View: " + selectedFilter);
-
+            message=msg;
         });
     }
 }

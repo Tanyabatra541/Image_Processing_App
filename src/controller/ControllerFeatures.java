@@ -39,5 +39,5 @@ public interface ControllerFeatures {
    * @param destinationImageName The name to be assigned to the resulting image after applying
    *                             features.
    */
-  void applyFeatures(String command, String destinationImageName);
+  String applyFeatures(String command, String destinationImageName);
 }
