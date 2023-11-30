@@ -741,7 +741,8 @@ public class ImageEditorView extends JFrame {
               double numericValueM = Double.parseDouble(mValue);
               double numericValueW = Double.parseDouble(wValue);
 
-              if (numericValueB < 0 || numericValueB > 255 || numericValueM < 0 || numericValueM > 255 || numericValueW < 0 || numericValueW > 255) {
+              if (numericValueB < 0 || numericValueB > 255 || numericValueM < 0
+                      || numericValueM > 255 || numericValueW < 0 || numericValueW > 255) {
                 JOptionPane.showMessageDialog(ImageEditorView.this,
                         "B, M, W must be between 0 to 255.",
                         "Error", JOptionPane.ERROR_MESSAGE);
