@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import model.ImageOperations;
 import model.JPGImage;
@@ -20,7 +22,7 @@ import static java.lang.System.exit;
  * It handles user interactions from the view, processes user input, and communicates with the
  * model and view components.
  */
-public class Controller implements ControllerFeatures{
+public class Controller implements ControllerFeatures {
 
   private static String lastSavedImagePath;
 
@@ -30,9 +32,11 @@ public class Controller implements ControllerFeatures{
   public static ImageOperations imageObj = null;
 
   private SwingFeaturesFrame view;
+  private static String filePath = null;
+  private static String extension = null;
 //  private final IView view;
 
-//  /**
+  //  /**
 //   * Constructs a new Controller instance.
 //   *
 //   * @param v The view to interact with.
@@ -150,8 +154,12 @@ public class Controller implements ControllerFeatures{
     String cmd = PARTS[0];
     String arg1 = PARTS[1];
     String arg2 = PARTS.length > 2 ? PARTS[2] : null;
-    String extension = identifyFileFormat(arg1);
 
+    if (Objects.equals(cmd, "load") || Objects.equals(cmd, "save")) {
+      filePath = extractFilePath(command);
+      extension = identifyFileFormat(filePath);
+      arg2=extractName(command);
+    }
     if (!Objects.equals(PARTS[0], "run")) {
 
       if (extension != null) {
@@ -170,11 +178,21 @@ public class Controller implements ControllerFeatures{
 
     switch (cmd) {
       case "load":
-        imageObj.loadImage(arg1, arg2);
+        arg1 = filePath;
+        if (arg1 != null) {
+          imageObj.loadImage(arg1, arg2);
+        } else {
+          System.out.println("Unable to load");
+        }
         break;
       case "save":
-        imageObj.saveImage(arg1, arg2);
-        lastSavedImagePath = arg2 + "." + extension;
+        arg1 = filePath;
+        if (arg1 != null) {
+          imageObj.saveImage(arg1, arg2);
+          lastSavedImagePath = arg2 + "." + extension;
+        } else {
+          System.out.println("Unable to save");
+        }
         break;
       case "horizontal-flip":
         if (PARTS.length < 3) {
@@ -472,8 +490,8 @@ public class Controller implements ControllerFeatures{
   @Override
   public void applyFeatures(String command, String destImageName) {
     try {
-System.out.println("applyFeatures(String command"+command);
-      if(command!=null) {
+      System.out.println("applyFeatures(String command" + command);
+      if (command != null) {
         parseAndExecute(command);
         /*int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
         view.updateImageForIndex(destImageData, 1);*/
@@ -492,6 +510,45 @@ System.out.println("applyFeatures(String command"+command);
       e.printStackTrace();
     }
   }
+
+  public static String extractFilePath(String command) {
+    String filePath = null;
+    // Check if the command starts with "load" or "save"
+    if (command.trim().startsWith("load") || command.trim().startsWith("save")) {
+      // Use regular expression to extract the file path inside single quotes
+      Pattern pattern = Pattern.compile("'(.*?)'");
+      Matcher matcher = pattern.matcher(command);
+
+      // Check if there is a match
+      if (matcher.find()) {
+        filePath = matcher.group(1);
+
+        // Check if the extracted path is a valid file path
+      }
+    }
+    return filePath;
+  }
+
+  public static String extractName(String command) {
+    String extractedName = null;
+
+    // Check if the command starts with "load" or "save"
+    if (command.trim().startsWith("load") || command.trim().startsWith("save")) {
+      // Use regular expressions to extract the file path and the second part
+      Pattern pattern = Pattern.compile("'(.*?)'\\s(.+)");
+      Matcher matcher = pattern.matcher(command);
+
+      if (matcher.find()) {
+        String afterFilePath = matcher.group(2);
+        String[] parts = afterFilePath.split(" ");
+        extractedName=parts[0];
+
+      }
+
+    }
+    return extractedName;
+  }
+
 
 
 }
