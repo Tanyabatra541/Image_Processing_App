@@ -62,14 +62,16 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener {
   JPanel sliderPanel;
 
   int sliderValue = 0;
-  String selectedFilter;
+  String selectedFilter=null;
   private JButton fileOpenButtonforLoad;
   private JComboBox<String> combobox;
   private JButton fileSaveButton;
   private JButton applyFilterButton;
   private JSlider arrowSlider;
-  private String command;
+  private String command=null;
   private JButton helpButton;
+  private JButton testBMWButton;
+  private JButton testCompressButton;
   private String fileExtension;
 boolean isCurrentImageFiltered= false;
 
@@ -332,30 +334,22 @@ String currentName="img";
     bmwPanel.add(bNumericField);
     bmwPanel.add(mNumericField);
     bmwPanel.add(wNumericField);
-    comboboxPanel.add(bmwPanel);
-    ActionListener textFieldListener = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        // Check if all fields are filled
-        String bText = bNumericField.getText();
-        String mText = mNumericField.getText();
-        String wText = wNumericField.getText();
+    testBMWButton = new JButton("Test these values!");
 
-        if (!bText.isEmpty() && !mText.isEmpty() && !wText.isEmpty()) {
-          // All fields are filled, perform your action here
-          // Example: Display a message
-          JOptionPane.showMessageDialog(SwingFeaturesFrame.this, "All fields are filled!");
-        }
-      }
-    };
-   
+    bmwPanel.add(testBMWButton);
+    testBMWButton.addActionListener(e -> filterOptions(false));
+    comboboxPanel.add(bmwPanel);
+
     bmwPanel.setVisible(false);
 
     compressionPercentage = new JTextField(3);
 
     compressPanel.add(new JLabel("Enter compression percentage:"));
     compressPanel.add(compressionPercentage);
+    testCompressButton = new JButton("Test for this percentage!");
 
+    compressPanel.add(testCompressButton);
+    testCompressButton.addActionListener(e -> filterOptions(false));
     comboboxPanel.add(compressPanel);
     compressPanel.setVisible(false);
 
@@ -386,7 +380,7 @@ String currentName="img";
 
     fileOpenButtonforLoad.addActionListener(evt -> {
       boolean allowOpen=true;
-      if(previousFilter!=null && fileSaveDisplay.getText()==null){
+      if(sourceName!=null && fileSaveDisplay.getText()==null){
 
         Object[] options = {"Yes", "No"};
 
@@ -414,6 +408,10 @@ String currentName="img";
           tempName="img";
           fileSaveDisplay.setText(null);
           sliderPanel.setVisible(false);
+          imageLabel[1].setText("Please select filter");
+
+          imageLabel[2].setIcon(new ImageIcon("path/to/placeholder-image.png"));
+          imageLabel[2].setText("Please upload image");
           JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
                   "Image loaded successfully!",
                   "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -423,120 +421,75 @@ String currentName="img";
                   "Error", JOptionPane.ERROR_MESSAGE);
         }
       }
+      command=null;
+      //selectedFilter=null;
     });
 
     applyFilterButton.addActionListener(evt -> {
-
-
-          Object[] options = {"Apply", "Cancel"};
-
-          int result = JOptionPane.showOptionDialog(SwingFeaturesFrame.this,
-                  "Do you want to apply "+selectedFilter+" on the image?",
-                  "Error", JOptionPane.YES_NO_OPTION,
-                  JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-
-          if (result == JOptionPane.YES_OPTION) {
-            System.out.println("Apply button pressed");
-            if((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
-                    Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-                    Objects.equals(selectedFilter, "sharpen") ||  (Objects.equals(selectedFilter, "luma-component")))) {
-              sourceName=splitImageName;
-            }else {
-              sourceName=filteredImgName;
-            }
-            }else if(result == JOptionPane.NO_OPTION){
-            if(sliderPanel.isVisible()){
-              sliderValue=0;
-              arrowSlider.setValue(0);
-            }
-
-            //applySplitFilter=false;
-
-
-          }
-       /* } else{
-
-        sourceName=filteredImgName;
-      }*/
-      features.applyFeatures(null, sourceName);
-      //filteredImgName="filteredImgName";
-    /*  previewDialog = new FilterPreviewDialog(this,SwingFeaturesFrame.this, "img");
-      previewDialog.setVisible(true);
-      String splitCmd= previewDialog.getCommand();
-      System.out.println("splitCmd");
-if(splitCmd!=null){
-  System.out.println("splitImgdest");
-  features.applyFeatures(splitCmd, "splitImgdest",true);
-}
-      if(fileSaveDisplay.getText()!=null){
-        fileSaveDisplay.setText(null);
+      boolean allowApply = true;
+      System.out.println("applyFilterButton"+fileOpenDisplay.getText());
+      if(Objects.equals(fileOpenDisplay.getText(), "File path will appear here")){
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please load an image before applying a filter.",
+                "Error", JOptionPane.ERROR_MESSAGE);
       }
-      if((Objects.equals(previousFilter, "levels-adjust") || Objects.equals(previousFilter, "color-correct") ||
-              Objects.equals(previousFilter, "blur") || Objects.equals(previousFilter, "sepia") ||
-              Objects.equals(previousFilter, "sharpen") ||  (Objects.equals(previousFilter, "luma-component")))){
-        Object[] options = {"Apply", "Cancel"};
+      else if(selectedFilter!=null && !Objects.equals(selectedFilter, "<None>")) {
+        if (Objects.equals(selectedFilter, "levels-adjust")) {
+          String bValue = bNumericField.getText();
+          String mValue = mNumericField.getText();
+          String wValue = wNumericField.getText();
 
+          // Now you can use these values as needed
+          System.out.println("B Value: " + bValue);
+          System.out.println("M Value: " + mValue);
+          System.out.println("W Value: " + wValue);
+//add invalid bmw error
+
+          allowApply = !bValue.isEmpty() && !mValue.isEmpty() && !wValue.isEmpty();
+        } else if (Objects.equals(selectedFilter, "compress")) {
+          String percentageTextValue = compressionPercentage.getText();
+
+          allowApply = !percentageTextValue.isEmpty();
+        }
+if(allowApply){
+        Object[] options = {"Apply", "Cancel"};
         int result = JOptionPane.showOptionDialog(SwingFeaturesFrame.this,
-                "Do you want to apply "+previousFilter+" on the image?",
+                "Do you want to apply " + selectedFilter + " on the image?",
                 "Error", JOptionPane.YES_NO_OPTION,
                 JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 
         if (result == JOptionPane.YES_OPTION) {
           System.out.println("Apply button pressed");
-          applySplitFilter=false;
-          sourceName=tempName;
-
+          if ((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
+                  Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
+                  Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
+            sourceName = splitImageName;
+          } else {
+            sourceName = filteredImgName;
+          }
         } else if (result == JOptionPane.NO_OPTION) {
-          System.out.println("Cancel button pressed");
+          if (sliderPanel.isVisible()) {
+            sliderValue = 0;
+            arrowSlider.setValue(0);
+          }
 
-          applySplitFilter=true;
-          isCurrentImageFiltered=false;
         }
+        features.applyFeatures(null, sourceName);
       }else{
-        applySplitFilter=false;
+  JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+          "Please enter valid values.",
+          "Error", JOptionPane.ERROR_MESSAGE);
+      }
+      }else {
+
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please select a valid filter.",
+                "Error", JOptionPane.ERROR_MESSAGE);
       }
 
-
-      String filterCommand = filterOptions(true);
-      compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
-      bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
-       if (fileOpenDisplay.getText()!=null && fileOpenDisplay.getText().equals("File path will appear here")){
-        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                "Please load image before applying a filter.",
-                "Error", JOptionPane.ERROR_MESSAGE);
-      }else if(filterCommand != null && !filterCommand.equals("error")) {
-
-
-
-if(sliderPanel.isVisible() && sliderValue!=0  ){
-
-System.out.println("KKKKKK"+tempName);
-  System.out.println("KKKKKK"+sourceName);
-  System.out.println("KKKKKK"+destName);
-  features.applyFeatures(filterCommand, destName,false);
-currentName=sourceName;
-}else{
-  System.out.println("&&&&&&&&&&&&"+applySplitFilter);
-  if(!applySplitFilter){
-    features.applyFeatures(filterCommand, destName,false);
-  }else{
-    features.applyFeatures(filterCommand, sourceName,false);
-  }
-  System.out.println("sajdhjas"+destName);
-  System.out.println("HHH"+tempName);
-  System.out.println("HHH"+sourceName);
-  System.out.println("HHH"+currentName);
-
-}
-
-      }else if(filterCommand == null){
-        // Display an error message if the filter command is null (no image loaded or invalid filter)
-        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                "Please select a valid filter before applying.",
-                "Error", JOptionPane.ERROR_MESSAGE);
-      }*/
     });
     fileSaveButton.addActionListener(evt -> {
+
       String saveCommand = saveFile();
       if (saveCommand != null && !saveCommand.equals("error")) {
         features.saveImage(saveCommand);
@@ -544,6 +497,8 @@ currentName=sourceName;
                 "Processed Image is saved.",
                 "Success", JOptionPane.INFORMATION_MESSAGE);
       }
+      command=null;
+
     });
 
 
@@ -566,39 +521,136 @@ currentName=sourceName;
     });
 
     combobox.addItemListener(e -> {
+      System.out.println("combobox"+command);
       applySplitFilter=false;
 
-      if (e.getStateChange() == ItemEvent.SELECTED) {
+      if ((e.getStateChange() == ItemEvent.SELECTED) && !(Objects.equals(fileOpenDisplay.getText(), "File path will appear here")) ){
+        selectedFilter = (String) combobox.getSelectedItem();
+          if (!Objects.equals(selectedFilter, "<None>")) {
+            String filterCommand = null;
+            compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+            bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+            if (!(Objects.equals(selectedFilter, "compress"))) {
+              if (!(Objects.equals(selectedFilter, "levels-adjust"))) {
+                if ((Objects.equals(selectedFilter, "color-correct") ||
+                        Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
+                        Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
+
+                  System.out.println("combobox.addItemListener INSIDE SLIDER");
+                  JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                          "Slide Arrow to view the changes!",
+                          "Success", JOptionPane.INFORMATION_MESSAGE);
+                  sliderPanel.setVisible(true);
+                  tempName = "tempName";
+                  splitImageName = selectedFilter + "Split";
+                  filterCommand = filterOptions(true);
+                  if (!Objects.equals(filterCommand, "error")) {
+                    features.applyFeatures(filterCommand, splitImageName);
+                  }
+                } else {
+                  sliderValue = 0;
+                  arrowSlider.setValue(0);
+                  sliderPanel.setVisible(false);
+
+                  filterCommand = filterOptions(true);
+                  features.applyFeatures(filterCommand, filteredImgName);
+                }
+              } else {
+                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                        "Hit Test to view the changes with given B,M,W values!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+              }
+            }
+          } else {
+            JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                    "Please select a valid filter.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+          }
+
+      }
+    });
+
+
+    testBMWButton.addActionListener(e -> {
+      System.out.println("^^^^^^^^^^^^^"+destName);
+      System.out.println("HHH"+tempName);
+      System.out.println("HHH"+sourceName);//filteredImg-1
+      System.out.println("HHH"+currentName);
+      System.out.println("HHH"+splitImageName);//HHHsplitImage
+      //b,m,w
+      //features.applyFeatures(null, tempName);
+      applySplitFilter=false;
+
+
         selectedFilter = (String) combobox.getSelectedItem();
         String filterCommand=null;
-        compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
-        bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
 
-        if((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
-                Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-                Objects.equals(selectedFilter, "sharpen") ||  (Objects.equals(selectedFilter, "luma-component")))){
 
+System.out.println("#####testBMWButton.addItemListener");
+
+        String bValue = bNumericField.getText();
+        String mValue = mNumericField.getText();
+        String wValue = wNumericField.getText();
+
+        // Now you can use these values as needed
+        System.out.println("B Value: " + bValue);
+        System.out.println("M Value: " + mValue);
+        System.out.println("W Value: " + wValue);
+//add invalid bmw error
+
+        if (!bValue.isEmpty() && !mValue.isEmpty() && !wValue.isEmpty()) {
           System.out.println("combobox.addItemListener INSIDE SLIDER");
-          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
-                  "Slide Arrow to view the changes!",
-                  "Success", JOptionPane.INFORMATION_MESSAGE);
-          sliderPanel.setVisible(true);
+
           tempName="tempName";
           splitImageName=selectedFilter+"Split";
           filterCommand = filterOptions(true);
           if(filterCommand!="error") {
             features.applyFeatures(filterCommand, splitImageName);
+            JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                    "Slide Arrow to view the changes!",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+            sliderPanel.setVisible(true);
           }
         }else{
-          sliderValue=0;
-          arrowSlider.setValue(0);
-          sliderPanel.setVisible(false);
-
-          filterCommand = filterOptions(true);
-          features.applyFeatures(filterCommand, filteredImgName);
+          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                  "Please enter a valid numeric value for B, M, W.",
+                  "Error", JOptionPane.ERROR_MESSAGE);
         }
 
+
+
+    });
+
+    testCompressButton.addActionListener(e -> {
+
+      applySplitFilter=false;
+
+
+      selectedFilter = (String) combobox.getSelectedItem();
+      String filterCommand=null;
+
+
+
+
+      String percentageTextValue = compressionPercentage.getText();
+
+      if (!percentageTextValue.isEmpty() ) {
+        System.out.println("combobox.addItemListener INSIDE SLIDER");
+
+        sliderValue = 0;
+        arrowSlider.setValue(0);
+        sliderPanel.setVisible(false);
+
+        filterCommand = filterOptions(true);
+        features.applyFeatures(filterCommand, filteredImgName);
+
+      }else{
+        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                "Please enter a valid Compression Percentage.",
+                "Error", JOptionPane.ERROR_MESSAGE);
       }
+
+
 
     });
 
@@ -653,15 +705,15 @@ currentName=sourceName;
     }*/
       selectedFilter = (String) combobox.getSelectedItem();
       comboboxDisplay.setText("You selected: " + selectedFilter);
-      compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
-      bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
-      String command = null;
+    //  compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+    //  bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+    //  String command = null;
 
 
     selectedFilter = (String) combobox.getSelectedItem();
     comboboxDisplay.setText("You selected: " + selectedFilter);
-    compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
-    bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+   // compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+   // bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
     command = null;
 
 
