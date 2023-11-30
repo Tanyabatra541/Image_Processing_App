@@ -10,10 +10,6 @@ public class ImageContent {
   private final String name;
   private final int[][][] rgbDataMap;
 
-  int height;
-  int width;
-
-
   /**
    * Constructs an `ImageContent` instance with the specified name and content.
    *
@@ -41,24 +37,6 @@ public class ImageContent {
    */
   public int[][][] getRgbDataMap() {
     return rgbDataMap;
-  }
-
-  /**
-   * Sets the width of the image.
-   *
-   * @param w The width of the image.
-   */
-  public void setWidth(int w) {
-    this.width = w;
-  }
-
-  /**
-   * Sets the height of the image.
-   *
-   * @param h The height of the image.
-   */
-  public void setHeight(int h) {
-    this.height = h;
   }
 
   /**

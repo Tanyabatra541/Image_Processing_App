@@ -9,8 +9,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 import controller.Controller;
 import view.ImageEditorView;
 
+/**
+ * The main class for the ImageEditor application.
+ */
 public class ImageEditor {
 
+  /**
+   * The main method that serves as the entry point for the application.
+   *
+   * @param args The command-line arguments.
+   */
   public static void main(String[] args) {
     if (args.length > 0) {
       handleCommandLineArguments(args);

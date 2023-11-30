@@ -1,8 +1,6 @@
 package controller;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
@@ -11,7 +9,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 
 import model.ImageModel;
 import view.ImageEditorView;
@@ -25,19 +22,20 @@ import static java.lang.System.exit;
  */
 public class Controller implements ControllerFeatures {
 
-  private static String lastSavedImagePath;
-
-  private String input;
-  //  private final String result;
-  private Reader reader;
+  private final Reader reader;
 
   static String filePath = null;
   private static String extension = null;
 
-  public static ImageModel imageObj = new ImageModel();
+  public ImageModel imageObj = new ImageModel();
 
   private ImageEditorView view;
 
+  /**
+   * Constructs a controller object with the given reader.
+   *
+   * @param reader The reader to use for reading input from the user.
+   */
   public Controller(Reader reader) {
     this.reader = reader;
   }
@@ -206,7 +204,8 @@ public class Controller implements ControllerFeatures {
                   !imageObj.getImageMap().containsKey(blueImageName)) {
             message = "One or more Source Image not found";
           } else {
-            imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName, blueImageName);
+            imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName,
+                    blueImageName);
           }
         }
         break;
@@ -314,7 +313,8 @@ public class Controller implements ControllerFeatures {
             if (splitPercentage < 0 || splitPercentage > 100) {
               message = "Split percentage should be between 0 and 100";
             } else {
-              imageObj.extractComponent(sourceImageName, destImageName, "luma", splitPercentage);
+              imageObj.extractComponent(sourceImageName, destImageName, "luma",
+                      splitPercentage);
             }
           } else {
             String destImageName = PARTS[2];
@@ -486,12 +486,26 @@ public class Controller implements ControllerFeatures {
     }
   }
 
+  /**
+   * Sets the view for this controller. Calls the addFeatures function in the view.
+   *
+   * @param view The view to use.
+   */
   @Override
   public void setView(ImageEditorView view) {
     this.view = view;
     view.addFeatures(this);
   }
 
+
+  /**
+   * Loads an image based on the provided command and updates the view with the image data and
+   * its histogram. The method parses and executes the given command to retrieve the image data
+   * and histogram data.
+   *
+   * @param command       The command specifying the image loading operation.
+   * @param destImageName The name of the destination image for which data is loaded.
+   */
   @Override
   public void loadImage(String command, String destImageName) {
     String m;
@@ -499,7 +513,8 @@ public class Controller implements ControllerFeatures {
       m = parseAndExecute(command);
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 0);
-      m = parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
+      m = parseAndExecute("histogram " + destImageName + " " + destImageName
+              + "-histogram");
       int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
       view.updateImageForIndex(destHistogramData, 2);
     } catch (IOException e) {
@@ -508,6 +523,12 @@ public class Controller implements ControllerFeatures {
     System.out.println("Loading image: " + command);
   }
 
+  /**
+   * Saves an image based on the provided command.
+   * The method parses and executes the given command to perform the image saving operation.
+   *
+   * @param command The command specifying the image saving operation.
+   */
   @Override
   public void saveImage(String command) {
     String m;
@@ -518,6 +539,14 @@ public class Controller implements ControllerFeatures {
     }
   }
 
+  /**
+   * Applies specified features to an image based on the provided command and updates the view.
+   * The method parses and executes the given command to perform the image transformation,
+   * updates the view with the modified image, and displays the histogram of the modified image.
+   *
+   * @param command       The command specifying the features to be applied to the image.
+   * @param destImageName The name of the destination image where the features are applied.
+   */
   @Override
   public void applyFeatures(String command, String destImageName) {
     String m;
@@ -526,7 +555,8 @@ public class Controller implements ControllerFeatures {
       if (command != null) {
         m = parseAndExecute(command);
         System.out.println("*****Applying feature on destImageName: " + destImageName);
-        m = parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
+        m = parseAndExecute("histogram " + destImageName + " " + destImageName
+                + "-histogram");
       }
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
@@ -539,6 +569,12 @@ public class Controller implements ControllerFeatures {
     }
   }
 
+  /**
+   * Executes commands read from the input source (reader). The method reads each line
+   * from the input source, trims leading and trailing whitespaces, and skips comments
+   * and empty lines. For each non-empty and non-comment line, the method invokes the
+   * parseAndExecute method to process and execute the specified command.
+   */
   public void executeCommands() {
     try {
       Scanner sc = new Scanner(reader);
@@ -556,6 +592,13 @@ public class Controller implements ControllerFeatures {
     }
   }
 
+  /**
+   * Extracts the file path from a given command string. It utilizes a regular expression to
+   * extract the content inside the single quotes, representing the file path.
+   *
+   * @param command The command string from which the file path needs to be extracted.
+   * @return The extracted file path if found; otherwise, returns null.
+   */
   public static String extractFilePath(String command) {
     String filePath = null;
     // Check if the command starts with "load" or "save"
@@ -574,6 +617,15 @@ public class Controller implements ControllerFeatures {
     return filePath;
   }
 
+  /**
+   * Extracts the name from a given command string that starts with "load" or "save."
+   * The method assumes that the file path is enclosed in single quotes ('') and extracts
+   * the content inside the single quotes as well as the second part after the file path,
+   * which typically represents the name.
+   *
+   * @param command The command string from which the name needs to be extracted.
+   * @return The extracted name if found; otherwise, returns null.
+   */
   public static String extractName(String command) {
     String extractedName = null;
 

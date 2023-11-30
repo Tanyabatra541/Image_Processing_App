@@ -141,6 +141,17 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+
+  /**
+   * Extracts a specific color component (red, green, or blue) from the source image and saves
+   * the result as a new image. The split percentage determines the split point,
+   * and only the specified percentage of the image will be transformed.
+   *
+   * @param sourceName      The name of the source image.
+   * @param destName        The name of the destination image.
+   * @param component       The color component to be extracted ("red", "green", or "blue").
+   * @param splitPercentage The percentage of the image width at which the split occurs.
+   */
   void extractComponent(String sourceName, String destName, String component, int splitPercentage);
 
   /**
@@ -214,8 +225,21 @@ public interface ImageOperations {
    */
   void convertToGrayscale(String sourceName, String destName, int splitPercentage);
 
+  /**
+   * Retrieves the RGB data of an image stored in the map, represented as a three-dimensional array.
+   *
+   * @param imageName The name of the image.
+   * @return The RGB data of the image as a three-dimensional array.
+   */
   int[][][] getRgbDataMap(String imageName);
 
+  /**
+   * Retrieves the pixel values of an image stored in the map, represented as a two-dimensional
+   * array.
+   *
+   * @param imageName The name of the image.
+   * @return The pixel values of the image as a two-dimensional array.
+   */
   double[][] getPixels(String imageName);
 
 

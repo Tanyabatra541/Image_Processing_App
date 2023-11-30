@@ -1,14 +1,13 @@
 package model;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The `AbstractImage` class is a class that implements the `ImageOperations` interface. It provides
- * functionality to apply various image operations like blue, sharpen, brighten, sepia, color
+ * The `ImageModel` class is a class that implements the `ImageOperations` interface. It provides
+ * functionality to apply various image operations like blur, sharpen, brighten, sepia, color
  * correct, levels adjust, etc.
  */
 public class ImageModel implements ImageOperations {
@@ -21,17 +20,17 @@ public class ImageModel implements ImageOperations {
 
 
   protected float[] sharpeningKernel = {
-          -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, 1.0f / 4.0f, 1.0f, 1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
-          -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
+    -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f,
+    -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+    -1.0f / 8.0f, 1.0f / 4.0f, 1.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+    -1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 4.0f, 1.0f / 4.0f, -1.0f / 8.0f,
+    -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f, -1.0f / 8.0f
   };
 
   protected float[] gaussianKernel = {
-          1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
-          1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
-          1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
+    1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f,
+    1.0f / 8.0f, 1.0f / 4.0f, 1.0f / 8.0f,
+    1.0f / 16.0f, 1.0f / 8.0f, 1.0f / 16.0f
   };
 
 
@@ -39,13 +38,11 @@ public class ImageModel implements ImageOperations {
    * Load an image from a file and store it in the image map.
    *
    * @param imageName The name to associate with the loaded image.
-   * @throws IOException If an error occurs while loading the image.
    */
   @Override
   public void loadImageInMap(String imageName, int[][][] imageRGBData) {
     if (imageRGBData != null) {
       ImageContent image = new ImageContent(imageName, imageRGBData);
-
       IMAGE_MAP.put(imageName, image);
       System.out.println("Loaded image: " + imageName);
     } else {
@@ -61,7 +58,6 @@ public class ImageModel implements ImageOperations {
    */
   @Override
   public void horizontalFlipImage(String sourceImageName, String destImageName) {
-//    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
     if (sourceRGBData != null) {
@@ -94,7 +90,6 @@ public class ImageModel implements ImageOperations {
    */
   @Override
   public void verticalFlipImage(String sourceImageName, String destImageName) {
-//    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
     int height = sourceRGBData.length;
@@ -117,7 +112,6 @@ public class ImageModel implements ImageOperations {
 
   private void applyConvolutionHelper(String sourceImageName, String destImageName, int
           splitPercentage, float[] kernel) {
-//    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
     int height = sourceRGBData.length;
@@ -471,7 +465,8 @@ public class ImageModel implements ImageOperations {
    *                   - "intensity": Convert the image to grayscale using intensity.
    *                   - "value": Extract the value (brightness) component of an image.
    */
-  private void extractComponentHelper(String sourceName, String destName, String component, int splitPercentage) {
+  private void extractComponentHelper(String sourceName, String destName, String component,
+                                      int splitPercentage) {
     boolean flag = true;
 
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
@@ -547,7 +542,8 @@ public class ImageModel implements ImageOperations {
   }
 
   @Override
-  public void extractComponent(String sourceName, String destName, String component, int splitPercentage) {
+  public void extractComponent(String sourceName, String destName, String component,
+                               int splitPercentage) {
     extractComponentHelper(sourceName, destName, component, splitPercentage);
   }
 

@@ -136,6 +136,7 @@ public class Histogram {
   /**
    * Creates a histogram from the RGB data of an image. The histogram is represented by three
    * arrays, one for each color channel (red, green, and blue).
+   *
    * @param sourceRGBData The RGB data of the source image, represented as a 3D array.
    */
   public void createHistogram(int[][][] sourceRGBData) {

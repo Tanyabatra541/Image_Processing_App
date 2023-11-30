@@ -1,28 +1,46 @@
 package view;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Objects;
-import javax.swing.*;
+
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import controller.ControllerFeatures;
 
 /**
- * This class opens the main window, that has different elements illustrated in
- * it. It also doubles up as all the listeners for simplicity. Such a design is
- * not recommended in general.
+ * ImageEditorView class represents the graphical user interface (GUI) for the image processing
+ * application. It includes features for loading, processing, and saving images, along with various
+ * controls and display elements.
  */
 public class ImageEditorView extends JFrame {
-  private JPanel mainPanel;
-  private JPanel bmwPanel;
+  private final JPanel mainPanel;
+  private final JPanel bmwPanel;
   private JPanel compressPanel;
-  private JPanel comboboxPanel;
-  private JScrollPane mainScrollPane;
-  private JLabel comboboxDisplay;
+  private final JLabel comboboxDisplay;
   private JLabel fileOpenDisplay;
   private JLabel fileSaveDisplay;
   private JPanel imagePanel;
@@ -42,7 +60,6 @@ public class ImageEditorView extends JFrame {
   private JButton applyFilterButton;
   private JSlider arrowSlider;
   private String command = null;
-  private JButton helpButton;
   private JButton testBMWButton;
   private JButton testCompressButton;
   private String fileExtension;
@@ -54,19 +71,139 @@ public class ImageEditorView extends JFrame {
   private String filteredImgName = "filteredImg";
   private String splitImageName = "splitImage";
   private boolean applySplitFilter = true;
-
   private int action = 0;
+
+  /**
+   * Constructs an instance of the ImageEditorView class, initializing the GUI components,
+   * layout, and event handlers.
+   */
+  public ImageEditorView() {
+    super();
+    setTitle("Image Processing");
+    setSize(1500, 1200);
+
+
+    mainPanel = new JPanel();
+    //for elements to be arranged vertically within this panel
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+    //scroll bars around this main panel
+    JScrollPane mainScrollPane = new JScrollPane(mainPanel);
+    add(mainScrollPane);
+    JButton helpButton = new JButton("Help");
+    helpButton.setToolTipText("Click for help");
+    helpButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        showHelpDialog();
+      }
+    });
+
+
+    mainPanel.add(helpButton, BorderLayout.NORTH);
+
+
+    JPanel dialogBoxesPanelForLoad = new JPanel();
+    dialogBoxesPanelForLoad.setBorder(BorderFactory.createTitledBorder("Load new Image:"));
+    dialogBoxesPanelForLoad.setLayout(new BoxLayout(dialogBoxesPanelForLoad, BoxLayout.PAGE_AXIS));
+    mainPanel.add(dialogBoxesPanelForLoad);
+
+    JPanel fileopenPanelForLoad = new JPanel();
+    fileopenPanelForLoad.setLayout(new FlowLayout());
+    dialogBoxesPanelForLoad.add(fileopenPanelForLoad);
+    fileOpenButtonforLoad = new JButton("Open a file");
+    fileopenPanelForLoad.add(fileOpenButtonforLoad);
+    fileOpenDisplay = new JLabel("File path will appear here");
+    fileopenPanelForLoad.add(fileOpenDisplay);
+    imagePanel = new JPanel();
+    imagePanel.setBorder(BorderFactory.createTitledBorder("Processing your image:"));
+    imagePanel.setLayout(new GridLayout(1, 0, 10, 10));
+
+    mainPanel.add(imagePanel);
+    imageLabel = new JLabel[3];
+    imageScrollPane = new JScrollPane[3];
+
+    setImg();
+    createArrowSlider();
+
+    JPanel comboboxPanel = new JPanel();
+    comboboxPanel.setBorder(BorderFactory.createTitledBorder("Processing Operations:"));
+    comboboxPanel.setLayout(new BoxLayout(comboboxPanel, BoxLayout.PAGE_AXIS));
+    mainPanel.add(comboboxPanel);
+
+    comboboxDisplay = new JLabel("Which filter do you want?");
+    comboboxPanel.add(comboboxDisplay);
+    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen",
+        "red-component", "blue-component", "green-component", "luma-component", "sepia",
+        "compress", "color-correct", "levels-adjust"};
+    combobox = new JComboBox<String>();
+    for (int i = 0; i < options.length; i++) {
+      combobox.addItem(options[i]);
+    }
+
+    comboboxPanel.add(combobox);
+    mainPanel.add(comboboxPanel);
+
+    applyFilterButton = new JButton("Apply Filter");
+    applyFilterButton.setToolTipText("Click to apply the selected filter");
+
+    mainPanel.add(applyFilterButton);
+
+    bNumericField = new JTextField(3);
+    mNumericField = new JTextField(3);
+    wNumericField = new JTextField(3);
+    bmwPanel = new JPanel();
+    bmwPanel.add(new JLabel("Enter B, M, W:"));
+    bmwPanel.add(bNumericField);
+    bmwPanel.add(mNumericField);
+    bmwPanel.add(wNumericField);
+    testBMWButton = new JButton("Test these values!");
+
+    bmwPanel.add(testBMWButton);
+    testBMWButton.addActionListener(e -> filterOptions(false));
+    comboboxPanel.add(bmwPanel);
+
+    bmwPanel.setVisible(false);
+
+    compressionPercentage = new JTextField(3);
+    compressPanel = new JPanel();
+    compressPanel.add(new JLabel("Enter compression percentage:"));
+    compressPanel.add(compressionPercentage);
+    testCompressButton = new JButton("Test for this percentage!");
+
+    compressPanel.add(testCompressButton);
+    testCompressButton.addActionListener(e -> filterOptions(false));
+    comboboxPanel.add(compressPanel);
+    compressPanel.setVisible(false);
+
+    combobox.addItemListener(e -> filterOptions(false));
+
+    //dialog boxes
+    JPanel dialogBoxesPanel = new JPanel();
+    dialogBoxesPanel.setBorder(BorderFactory.createTitledBorder("Save Processed Image:"));
+    dialogBoxesPanel.setLayout(new BoxLayout(dialogBoxesPanel, BoxLayout.PAGE_AXIS));
+    mainPanel.add(dialogBoxesPanel);
+
+    //file save
+    JPanel filesavePanel = new JPanel();
+    filesavePanel.setLayout(new FlowLayout());
+    dialogBoxesPanel.add(filesavePanel);
+    fileSaveButton = new JButton("Save a file");
+    filesavePanel.add(fileSaveButton);
+    fileSaveDisplay = new JLabel("File path will appear here");
+    filesavePanel.add(fileSaveDisplay);
+
+    setVisible(true);
+
+  }
 
   private String getFileExtension(String filePath) {
     if (filePath == null) {
-      return null; // or throw an exception, depending on your requirements
+      return null;
     }
-
     int lastDotIndex = filePath.lastIndexOf(".");
     if (lastDotIndex == -1) {
       return ""; // No file extension found
     }
-
     return filePath.substring(lastDotIndex + 1).toLowerCase();
   }
 
@@ -74,7 +211,7 @@ public class ImageEditorView extends JFrame {
   private void createArrowSlider() {
     arrowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
-    percentageLabel.setBounds(10, 60, 150, 20); // Adjust the bounds as needed
+    percentageLabel.setBounds(10, 60, 150, 20);
 
     arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
@@ -109,6 +246,12 @@ public class ImageEditorView extends JFrame {
     sliderPanel.setVisible(false);
   }
 
+  /**
+   * Updates the display of an image at the specified index with the provided RGB values.
+   *
+   * @param rgbValues The RGB values representing the image.
+   * @param index     The index at which the image should be updated.
+   */
   public void updateImageForIndex(int[][][] rgbValues, int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
 
@@ -173,11 +316,15 @@ public class ImageEditorView extends JFrame {
             "<h2>Struggling with how to process your image?</h2>" +
             "<p>Follow these steps:</p>" +
             "<ol>" +
-            "<li>Load an image of your choice (PNG/JPG/JPEG/PPM) by clicking the 'Open' button.</li>" +
-            "<li>Change the filter in the dropdown to see how the filter will look on your image.</li>" +
-            "<li>Hit the 'Apply Filter' button to apply filters of your choice to the image.</li>" +
+            "<li>Load an image of your choice (PNG/JPG/JPEG/PPM) by clicking the 'Open' " +
+            "button.</li>" +
+            "<li>Change the filter in the dropdown to see how the filter will look on your " +
+            "image.</li>" +
+            "<li>Hit the 'Apply Filter' button to apply filters of your choice to the " +
+            "image.</li>" +
             "</ol>" +
-            "<p>(Some images have a special feature to compare with the previous image to help you decide " +
+            "<p>(Some images have a special feature to compare with the previous image to help " +
+            "you decide " +
             "if you like the filter. Be sure to hit 'Apply Filter' if you like the filter!) </p>" +
             "</body></html>";
 
@@ -199,125 +346,14 @@ public class ImageEditorView extends JFrame {
   }
 
 
-  public ImageEditorView() {
-    super();
-    setTitle("Image Processing");
-    setSize(1500, 1200);
-
-
-    mainPanel = new JPanel();
-    //for elements to be arranged vertically within this panel
-    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-    //scroll bars around this main panel
-    mainScrollPane = new JScrollPane(mainPanel);
-    add(mainScrollPane);
-    helpButton = new JButton("Help");
-    helpButton.setToolTipText("Click for help");
-    helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        showHelpDialog();
-      }
-    });
-
-
-    mainPanel.add(helpButton, BorderLayout.NORTH);
-
-
-    JPanel dialogBoxesPanelForLoad = new JPanel();
-    dialogBoxesPanelForLoad.setBorder(BorderFactory.createTitledBorder("Load new Image:"));
-    dialogBoxesPanelForLoad.setLayout(new BoxLayout(dialogBoxesPanelForLoad, BoxLayout.PAGE_AXIS));
-    mainPanel.add(dialogBoxesPanelForLoad);
-
-    JPanel fileopenPanelForLoad = new JPanel();
-    fileopenPanelForLoad.setLayout(new FlowLayout());
-    dialogBoxesPanelForLoad.add(fileopenPanelForLoad);
-    fileOpenButtonforLoad = new JButton("Open a file");
-    fileopenPanelForLoad.add(fileOpenButtonforLoad);
-    fileOpenDisplay = new JLabel("File path will appear here");
-    fileopenPanelForLoad.add(fileOpenDisplay);
-    imagePanel = new JPanel();
-    imagePanel.setBorder(BorderFactory.createTitledBorder("Processing your image:"));
-    imagePanel.setLayout(new GridLayout(1, 0, 10, 10));
-
-    mainPanel.add(imagePanel);
-    imageLabel = new JLabel[3];
-    imageScrollPane = new JScrollPane[3];
-
-    setImg();
-    createArrowSlider();
-
-    comboboxPanel = new JPanel();
-    comboboxPanel.setBorder(BorderFactory.createTitledBorder("Processing Operations:"));
-    comboboxPanel.setLayout(new BoxLayout(comboboxPanel, BoxLayout.PAGE_AXIS));
-    mainPanel.add(comboboxPanel);
-
-    comboboxDisplay = new JLabel("Which filter do you want?");
-    comboboxPanel.add(comboboxDisplay);
-    String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen", "red-component", "blue-component", "green-component", "luma-component", "sepia", "compress",
-            "color-correct", "levels-adjust"};
-    combobox = new JComboBox<String>();
-    for (int i = 0; i < options.length; i++) {
-      combobox.addItem(options[i]);
-    }
-
-    comboboxPanel.add(combobox);
-    mainPanel.add(comboboxPanel);
-
-    applyFilterButton = new JButton("Apply Filter");
-    applyFilterButton.setToolTipText("Click to apply the selected filter");
-
-    mainPanel.add(applyFilterButton);
-
-    bNumericField = new JTextField(3);
-    mNumericField = new JTextField(3);
-    wNumericField = new JTextField(3);
-    bmwPanel = new JPanel();
-    bmwPanel.add(new JLabel("Enter B, M, W:"));
-    bmwPanel.add(bNumericField);
-    bmwPanel.add(mNumericField);
-    bmwPanel.add(wNumericField);
-    testBMWButton = new JButton("Test these values!");
-
-    bmwPanel.add(testBMWButton);
-    testBMWButton.addActionListener(e -> filterOptions(false));
-    comboboxPanel.add(bmwPanel);
-
-    bmwPanel.setVisible(false);
-
-    compressionPercentage = new JTextField(3);
-    compressPanel = new JPanel();
-    compressPanel.add(new JLabel("Enter compression percentage:"));
-    compressPanel.add(compressionPercentage);
-    testCompressButton = new JButton("Test for this percentage!");
-
-    compressPanel.add(testCompressButton);
-    testCompressButton.addActionListener(e -> filterOptions(false));
-    comboboxPanel.add(compressPanel);
-    compressPanel.setVisible(false);
-
-    combobox.addItemListener(e -> filterOptions(false));
-
-    //dialog boxes
-    JPanel dialogBoxesPanel = new JPanel();
-    dialogBoxesPanel.setBorder(BorderFactory.createTitledBorder("Save Processed Image:"));
-    dialogBoxesPanel.setLayout(new BoxLayout(dialogBoxesPanel, BoxLayout.PAGE_AXIS));
-    mainPanel.add(dialogBoxesPanel);
-
-    //file save
-    JPanel filesavePanel = new JPanel();
-    filesavePanel.setLayout(new FlowLayout());
-    dialogBoxesPanel.add(filesavePanel);
-    fileSaveButton = new JButton("Save a file");
-    filesavePanel.add(fileSaveButton);
-    fileSaveDisplay = new JLabel("File path will appear here");
-    filesavePanel.add(fileSaveDisplay);
-
-    setVisible(true);
-
-  }
-
-
+  /**
+   * Adds an action listener to the specified button. The action listener should be notified when
+   * the button is clicked. The action listener is responsible for calling the appropriate method
+   * in the ControllerFeatures instance.
+   *
+   * @param features The ControllerFeatures instance containing methods for interacting with the
+   *                 image processing application.
+   */
   public void addFeatures(ControllerFeatures features) {
 
     fileOpenButtonforLoad.addActionListener(evt -> {
@@ -392,10 +428,13 @@ public class ImageEditorView extends JFrame {
 
           if (result == JOptionPane.YES_OPTION) {
             //System.out.println("Apply button pressed");
-            if ((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
-                    Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-                    Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
-              System.out.println("splitImageName"+splitImageName);
+            if ((Objects.equals(selectedFilter, "levels-adjust")
+                    || Objects.equals(selectedFilter, "color-correct") ||
+                    Objects.equals(selectedFilter, "blur")
+                    || Objects.equals(selectedFilter, "sepia") ||
+                    Objects.equals(selectedFilter, "sharpen")
+                    || (Objects.equals(selectedFilter, "luma-component")))) {
+              System.out.println("splitImageName" + splitImageName);
               sourceName = splitImageName;
 
             } else {
@@ -408,11 +447,11 @@ public class ImageEditorView extends JFrame {
             }
 
           }
-          System.out.println("##source:"+sourceName);
-          System.out.println("source:"+tempName);
-          System.out.println("source:"+destName);
-          System.out.println("source:"+splitImageName);
-          System.out.println("source:"+filteredImgName);
+          System.out.println("##source:" + sourceName);
+          System.out.println("source:" + tempName);
+          System.out.println("source:" + destName);
+          System.out.println("source:" + splitImageName);
+          System.out.println("source:" + filteredImgName);
           features.applyFeatures(null, sourceName);
         } else {
           JOptionPane.showMessageDialog(ImageEditorView.this,
@@ -448,12 +487,12 @@ public class ImageEditorView extends JFrame {
       //System.out.println("Slider value: " + sliderValue);
 
       String filterCommand = filterOptions(true);
-      System.out.println("**source:"+filterCommand);
-      System.out.println("**source:"+sourceName);
-      System.out.println("source:"+tempName);
-      System.out.println("source:"+destName);
-      System.out.println("source:"+splitImageName);
-      System.out.println("source:"+filteredImgName);
+      System.out.println("**source:" + filterCommand);
+      System.out.println("**source:" + sourceName);
+      System.out.println("source:" + tempName);
+      System.out.println("source:" + destName);
+      System.out.println("source:" + splitImageName);
+      System.out.println("source:" + filteredImgName);
       features.applyFeatures(filterCommand, tempName);
 
     });
@@ -462,7 +501,8 @@ public class ImageEditorView extends JFrame {
 
       applySplitFilter = false;
 
-      if ((e.getStateChange() == ItemEvent.SELECTED) && !(Objects.equals(fileOpenDisplay.getText(), "File path will appear here"))) {
+      if ((e.getStateChange() == ItemEvent.SELECTED) && !(Objects.equals(fileOpenDisplay.getText(),
+              "File path will appear here"))) {
         selectedFilter = (String) combobox.getSelectedItem();
         if (!Objects.equals(selectedFilter, "<None>")) {
           String filterCommand = null;
@@ -471,8 +511,9 @@ public class ImageEditorView extends JFrame {
           if (!(Objects.equals(selectedFilter, "compress"))) {
             if (!(Objects.equals(selectedFilter, "levels-adjust"))) {
               if ((Objects.equals(selectedFilter, "color-correct") ||
-                      Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-                      Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
+                      Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter,
+                      "sepia") || Objects.equals(selectedFilter, "sharpen")
+                      || (Objects.equals(selectedFilter, "luma-component")))) {
 
                 JOptionPane.showMessageDialog(ImageEditorView.this,
                         "Slide Arrow to view the changes!",
@@ -483,11 +524,11 @@ public class ImageEditorView extends JFrame {
                 tempName = "tempName";
                 splitImageName = selectedFilter + "Split";
                 filterCommand = filterOptions(true);
-                System.out.println("%%"+filterCommand);
-                System.out.println("%%"+tempName);
-                System.out.println("%%"+splitImageName);
-                System.out.println("%%"+sourceName);
-                System.out.println("%%"+destName);
+                System.out.println("%%" + filterCommand);
+                System.out.println("%%" + tempName);
+                System.out.println("%%" + splitImageName);
+                System.out.println("%%" + sourceName);
+                System.out.println("%%" + destName);
 
                 if (!Objects.equals(filterCommand, "error")) {
                   features.applyFeatures(filterCommand, splitImageName);
@@ -530,7 +571,7 @@ public class ImageEditorView extends JFrame {
         tempName = "tempName";
         splitImageName = selectedFilter + "Split";
         filterCommand = filterOptions(true);
-        if (filterCommand != "error") {
+        if (!Objects.equals(filterCommand, "error")) {
           features.applyFeatures(filterCommand, splitImageName);
           JOptionPane.showMessageDialog(ImageEditorView.this,
                   "Slide Arrow to view the changes!",
@@ -585,7 +626,9 @@ public class ImageEditorView extends JFrame {
       fileOpenDisplay.setText(f.getAbsolutePath());
       fileExtension = getFileExtension(f.getAbsolutePath());
 
-      if (!Objects.equals("png", fileExtension) && !Objects.equals("jpg", fileExtension) && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm", fileExtension)) {
+      if (!Objects.equals("png", fileExtension) && !Objects.equals("jpg", fileExtension)
+              && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm",
+              fileExtension)) {
         JOptionPane.showMessageDialog(ImageEditorView.this,
                 "Please select png/ jpg/ jpeg/ppm image.",
                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -759,11 +802,13 @@ public class ImageEditorView extends JFrame {
             }
             if (sliderPanel.isVisible() && sliderValue != 0) {
               tempName = sourceName + "-" + selectedFilter;
-              command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " " + sourceName + " " + tempName + " split " + sliderValue;
+              command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " "
+                      + sourceName + " " + tempName + " split " + sliderValue;
 
             } else {
               destName = sourceName + "-" + selectedFilter + "1";
-              command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " " + sourceName + " " + splitImageName;
+              command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " "
+                      + sourceName + " " + splitImageName;
             }
             applySplitFilter = true;
           } else if ((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter) {

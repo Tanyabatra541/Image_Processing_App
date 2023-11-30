@@ -10,12 +10,23 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+/**
+ * The IOImageOperations class provides methods for converting images to RGB format, reading image
+ * data from PPM files, loading images, and saving images in various formats including PNG, JPG
+ * and PPM.
+ */
 public class IOImageOperations {
 
+  /**
+   * Converts a PNG image to RGB format and returns the corresponding RGB data.
+   *
+   * @param imagePath The file path of the PNG image.
+   * @return The RGB data of the PNG image as a three-dimensional array.
+   */
   public int[][][] convertPNGToRGB(String imagePath) {
     System.out.println("convertPNGToRGB");
-    int HEIGHT;
-    int WIDTH;
+    int height;
+    int width;
     try {
       File imageFile = new File(imagePath);
       if (!imageFile.exists()) {
@@ -29,13 +40,13 @@ public class IOImageOperations {
         return null;
       }
 
-      WIDTH = bufferedImage.getWidth();
-      HEIGHT = bufferedImage.getHeight();
+      width = bufferedImage.getWidth();
+      height = bufferedImage.getHeight();
 
-      int[][][] imageRGBData = new int[HEIGHT][WIDTH][3];
+      int[][][] imageRGBData = new int[height][width][3];
 
-      for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
           int rgb = bufferedImage.getRGB(x, y);
           imageRGBData[y][x][0] = (rgb >> 16) & 0xFF; // Red component
           imageRGBData[y][x][1] = (rgb >> 8) & 0xFF;  // Green component
@@ -50,6 +61,12 @@ public class IOImageOperations {
     }
   }
 
+  /**
+   * Reads image RGB data from a PPM file and returns it as a three-dimensional array.
+   *
+   * @param filename The file path of the PPM image.
+   * @return The RGB data of the PPM image as a three-dimensional array.
+   */
   public int[][][] readImageRGBData(String filename) {
     Scanner sc = null;
 
@@ -89,6 +106,16 @@ public class IOImageOperations {
     return imageRGBData;
   }
 
+
+  /**
+   * Loads an image from the specified file path and returns its RGB data. If it is a PNG or JPG
+   * image, then the convertPNGToRGB method is called. If it is a PPM image, then the
+   * readImageRGBData method is called.
+   *
+   * @param imagePath The file path of the image.
+   * @param extension The file extension of the image (e.g., "png", "ppm").
+   * @return The RGB data of the loaded image as a three-dimensional array.
+   */
   public int[][][] load(String imagePath, String extension) {
 
     if (Objects.equals(extension, "png") || Objects.equals(extension, "jpg")) {
@@ -101,14 +128,19 @@ public class IOImageOperations {
   }
 
   /**
-   * Saves an image as a PNG file to the specified file path.
+   * Saves an image as either a PNG, JPG or PPM file based on the specified extension.
    *
-   * @param imagePath The file path where the PNG image should be saved.
+   * @param imagePath The file path where the image should be saved.
    * @param imageName The name of the image to be saved.
+   * @param extension The file extension indicating the format (e.g., "png", "ppm").
+   * @param rgbData   The RGB data of the image.
+   * @param pixels    The pixel values of the image.
    */
-  public void save(String imagePath, String imageName, String extension, int[][][] rgbData, double[][] pixels) {
+  public void save(String imagePath, String imageName, String extension, int[][][] rgbData,
+                   double[][] pixels) {
     System.out.println("Saving" + extension);
-    if (extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg")
+    if (extension.equalsIgnoreCase("png")
+            || extension.equalsIgnoreCase("jpg")
             || extension.equalsIgnoreCase("jpeg")) {
       savePNG(imagePath, imageName, extension, rgbData, pixels);
     } else if (extension.equalsIgnoreCase("ppm")) {
@@ -138,11 +170,6 @@ public class IOImageOperations {
   }
 
   private void savePPM(String imagePath, int[][][] rgbData, double[][] pixels) {
-    //ImageContent image = IMAGE_MAP.get(imageName);
-//    ImageContent image =
-
-
-//   if (rgb != null) {
     String content = convertToPPMFormat(rgbData);
 
     // Create a file and write the image content to it
@@ -163,7 +190,8 @@ public class IOImageOperations {
   }
 
 
-  private void savePNG(String imagePath, String imageName, String extension, int[][][] rgbData, double[][] pixels) {
+  private void savePNG(String imagePath, String imageName, String extension, int[][][] rgbData,
+                       double[][] pixels) {
     System.out.println("SavingPNG");
     BufferedImage bufferedImage;
 
