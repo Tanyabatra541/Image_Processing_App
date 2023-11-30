@@ -47,7 +47,7 @@ public class ImageEditorView extends JFrame {
   private JButton testCompressButton;
   private String fileExtension;
 
-  private String sourceName = null;
+  private String sourceName = "img";
   private String destName = "img";
 
   private String tempName = "img";
@@ -395,7 +395,9 @@ public class ImageEditorView extends JFrame {
             if ((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
                     Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
                     Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
+              System.out.println("splitImageName"+splitImageName);
               sourceName = splitImageName;
+
             } else {
               sourceName = filteredImgName;
             }
@@ -406,6 +408,11 @@ public class ImageEditorView extends JFrame {
             }
 
           }
+          System.out.println("##source:"+sourceName);
+          System.out.println("source:"+tempName);
+          System.out.println("source:"+destName);
+          System.out.println("source:"+splitImageName);
+          System.out.println("source:"+filteredImgName);
           features.applyFeatures(null, sourceName);
         } else {
           JOptionPane.showMessageDialog(ImageEditorView.this,
@@ -441,6 +448,12 @@ public class ImageEditorView extends JFrame {
       //System.out.println("Slider value: " + sliderValue);
 
       String filterCommand = filterOptions(true);
+      System.out.println("**source:"+filterCommand);
+      System.out.println("**source:"+sourceName);
+      System.out.println("source:"+tempName);
+      System.out.println("source:"+destName);
+      System.out.println("source:"+splitImageName);
+      System.out.println("source:"+filteredImgName);
       features.applyFeatures(filterCommand, tempName);
 
     });
@@ -464,10 +477,18 @@ public class ImageEditorView extends JFrame {
                 JOptionPane.showMessageDialog(ImageEditorView.this,
                         "Slide Arrow to view the changes!",
                         "Success", JOptionPane.INFORMATION_MESSAGE);
+                sliderValue = 0;
+                arrowSlider.setValue(0);
                 sliderPanel.setVisible(true);
                 tempName = "tempName";
                 splitImageName = selectedFilter + "Split";
                 filterCommand = filterOptions(true);
+                System.out.println("%%"+filterCommand);
+                System.out.println("%%"+tempName);
+                System.out.println("%%"+splitImageName);
+                System.out.println("%%"+sourceName);
+                System.out.println("%%"+destName);
+
                 if (!Objects.equals(filterCommand, "error")) {
                   features.applyFeatures(filterCommand, splitImageName);
                 }
