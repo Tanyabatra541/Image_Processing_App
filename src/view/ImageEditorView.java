@@ -4,23 +4,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Objects;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import controller.Controller;
 import controller.ControllerFeatures;
 
 /**
@@ -29,7 +21,7 @@ import controller.ControllerFeatures;
  * not recommended in general.
  */
 
-public class SwingFeaturesFrame extends JFrame implements ActionListener {
+public class ImageEditorView extends JFrame implements ActionListener {
 
   private JPanel mainPanel;
   private JPanel bmwPanel = new JPanel();
@@ -71,19 +63,19 @@ public class SwingFeaturesFrame extends JFrame implements ActionListener {
   private String command;
   private JButton helpButton;
   private String fileExtension;
-boolean isCurrentImageFiltered= false;
+  boolean isCurrentImageFiltered = false;
 
-  String sourceName=null;
-  String destName="img";
+  String sourceName = null;
+  String destName = "img";
 
-String tempName="img";
-String currentName="img";
-  boolean applySplitFilter=true;
-  String previousFilter=null;
+  String tempName = "img";
+  String currentName = "img";
+  boolean applySplitFilter = true;
+  String previousFilter = null;
 
-  String filteredImgName="filteredImg";
-  int action=0;
-  String splitImageName="splitImage";
+  String filteredImgName = "filteredImg";
+  int action = 0;
+  String splitImageName = "splitImage";
   DocumentListener documentListener;
 
 
@@ -106,7 +98,7 @@ String currentName="img";
     JLabel percentageLabel = new JLabel("Split Percentage: " + arrowSlider.getValue() + "%");
     percentageLabel.setBounds(10, 60, 150, 20); // Adjust the bounds as needed
 
-   arrowSlider.addChangeListener(e -> {
+    arrowSlider.addChangeListener(e -> {
       sliderValue = arrowSlider.getValue();
       percentageLabel.setText("Split Percentage: " + sliderValue + "%");
       System.out.println("Slider value: " + sliderValue);
@@ -129,8 +121,8 @@ String currentName="img";
 
     // Set the bounds for the slider within the panel
 
-    percentageLabel.setBounds(panelWidth*2+panelHeight*2, 0, 150, panelHeight);
-    arrowSlider.setBounds(panelWidth+panelHeight, 0, panelWidth, panelHeight);
+    percentageLabel.setBounds(panelWidth * 2 + panelHeight * 2, 0, 150, panelHeight);
+    arrowSlider.setBounds(panelWidth + panelHeight, 0, panelWidth, panelHeight);
 
     // Add the slider to the new panel
     sliderPanel.add(arrowSlider);
@@ -144,24 +136,24 @@ String currentName="img";
 
   private void addSlider() {
     System.out.println("in slider panel");
-    if(Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
+    if (Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
             Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-            Objects.equals(selectedFilter, "sharpen") || Objects.equals(selectedFilter, "luma-component")){
+            Objects.equals(selectedFilter, "sharpen") || Objects.equals(selectedFilter, "luma-component")) {
       sliderPanel.setVisible(true);
 
-    }else{
-      sliderValue=0;
+    } else {
+      sliderValue = 0;
       arrowSlider.setValue(0);
       sliderPanel.setVisible(false);
     }
   }
 
 
-  public void updateImageForIndex(int[][][] rgbValues,int index) {
+  public void updateImageForIndex(int[][][] rgbValues, int index) {
     BufferedImage image = convertRGBtoBufferedImage(rgbValues);
 
-    int scaledWidth = (int)(image.getWidth() * 1.5);
-    int scaledHeight = (int)(image.getHeight() * 1.5);
+    int scaledWidth = (int) (image.getWidth() * 1.5);
+    int scaledHeight = (int) (image.getHeight() * 1.5);
 
     // Create a scaled version of the image
     Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
@@ -248,7 +240,7 @@ String currentName="img";
   }
 
 
-  public SwingFeaturesFrame() {
+  public ImageEditorView() {
     super();
     setTitle("Image Processing");
     setSize(1500, 1200);
@@ -344,11 +336,11 @@ String currentName="img";
         if (!bText.isEmpty() && !mText.isEmpty() && !wText.isEmpty()) {
           // All fields are filled, perform your action here
           // Example: Display a message
-          JOptionPane.showMessageDialog(SwingFeaturesFrame.this, "All fields are filled!");
+          JOptionPane.showMessageDialog(ImageEditorView.this, "All fields are filled!");
         }
       }
     };
-   
+
     bmwPanel.setVisible(false);
 
     compressionPercentage = new JTextField(3);
@@ -382,43 +374,43 @@ String currentName="img";
   }
 
 
-  public void addFeatures(ControllerFeatures features){
+  public void addFeatures(ControllerFeatures features) {
 
     fileOpenButtonforLoad.addActionListener(evt -> {
-      boolean allowOpen=true;
-      if(previousFilter!=null && fileSaveDisplay.getText()==null){
+      boolean allowOpen = true;
+      if (previousFilter != null && fileSaveDisplay.getText() == null) {
 
         Object[] options = {"Yes", "No"};
 
-        int result = JOptionPane.showOptionDialog(SwingFeaturesFrame.this,
+        int result = JOptionPane.showOptionDialog(ImageEditorView.this,
                 "The current image is not saved. Are you sure you want to proceed?",
                 "Error", JOptionPane.YES_NO_OPTION,
                 JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 
         if (result == JOptionPane.YES_OPTION) {
           System.out.println("Yes button pressed");
-          allowOpen=true;
+          allowOpen = true;
         } else if (result == JOptionPane.NO_OPTION) {
           System.out.println("No button pressed");
-          allowOpen=false;
+          allowOpen = false;
 
         }
       }
-      if(allowOpen) {
+      if (allowOpen) {
         String openCommand = openFile();
         System.out.println("openCommand" + openCommand);
         if (openCommand != null && !openCommand.equals("error")) {
           features.loadImage(openCommand, "img");
-          sourceName="img";
-          destName="img";
-          tempName="img";
+          sourceName = "img";
+          destName = "img";
+          tempName = "img";
           fileSaveDisplay.setText(null);
           sliderPanel.setVisible(false);
-          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+          JOptionPane.showMessageDialog(ImageEditorView.this,
                   "Image loaded successfully!",
                   "Success", JOptionPane.INFORMATION_MESSAGE);
         } else if (openCommand == null || !openCommand.equals("error")) {
-          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+          JOptionPane.showMessageDialog(ImageEditorView.this,
                   "Please load an image before applying a filter.",
                   "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -428,37 +420,29 @@ String currentName="img";
     applyFilterButton.addActionListener(evt -> {
 
 
-          Object[] options = {"Apply", "Cancel"};
+      Object[] options = {"Apply", "Cancel"};
 
-          int result = JOptionPane.showOptionDialog(SwingFeaturesFrame.this,
-                  "Do you want to apply "+selectedFilter+" on the image?",
-                  "Error", JOptionPane.YES_NO_OPTION,
-                  JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+      int result = JOptionPane.showOptionDialog(ImageEditorView.this,
+              "Do you want to apply " + selectedFilter + " on the image?",
+              "Error", JOptionPane.YES_NO_OPTION,
+              JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 
-          if (result == JOptionPane.YES_OPTION) {
-            System.out.println("Apply button pressed");
-            if((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
-                    Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-                    Objects.equals(selectedFilter, "sharpen") ||  (Objects.equals(selectedFilter, "luma-component")))) {
-              sourceName=splitImageName;
-            }else {
-              sourceName=filteredImgName;
-            }
-            }else if(result == JOptionPane.NO_OPTION){
-            if(sliderPanel.isVisible()){
-              sliderValue=0;
-              arrowSlider.setValue(0);
-            }
-
-            //applySplitFilter=false;
-
-
-          }
-       /* } else{
-
-        sourceName=filteredImgName;
-      }*/
-      features.applyFeatures(null, sourceName);
+      if (result == JOptionPane.YES_OPTION) {
+        System.out.println("Apply button pressed");
+        if ((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
+                Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
+                Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
+          sourceName = splitImageName;
+        } else {
+          sourceName = filteredImgName;
+        }
+      } else if (result == JOptionPane.NO_OPTION) {
+        if (sliderPanel.isVisible()) {
+          sliderValue = 0;
+          arrowSlider.setValue(0);
+        }
+      }
+      features.applyFeatures(command, sourceName);
       //filteredImgName="filteredImgName";
     /*  previewDialog = new FilterPreviewDialog(this,SwingFeaturesFrame.this, "img");
       previewDialog.setVisible(true);
@@ -508,26 +492,26 @@ if(splitCmd!=null){
 
 
 
-if(sliderPanel.isVisible() && sliderValue!=0  ){
+      if(sliderPanel.isVisible() && sliderValue!=0  ){
 
-System.out.println("KKKKKK"+tempName);
-  System.out.println("KKKKKK"+sourceName);
-  System.out.println("KKKKKK"+destName);
-  features.applyFeatures(filterCommand, destName,false);
-currentName=sourceName;
-}else{
-  System.out.println("&&&&&&&&&&&&"+applySplitFilter);
-  if(!applySplitFilter){
-    features.applyFeatures(filterCommand, destName,false);
-  }else{
-    features.applyFeatures(filterCommand, sourceName,false);
-  }
-  System.out.println("sajdhjas"+destName);
-  System.out.println("HHH"+tempName);
-  System.out.println("HHH"+sourceName);
-  System.out.println("HHH"+currentName);
+      System.out.println("KKKKKK"+tempName);
+        System.out.println("KKKKKK"+sourceName);
+        System.out.println("KKKKKK"+destName);
+        features.applyFeatures(filterCommand, destName,false);
+      currentName=sourceName;
+      }else{
+        System.out.println("&&&&&&&&&&&&"+applySplitFilter);
+        if(!applySplitFilter){
+          features.applyFeatures(filterCommand, destName,false);
+        }else{
+          features.applyFeatures(filterCommand, sourceName,false);
+        }
+        System.out.println("sajdhjas"+destName);
+        System.out.println("HHH"+tempName);
+        System.out.println("HHH"+sourceName);
+        System.out.println("HHH"+currentName);
 
-}
+      }
 
       }else if(filterCommand == null){
         // Display an error message if the filter command is null (no image loaded or invalid filter)
@@ -540,13 +524,11 @@ currentName=sourceName;
       String saveCommand = saveFile();
       if (saveCommand != null && !saveCommand.equals("error")) {
         features.saveImage(saveCommand);
-        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+        JOptionPane.showMessageDialog(ImageEditorView.this,
                 "Processed Image is saved.",
                 "Success", JOptionPane.INFORMATION_MESSAGE);
       }
     });
-
-
 //    fileSaveButton.addActionListener(evt -> features.saveImage(saveFile()));
     arrowSlider.addChangeListener(e -> {
       System.out.println("Inside arrowSlider");
@@ -554,43 +536,40 @@ currentName=sourceName;
       System.out.println("Slider value: " + sliderValue);
 
       String filterCommand = filterOptions(true);
-      System.out.println("%%%%%%%%%%%%"+applySplitFilter);
-      System.out.println("XBDHJBHJD+"+currentName);
-        System.out.println("AAAAAAA"+tempName);
-        System.out.println("AAAAAAA"+sourceName);
-        System.out.println("AAAAAAA"+destName);
+      System.out.println("%%%%%%%%%%%%" + applySplitFilter);
+      System.out.println("XBDHJBHJD+" + currentName);
+      System.out.println("AAAAAAA" + tempName);
+      System.out.println("AAAAAAA" + sourceName);
+      System.out.println("AAAAAAA" + destName);
       features.applyFeatures(filterCommand, tempName);
-
-
-
     });
 
     combobox.addItemListener(e -> {
-      applySplitFilter=false;
+      applySplitFilter = false;
 
       if (e.getStateChange() == ItemEvent.SELECTED) {
         selectedFilter = (String) combobox.getSelectedItem();
-        String filterCommand=null;
+        String filterCommand = null;
         compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
         bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
 
-        if((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
+        if ((Objects.equals(selectedFilter, "levels-adjust") || Objects.equals(selectedFilter, "color-correct") ||
                 Objects.equals(selectedFilter, "blur") || Objects.equals(selectedFilter, "sepia") ||
-                Objects.equals(selectedFilter, "sharpen") ||  (Objects.equals(selectedFilter, "luma-component")))){
+                Objects.equals(selectedFilter, "sharpen") || (Objects.equals(selectedFilter, "luma-component")))) {
 
           System.out.println("combobox.addItemListener INSIDE SLIDER");
-          JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+          JOptionPane.showMessageDialog(ImageEditorView.this,
                   "Slide Arrow to view the changes!",
                   "Success", JOptionPane.INFORMATION_MESSAGE);
           sliderPanel.setVisible(true);
-          tempName="tempName";
-          splitImageName=selectedFilter+"Split";
+          tempName = "tempName";
+          splitImageName = selectedFilter + "Split";
           filterCommand = filterOptions(true);
-          if(filterCommand!="error") {
+          if (filterCommand != "error") {
             features.applyFeatures(filterCommand, splitImageName);
           }
-        }else{
-          sliderValue=0;
+        } else {
+          sliderValue = 0;
           arrowSlider.setValue(0);
           sliderPanel.setVisible(false);
 
@@ -605,15 +584,13 @@ currentName=sourceName;
   }
 
 
-
-
-  public String openFile(){
+  public String openFile() {
     command = null;
     final JFileChooser fchooser = new JFileChooser(".");
     FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Images", "jpg","jpeg", "ppm", "png");
+            "Images", "jpg", "jpeg", "ppm", "png");
     fchooser.setFileFilter(filter);
-    int retvalue = fchooser.showOpenDialog(SwingFeaturesFrame.this);
+    int retvalue = fchooser.showOpenDialog(ImageEditorView.this);
     if (retvalue == JFileChooser.APPROVE_OPTION) {
       File f = fchooser.getSelectedFile();
       fileOpenDisplay.setText(f.getAbsolutePath());
@@ -621,41 +598,41 @@ currentName=sourceName;
       fileExtension = getFileExtension(f.getAbsolutePath());
       System.out.println("Selected fileExtension: " + fileExtension);
 
-      if(!Objects.equals("png", fileExtension)&& !Objects.equals("jpg", fileExtension) && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm", fileExtension)){
-        JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+      if (!Objects.equals("png", fileExtension) && !Objects.equals("jpg", fileExtension) && !Objects.equals("jpeg", fileExtension) && !Objects.equals("ppm", fileExtension)) {
+        JOptionPane.showMessageDialog(ImageEditorView.this,
                 "Please select png/ jpg/ jpeg/ppm image.",
                 "Error", JOptionPane.ERROR_MESSAGE);
         fileOpenDisplay.setText(null);
         imageLabel[0].setIcon(null);
         imageLabel[2].setIcon(null);
-        command="error";
-      }else {
+        command = "error";
+      } else {
         command = "load " + f.getAbsolutePath() + " img";
         System.out.println(command);
-
       }
     }
     imageLabel[1].setIcon(null);
+    combobox.setSelectedIndex(0);
     return command;
   }
 
-  public String filterOptions(boolean applyFilter){
+  public String filterOptions(boolean applyFilter) {
     /*sourceName=isCurrentImageFiltered? destName:sourceName;
     if( applySplitFilter==true && isCurrentImageFiltered==false) {
       sourceName=currentName;
     }*/
 
-    System.out.println("|||||||||||applyFilter"+applyFilter);
-    System.out.println("|||||||||||selectedFilter"+selectedFilter);
+    System.out.println("|||||||||||applyFilter" + applyFilter);
+    System.out.println("|||||||||||selectedFilter" + selectedFilter);
     /*if(previousFilter!=null && !applyFilter){
       sliderPanel.setVisible(false);
 
     }*/
-      selectedFilter = (String) combobox.getSelectedItem();
-      comboboxDisplay.setText("You selected: " + selectedFilter);
-      compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
-      bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
-      String command = null;
+    selectedFilter = (String) combobox.getSelectedItem();
+    comboboxDisplay.setText("You selected: " + selectedFilter);
+    compressPanel.setVisible(Objects.equals(selectedFilter, "compress"));
+    bmwPanel.setVisible(Objects.equals(selectedFilter, "levels-adjust"));
+    String command = null;
 
 
     selectedFilter = (String) combobox.getSelectedItem();
@@ -665,100 +642,91 @@ currentName=sourceName;
     command = null;
 
 
-    if(applyFilter){
-      switch (Objects.requireNonNull(selectedFilter)){
+    if (applyFilter) {
+      switch (Objects.requireNonNull(selectedFilter)) {
 
         case "<None>":
           command = null;
           break;
         case "horizontal-flip":
           selectedFilter = "horizontal-flip";
-          filteredImgName="filteredImg-"+action;
-          command = selectedFilter + " "+sourceName+" "+filteredImgName;
+          filteredImgName = "filteredImg-" + action;
+          command = selectedFilter + " " + sourceName + " " + filteredImgName;
           break;
         case "vertical-flip":
-          filteredImgName="filteredImg-"+action;
+          filteredImgName = "filteredImg-" + action;
           selectedFilter = "vertical-flip";
-          command = selectedFilter + " "+sourceName+ " "+filteredImgName;
+          command = selectedFilter + " " + sourceName + " " + filteredImgName;
           break;
         case "blur":
           selectedFilter = "blur";
 
-          if(sliderPanel.isVisible()  && sliderValue!=0) {
-            tempName= sourceName+"-"+selectedFilter;
-            command= selectedFilter+" "+sourceName+" "+tempName+" split "+sliderValue;
+          if (sliderPanel.isVisible() && sliderValue != 0) {
+            tempName = sourceName + "-" + selectedFilter;
+            command = selectedFilter + " " + sourceName + " " + tempName + " split " + sliderValue;
 
-          }else{
-            destName= sourceName+"-"+selectedFilter+"1";
-            command= selectedFilter+" "+sourceName+" "+splitImageName;
+          } else {
+            destName = sourceName + "-" + selectedFilter + "1";
+            command = selectedFilter + " " + sourceName + " " + splitImageName;
 
           }
-          applySplitFilter=true;
+          applySplitFilter = true;
 
           break;
         case "sharpen":
           selectedFilter = "sharpen";
 
-          if(sliderPanel.isVisible()  && sliderValue!=0) {
-            tempName= sourceName+"-"+selectedFilter;
-            command= selectedFilter+" "+sourceName+" "+tempName+" split "+sliderValue;
+          if (sliderPanel.isVisible() && sliderValue != 0) {
+            tempName = sourceName + "-" + selectedFilter;
+            command = selectedFilter + " " + sourceName + " " + tempName + " split " + sliderValue;
 
-          }else{
-            destName= sourceName+"-"+selectedFilter+"1";
-            command= selectedFilter+" "+sourceName+" "+splitImageName;
+          } else {
+            destName = sourceName + "-" + selectedFilter + "1";
+            command = selectedFilter + " " + sourceName + " " + splitImageName;
 
           }
-          applySplitFilter=true;
+          applySplitFilter = true;
           System.out.println("sharpen command" + command);
           break;
         case "red-component":
           selectedFilter = "red-component";
-          filteredImgName="filteredImg-"+action;
-          command = selectedFilter + " "+sourceName+" "+filteredImgName;
+          filteredImgName = "filteredImg-" + action;
+          command = selectedFilter + " " + sourceName + " " + filteredImgName;
           break;
         case "blue-component":
           selectedFilter = "blue-component";
-          filteredImgName="filteredImg-"+action;
-          command = selectedFilter + " "+sourceName+" "+filteredImgName;
+          filteredImgName = "filteredImg-" + action;
+          command = selectedFilter + " " + sourceName + " " + filteredImgName;
           break;
         case "green-component":
           selectedFilter = "green-component";
-          filteredImgName="filteredImg-"+action;
-          command = selectedFilter + " "+sourceName+" "+filteredImgName;
+          filteredImgName = "filteredImg-" + action;
+          command = selectedFilter + " " + sourceName + " " + filteredImgName;
           break;
         case "luma-component":
           selectedFilter = "luma-component";
-         /* if (sliderValue != 0) {
-            command = selectedFilter + " img dest split " + sliderValue;
+          if (sliderPanel.isVisible() && sliderValue != 0) {
+            tempName = sourceName + "-" + selectedFilter;
+            command = selectedFilter + " " + sourceName + " " + tempName + " split " + sliderValue;
           } else {
-            command = selectedFilter + " img img";
-          }*/
-
-          if(sliderPanel.isVisible()  && sliderValue!=0) {
-            tempName= sourceName+"-"+selectedFilter;
-            command= selectedFilter+" "+sourceName+" "+tempName+" split "+sliderValue;
-
-          }else{
-            destName= sourceName+"-"+selectedFilter+"1";
-            command= selectedFilter+" "+sourceName+" "+splitImageName;
-
+            destName = sourceName + "-" + selectedFilter + "1";
+            command = selectedFilter + " " + sourceName + " " + splitImageName;
           }
-          applySplitFilter=true;
+          applySplitFilter = true;
           break;
         case "sepia":
           selectedFilter = "sepia";
+          if (sliderPanel.isVisible() && sliderValue != 0) {
+            tempName = sourceName + "-" + selectedFilter;
+            command = selectedFilter + " " + sourceName + " " + tempName + " split " + sliderValue;
 
-          if(sliderPanel.isVisible()  && sliderValue!=0) {
-            tempName= sourceName+"-"+selectedFilter;
-            command= selectedFilter+" "+sourceName+" "+tempName+" split "+sliderValue;
-
-          }else{
-            destName= sourceName+"-"+selectedFilter+"1";
-            command= selectedFilter+" "+sourceName+" "+splitImageName;
+          } else {
+            destName = sourceName + "-" + selectedFilter + "1";
+            command = selectedFilter + " " + sourceName + " " + splitImageName;
 
           }
-          applySplitFilter=true;
-System.out.println("sepia command" + command);
+          applySplitFilter = true;
+          System.out.println("sepia command" + command);
           break;
         case "compress":
           selectedFilter = "compress";
@@ -768,7 +736,7 @@ System.out.println("sepia command" + command);
               double numericValue = Double.parseDouble(enteredText);
 
               if (numericValue < 0 || numericValue > 100) {
-                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                JOptionPane.showMessageDialog(ImageEditorView.this,
                         "Compression Percentage must be between 0 to 100.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 command = "error";
@@ -776,20 +744,20 @@ System.out.println("sepia command" + command);
               }
 
             } catch (NumberFormatException e) {
-              JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+              JOptionPane.showMessageDialog(ImageEditorView.this,
                       "Please enter a valid numeric value for Compression Percentage.",
                       "Error", JOptionPane.ERROR_MESSAGE);
               command = "error";
               break;
 
             }
-              System.out.println("Entered Compression Percentage: " + enteredText);
+            System.out.println("Entered Compression Percentage: " + enteredText);
 
-            command = selectedFilter +" "+enteredText+ " "+sourceName+" "+filteredImgName;
+            command = selectedFilter + " " + enteredText + " " + sourceName + " " + filteredImgName;
             //destName=sourceName;
 
           } else if (enteredText.isEmpty() && applyFilter) {
-            JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+            JOptionPane.showMessageDialog(ImageEditorView.this,
                     "Please enter a value for Compression Percentage.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             command = "error";
@@ -803,16 +771,16 @@ System.out.println("sepia command" + command);
           } else {
             command = selectedFilter + " img img";
           }*/
-          if(sliderPanel.isVisible()  && sliderValue!=0) {
-            tempName= sourceName+"-"+selectedFilter;
-            command= selectedFilter+" "+sourceName+" "+tempName+" split "+sliderValue;
+          if (sliderPanel.isVisible() && sliderValue != 0) {
+            tempName = sourceName + "-" + selectedFilter;
+            command = selectedFilter + " " + sourceName + " " + tempName + " split " + sliderValue;
 
-          }else{
-            destName= sourceName+"-"+selectedFilter+"1";
-            command= selectedFilter+" "+sourceName+" "+splitImageName;
+          } else {
+            destName = sourceName + "-" + selectedFilter + "1";
+            command = selectedFilter + " " + sourceName + " " + splitImageName;
 
           }
-          applySplitFilter=true;
+          applySplitFilter = true;
           break;
         case "levels-adjust": //TODO
           selectedFilter = "levels-adjust";
@@ -833,7 +801,7 @@ System.out.println("sepia command" + command);
               double numericValueW = Double.parseDouble(wValue);
 
               if (numericValueB < 0 || numericValueB > 255 || numericValueM < 0 || numericValueM > 255 || numericValueW < 0 || numericValueW > 255) {
-                JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+                JOptionPane.showMessageDialog(ImageEditorView.this,
                         "B, M, W must be between 0 to 255.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 command = "error";
@@ -841,7 +809,7 @@ System.out.println("sepia command" + command);
               }
 
             } catch (NumberFormatException e) {
-              JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+              JOptionPane.showMessageDialog(ImageEditorView.this,
                       "Please enter a valid numeric value for B, M, W.",
                       "Error", JOptionPane.ERROR_MESSAGE);
               command = "error";
@@ -849,20 +817,20 @@ System.out.println("sepia command" + command);
 
             }
 
-            if(sliderPanel.isVisible()  && sliderValue!=0) {
-              tempName= sourceName+"-"+selectedFilter;
-              command= selectedFilter+" " + bValue + " " + mValue + " " + wValue +" "+sourceName+" "+tempName+" split "+sliderValue;
+            if (sliderPanel.isVisible() && sliderValue != 0) {
+              tempName = sourceName + "-" + selectedFilter;
+              command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " " + sourceName + " " + tempName + " split " + sliderValue;
 
-            }else{
-              destName= sourceName+"-"+selectedFilter+"1";
-              command= selectedFilter+" " + bValue + " " + mValue + " " + wValue +" "+sourceName+" "+splitImageName;
+            } else {
+              destName = sourceName + "-" + selectedFilter + "1";
+              command = selectedFilter + " " + bValue + " " + mValue + " " + wValue + " " + sourceName + " " + splitImageName;
 
             }
-            applySplitFilter=true;
+            applySplitFilter = true;
 
 
           } else if ((bValue.isEmpty() || mValue.isEmpty() || wValue.isEmpty()) && applyFilter) {
-            JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+            JOptionPane.showMessageDialog(ImageEditorView.this,
                     "Please enter a value for B, M, W.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             command = "error";
@@ -876,7 +844,7 @@ System.out.println("sepia command" + command);
           break;
       }
       comboboxDisplay.setText("You selected: " + selectedFilter);
-       // addSlider();
+      // addSlider();
     }
    /* if(applyFilter){
       previousFilter=selectedFilter;
@@ -889,13 +857,13 @@ System.out.println("sepia command" + command);
   public String saveFile() {
     String command = null;
 
-    if(sliderPanel.isVisible()) {
+    if (sliderPanel.isVisible()) {
       if ((Objects.equals(previousFilter, "levels-adjust") || Objects.equals(previousFilter, "color-correct") ||
               Objects.equals(previousFilter, "blur") || Objects.equals(previousFilter, "sepia") ||
-              Objects.equals(previousFilter, "sharpen") ||  (Objects.equals(previousFilter, "luma-component")) )){
+              Objects.equals(previousFilter, "sharpen") || (Objects.equals(previousFilter, "luma-component")))) {
         Object[] options = {"Apply", "Cancel"};
 
-        int result = JOptionPane.showOptionDialog(SwingFeaturesFrame.this,
+        int result = JOptionPane.showOptionDialog(ImageEditorView.this,
                 "Do you want to apply " + previousFilter + " on the image?",
                 "Error", JOptionPane.YES_NO_OPTION,
                 JOptionPane.ERROR_MESSAGE, null, options, options[0]);
@@ -915,18 +883,18 @@ System.out.println("sepia command" + command);
       command = filterOptions(true);
     }
 
-      if (fileOpenDisplay.getText().equals("File path will appear here")) {
-      JOptionPane.showMessageDialog(SwingFeaturesFrame.this,
+    if (fileOpenDisplay.getText().equals("File path will appear here")) {
+      JOptionPane.showMessageDialog(ImageEditorView.this,
               "Please load an image before attempting to save.",
               "Error", JOptionPane.ERROR_MESSAGE);
-    }else {
+    } else {
       final JFileChooser fchooser = new JFileChooser(".");
-      int retvalue = fchooser.showSaveDialog(SwingFeaturesFrame.this);
+      int retvalue = fchooser.showSaveDialog(ImageEditorView.this);
       if (retvalue == JFileChooser.APPROVE_OPTION) {
         File f = fchooser.getSelectedFile();
         fileSaveDisplay.setText(f.getAbsolutePath());
-          command = "save " + f.getAbsolutePath() + " "+sourceName;
-          System.out.println("Image saved");
+        command = "save " + f.getAbsolutePath() + " " + sourceName;
+        System.out.println("Image saved");
       }
     }
     return command;

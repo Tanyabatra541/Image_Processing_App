@@ -11,7 +11,7 @@ import java.util.Map;
  * functionality to apply various image operations like blue, sharpen, brighten, sepia, color
  * correct, levels adjust, etc.
  */
-public abstract class AbstractImage implements ImageOperations {
+public class ImageModel implements ImageOperations {
 
   /**
    * The `imageMap` is a map that stores the name of the image as the key and the image content as
@@ -38,20 +38,20 @@ public abstract class AbstractImage implements ImageOperations {
   /**
    * Load an image from a file and store it in the image map.
    *
-   * @param imagePath The file path of the image to load.
    * @param imageName The name to associate with the loaded image.
    * @throws IOException If an error occurs while loading the image.
    */
-  public abstract void loadImage(String imagePath, String imageName) throws IOException;
+  @Override
+  public void loadImageInMap(String imageName, int[][][] imageRGBData) {
+    if (imageRGBData != null) {
+      ImageContent image = new ImageContent(imageName, imageRGBData);
 
-  /**
-   * Save an image to a file using a specific format.
-   *
-   * @param imagePath The file path to save the image.
-   * @param imageName The name of the image to be saved.
-   * @throws IOException If an error occurs while saving the image.
-   */
-  public abstract void saveImage(String imagePath, String imageName) throws IOException;
+      IMAGE_MAP.put(imageName, image);
+      System.out.println("Loaded image: " + imageName);
+    } else {
+      System.out.println("Failed to load the image from: " + imageName);
+    }
+  }
 
   /**
    * Flip an image horizontally and save it as a new image with the given name.
@@ -77,14 +77,9 @@ public abstract class AbstractImage implements ImageOperations {
             flippedRGBData[y][x] = sourceRGBData[y][width - x - 1];
           }
         }
-
         createPPMContent(width, height, flippedRGBData);
-
         ImageContent flippedImage = new ImageContent(destImageName, flippedRGBData);
         IMAGE_MAP.put(destImageName, flippedImage);
-
-        //rgbDataMap.put(destImageName, flippedRGBData);
-
         System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '"
                 + destImageName + "'.");
       } else {
@@ -148,28 +143,27 @@ public abstract class AbstractImage implements ImageOperations {
     int kernelSize = (int) Math.sqrt(kernel.length);
     int kernelRadius = kernelSize / 2;
 
-    for (int y = kernelRadius; y < height - kernelRadius; y++) {
-      for (int x = kernelRadius; x < width - kernelRadius; x++) {
-        for (int channel = 0; channel < 3; channel++) {
-          float sum = 0.0f;
-          int kernelIndex = 0;
-          for (int ky = -kernelRadius; ky <= kernelRadius; ky++) {
-            for (int kx = -kernelRadius; kx <= kernelRadius; kx++) {
-              int pixelX = Math.min(width - 1, Math.max(0, x + kx));
-              int pixelY = Math.min(height - 1, Math.max(0, y + ky));
-              float kernelValue = kernel[kernelIndex];
-              int pixelValue = sourceRGBData[pixelY][pixelX][channel];
-              sum += kernelValue * pixelValue;
-              kernelIndex++;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (splitPercentage == 0 || (splitPercentage > 0 && x < splitPosition)) {
+          for (int channel = 0; channel < 3; channel++) {
+            float sum = 0.0f;
+            int kernelIndex = 0;
+            for (int ky = -kernelRadius; ky <= kernelRadius; ky++) {
+              for (int kx = -kernelRadius; kx <= kernelRadius; kx++) {
+                int pixelX = Math.min(width - 1, Math.max(0, x + kx));
+                int pixelY = Math.min(height - 1, Math.max(0, y + ky));
+                float kernelValue = kernel[kernelIndex];
+                int pixelValue = sourceRGBData[pixelY][pixelX][channel];
+                sum += kernelValue * pixelValue;
+                kernelIndex++;
+              }
             }
-          }
-          int newValue = Math.min(255, Math.max(0, (int) sum));
-          if (splitPercentage == 0 || x < splitPosition) {
+            int newValue = Math.min(255, Math.max(0, (int) sum));
             resultRGBData[y][x][channel] = newValue;
-          } else {
-            // Copy the original image data to the destination image for the other side
-            resultRGBData[y][x][channel] = sourceRGBData[y][x][channel];
           }
+        } else {
+          System.arraycopy(sourceRGBData[y][x], 0, resultRGBData[y][x], 0, 3);
         }
       }
     }
@@ -182,13 +176,11 @@ public abstract class AbstractImage implements ImageOperations {
     System.out.println("Convolution operation completed. Result image saved as " + destImageName);
   }
 
-  // Example usage in the sharpening function
   private void sharpenImageHelper(String sourceImageName, String destImageName,
                                   int splitPercentage) {
     applyConvolutionHelper(sourceImageName, destImageName, splitPercentage, sharpeningKernel);
   }
 
-  // Example usage in the blurring function
   private void blurImageHelper(String sourceImageName, String destImageName, int splitPercentage) {
     applyConvolutionHelper(sourceImageName, destImageName, splitPercentage, gaussianKernel);
   }
@@ -295,9 +287,7 @@ public abstract class AbstractImage implements ImageOperations {
       System.out.println("Source image not found: " + sourceName);
       return;
     }
-
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
-
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
     int[][][] sepiaRGBData = new int[height][width][3];
@@ -306,24 +296,23 @@ public abstract class AbstractImage implements ImageOperations {
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        int r = sourceRGBData[y][x][0];
-        int g = sourceRGBData[y][x][1];
-        int b = sourceRGBData[y][x][2];
-
-        int tr = (int) (0.393 * r + 0.769 * g + 0.189 * b);
-        int tg = (int) (0.349 * r + 0.686 * g + 0.168 * b);
-        int tb = (int) (0.272 * r + 0.534 * g + 0.131 * b);
-
-        tr = Math.min(255, Math.max(0, tr));
-        tg = Math.min(255, Math.max(0, tg));
-        tb = Math.min(255, Math.max(0, tb));
-
         if (splitPercentage == 0 || x <= splitPosition) {
+          int r = sourceRGBData[y][x][0];
+          int g = sourceRGBData[y][x][1];
+          int b = sourceRGBData[y][x][2];
+
+          int tr = (int) (0.393 * r + 0.769 * g + 0.189 * b);
+          int tg = (int) (0.349 * r + 0.686 * g + 0.168 * b);
+          int tb = (int) (0.272 * r + 0.534 * g + 0.131 * b);
+
+          tr = Math.min(255, Math.max(0, tr));
+          tg = Math.min(255, Math.max(0, tg));
+          tb = Math.min(255, Math.max(0, tb));
+
           sepiaRGBData[y][x][0] = tr;
           sepiaRGBData[y][x][1] = tg;
           sepiaRGBData[y][x][2] = tb;
         } else {
-          // Copy the original image data to the destination image for the other side
           sepiaRGBData[y][x][0] = sourceRGBData[y][x][0];
           sepiaRGBData[y][x][1] = sourceRGBData[y][x][1];
           sepiaRGBData[y][x][2] = sourceRGBData[y][x][2];
@@ -339,6 +328,7 @@ public abstract class AbstractImage implements ImageOperations {
     System.out.println("Sepia filter applied with " + splitPercentage + "% split. Sepia-toned "
             + "image saved as " + destName);
   }
+
 
   /**
    * Applies the sepia tone to a particular percentage of the source image depending on
@@ -520,8 +510,7 @@ public abstract class AbstractImage implements ImageOperations {
    *                   - "intensity": Convert the image to grayscale using intensity.
    *                   - "value": Extract the value (brightness) component of an image.
    */
-  @Override
-  public void extractComponent(String sourceName, String destName, String component) {
+  private void extractComponentHelper(String sourceName, String destName, String component, int splitPercentage) {
     ImageContent sourceImage = IMAGE_MAP.get(sourceName);
     boolean flag = true;
 
@@ -533,6 +522,8 @@ public abstract class AbstractImage implements ImageOperations {
         int width = sourceRGBData[0].length;
 
         int[][][] extractedRGBData = new int[height][width][3];
+
+        int splitPosition = width * splitPercentage / 100;
 
         for (int y = 0; y < height; y++) {
           for (int x = 0; x < width; x++) {
@@ -554,10 +545,12 @@ public abstract class AbstractImage implements ImageOperations {
                 g = 0;
                 break;
               case "luma":
-                int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
-                r = luma;
-                g = luma;
-                b = luma;
+                if (x <= splitPosition || splitPercentage == 0) {
+                  int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                  r = luma;
+                  g = luma;
+                  b = luma;
+                }
                 break;
               case "intensity":
                 int intensity = (r + g + b) / 3;
@@ -574,7 +567,6 @@ public abstract class AbstractImage implements ImageOperations {
               default:
                 flag = false;
                 System.out.print("Invalid component parameter.");
-
             }
             extractedRGBData[y][x][0] = r;
             extractedRGBData[y][x][1] = g;
@@ -590,8 +582,6 @@ public abstract class AbstractImage implements ImageOperations {
                   + "' and saved as '" + destName + "'");
 
         }
-
-
       } else {
         System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
       }
@@ -600,13 +590,15 @@ public abstract class AbstractImage implements ImageOperations {
     }
   }
 
-  /**
-   * Get a map of image names to their corresponding ImageContent objects.
-   *
-   * @return A map where keys are image names and values are the corresponding ImageContent objects.
-   */
-  public Map<String, ImageContent> getImageMap() {
-    return IMAGE_MAP;
+  @Override
+  public void extractComponent(String sourceName, String destName, String component, int splitPercentage) {
+    extractComponentHelper(sourceName, destName, component, splitPercentage);
+  }
+
+
+  @Override
+  public void extractComponent(String sourceName, String destName, String component) {
+    extractComponentHelper(sourceName, destName, component, 0);
   }
 
 
@@ -618,6 +610,11 @@ public abstract class AbstractImage implements ImageOperations {
   @Override
   public int[][][] getRgbDataMap(String imageName) {
     return IMAGE_MAP.get(imageName).getRgbDataMap();
+  }
+
+  @Override
+  public double[][] getPixels(String imageName) {
+    return IMAGE_MAP.get(imageName).getPixels();
   }
 
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
@@ -665,23 +662,25 @@ public abstract class AbstractImage implements ImageOperations {
           int greenValue = sourceRGBData[y][x][1];
           int blueValue = sourceRGBData[y][x][2];
 
-          // Offset the values
-          int offsetR = averagePeak - peakR;
-          int offsetG = averagePeak - peakG;
-          int offsetB = averagePeak - peakB;
+          if (splitPercentage == 0 || x <= splitPosition) {
+            // Offset the values
+            int offsetR = averagePeak - peakR;
+            int offsetG = averagePeak - peakG;
+            int offsetB = averagePeak - peakB;
 
-          // Apply offsets and ensure values stay within the valid range (10 to 245)
-          int correctedRed = Math.min(245, Math.max(10, redValue + offsetR));
-          int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
-          int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
+            // Apply offsets and ensure values stay within the valid range (10 to 245)
+            int correctedRed = Math.min(245, Math.max(10, redValue + offsetR));
+            int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
+            int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
 
-          colorCorrectedImage[y][x][0] = Math.max(0, Math.min(255, redValue + offsetR));
-          colorCorrectedImage[y][x][1] = Math.max(0, Math.min(255, greenValue + offsetG));
-          colorCorrectedImage[y][x][2] = Math.max(0, Math.min(255, blueValue + offsetB));
-
-          // Apply split
-          split(colorCorrectedImage, splitPosition, y, x, redValue, greenValue, blueValue,
-                  correctedRed, correctedGreen, correctedBlue, splitPercentage);
+            colorCorrectedImage[y][x][0] = correctedRed;
+            colorCorrectedImage[y][x][1] = correctedGreen;
+            colorCorrectedImage[y][x][2] = correctedBlue;
+          } else {
+            colorCorrectedImage[y][x][0] = redValue;
+            colorCorrectedImage[y][x][1] = greenValue;
+            colorCorrectedImage[y][x][2] = blueValue;
+          }
         }
       }
 
@@ -723,21 +722,6 @@ public abstract class AbstractImage implements ImageOperations {
   @Override
   public void colorCorrectImage(String sourceName, String destName) {
     colorCorrectImageHelper(sourceName, destName, 0);
-  }
-
-  private void split(int[][][] colorCorrectedImage, int splitPosition, int y, int x, int redValue,
-                     int greenValue, int blueValue, int correctedRed, int correctedGreen,
-                     int correctedBlue, int splitPercentage) {
-    if (splitPercentage == 0 || x <= splitPosition) {
-      colorCorrectedImage[y][x][0] = correctedRed;
-      colorCorrectedImage[y][x][1] = correctedGreen;
-      colorCorrectedImage[y][x][2] = correctedBlue;
-    } else {
-      // Copy the original image data to the destination image for the other side
-      colorCorrectedImage[y][x][0] = redValue;
-      colorCorrectedImage[y][x][1] = greenValue;
-      colorCorrectedImage[y][x][2] = blueValue;
-    }
   }
 
 
@@ -800,15 +784,24 @@ public abstract class AbstractImage implements ImageOperations {
             int greenValue = sourceRGBData[y][x][1];
             int blueValue = sourceRGBData[y][x][2];
 
-            int adjustedRed = applyCurvesFunction(redValue, shadowPoint, midPoint, highlightPoint);
-            int adjustedGreen = applyCurvesFunction(greenValue, shadowPoint, midPoint,
-                    highlightPoint);
-            int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint,
-                    highlightPoint);
+            if (splitPercentage == 0 || x <= splitPosition) {
 
-            // Apply split
-            split(adjustedRGBData, splitPosition, y, x, redValue, greenValue, blueValue,
-                    adjustedRed, adjustedGreen, adjustedBlue, splitPercentage);
+              int adjustedRed = applyCurvesFunction(redValue, shadowPoint, midPoint, highlightPoint);
+              int adjustedGreen = applyCurvesFunction(greenValue, shadowPoint, midPoint,
+                      highlightPoint);
+              int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint,
+                      highlightPoint);
+
+              adjustedRGBData[y][x][0] = adjustedRed;
+              adjustedRGBData[y][x][1] = adjustedGreen;
+              adjustedRGBData[y][x][2] = adjustedBlue;
+
+            } else {
+
+              adjustedRGBData[y][x][0] = redValue;
+              adjustedRGBData[y][x][1] = greenValue;
+              adjustedRGBData[y][x][2] = blueValue;
+            }
           }
         }
 
@@ -915,18 +908,22 @@ public abstract class AbstractImage implements ImageOperations {
           int green = sourceRGBData[y][x][1];
           int blue = sourceRGBData[y][x][2];
 
-          // Apply the specified transformation
-          int grayscaleValue = (int) (grayscaleMatrix[0][0] * red + grayscaleMatrix[0][1] * green
-                  + grayscaleMatrix[0][2] * blue);
+          if (splitPercentage == 0 || x <= splitPosition) {
+            // Apply the specified transformation
+            int grayscaleValue = (int) (grayscaleMatrix[0][0] * red + grayscaleMatrix[0][1] * green
+                    + grayscaleMatrix[0][2] * blue);
 
-          // Set the same grayscale value for all channels
-          grayscalePixels[y][x][0] = grayscaleValue;
-          grayscalePixels[y][x][1] = grayscaleValue;
-          grayscalePixels[y][x][2] = grayscaleValue;
+            // Set the same grayscale value for all channels
+            grayscalePixels[y][x][0] = grayscaleValue;
+            grayscalePixels[y][x][1] = grayscaleValue;
+            grayscalePixels[y][x][2] = grayscaleValue;
 
-          // Apply vertical split
-          split(grayscalePixels, splitPosition, y, x, red, green, blue, grayscaleValue,
-                  grayscaleValue, grayscaleValue, splitPercentage);
+          } else {
+            // Copy the original image data to the destination image for the other side
+            grayscalePixels[y][x][0] = red;
+            grayscalePixels[y][x][1] = green;
+            grayscalePixels[y][x][2] = blue;
+          }
         }
       }
 

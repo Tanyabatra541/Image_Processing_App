@@ -10,20 +10,10 @@ public interface ImageOperations {
   /**
    * Load an image from a file and store it in the image map.
    *
-   * @param imagePath The file path of the image to load.
    * @param imageName The name to associate with the loaded image.
    * @throws IOException If an error occurs while loading the image.
    */
-  void loadImage(String imagePath, String imageName) throws IOException;
-
-  /**
-   * Save an image to a file using a specific format.
-   *
-   * @param imagePath The file path to save the image.
-   * @param imageName The name of the image to be saved.
-   * @throws IOException If an error occurs while saving the image.
-   */
-  void saveImage(String imagePath, String imageName) throws IOException;
+  void loadImageInMap(String imageName, int[][][] rgb) throws IOException;
 
   /**
    * Flip an image horizontally and save it as a new image with the given name.
@@ -151,6 +141,8 @@ public interface ImageOperations {
    */
   void extractComponent(String sourceName, String destName, String component);
 
+  void extractComponent(String sourceName, String destName, String component, int splitPercentage);
+
   /**
    * Compresses the specified image with the given compression percentage and saves the compressed
    * image with the provided destination name.
@@ -223,6 +215,8 @@ public interface ImageOperations {
   void convertToGrayscale(String sourceName, String destName, int splitPercentage);
 
   int[][][] getRgbDataMap(String imageName);
+
+  double[][] getPixels(String imageName);
 
 
 }

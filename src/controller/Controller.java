@@ -1,17 +1,18 @@
 package controller;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Objects;
 import java.util.Scanner;
 
-import model.ImageOperations;
-import model.JPGImage;
-import model.PNGImage;
-import model.PPMImage;
-import view.SwingFeaturesFrame;
-//import view.IView;
+import javax.imageio.ImageIO;
+
+import model.ImageModel;
+import view.ImageEditorView;
 
 import static java.lang.System.exit;
 
@@ -20,112 +21,21 @@ import static java.lang.System.exit;
  * It handles user interactions from the view, processes user input, and communicates with the
  * model and view components.
  */
-public class Controller implements ControllerFeatures{
+public class Controller implements ControllerFeatures {
 
   private static String lastSavedImagePath;
 
   private String input;
-  private final String result;
+  //  private final String result;
+  private Reader reader;
+  private String extension;
 
-  public static ImageOperations imageObj = null;
+  public static ImageModel imageObj = new ImageModel();
 
-  private SwingFeaturesFrame view;
-//  private final IView view;
-
-//  /**
-//   * Constructs a new Controller instance.
-//   *
-//   * @param v The view to interact with.
-//   */
-  public Controller(SwingFeaturesFrame v) {
-    view = v;
-//    view.setListener(this);
-//    view.display();
-    input = "";
-    result = "";
-
+  private ImageEditorView view;
+  public Controller(Reader reader) {
+    this.reader = reader;
   }
-
-//  /**
-//   * Handles user actions, such as button clicks and text input.
-//   *
-//   * @param e An ActionEvent representing the user's action.
-//   */
-//  @Override
-//  public void actionPerformed(ActionEvent e) {
-//    if (Objects.equals(e.getActionCommand(), "Execute Button")) {
-//      // Read the text from the input textField
-//      String inputText = view.getInputString();
-//      // Check if the input text represents a file path
-//      File file = new File(inputText);
-//      if (file.exists() && file.isFile()) {
-//        try {
-//          // Read the contents of the file and display them in the view
-//          StringBuilder fileContents;
-//          fileContents = new StringBuilder();
-//          try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//              fileContents.append(line).append("\n");
-//            }
-//          }
-//          // Pass the file contents to the model for processing
-//          executeScriptFromFile(inputText);
-//          // Display any output or result from the model in the view
-//          String result = getResult(); // This method depends on your model structure
-//          view.setEchoOutput(result);
-//        } catch (IOException ex) {
-//          // Handle any exceptions that occur during file reading
-//          view.setEchoOutput("Error reading the file: " + ex.getMessage());
-//        }
-//      } else {
-//        // Send the text to the model
-//        setString(inputText);
-//        // Clear the input textField
-//        view.clearInputString();
-//        // Finally, echo the string in the view
-//        String text = getString();
-//        view.setEchoOutput(text);
-//      }
-//    } else if (Objects.equals(e.getActionCommand(), "Exit Button")) {
-//      view.closeOrDispose();
-//      Scanner scanner = new Scanner(System.in);
-//      while (true) {
-//        System.out.print("Enter a command (or type 'exit' to quit): ");
-//        String command = scanner.nextLine();
-//        if (command.equals("exit")) {
-//          break;
-//        }
-//        try {
-//          parseAndExecute(command);
-//        } catch (IOException ex) {
-//          throw new RuntimeException(ex);
-//        }
-//      }
-//    }
-//  }
-
-//  private void setString(String i) {
-//    input = i;
-//  }
-//
-//  /**
-//   * Gets the input string.
-//   *
-//   * @return The input string.
-//   */
-//  private String getString() {
-//    return input;
-//  }
-//
-//  /**
-//   * Retrieves the result from processing commands, if available.
-//   *
-//   * @return The result string obtained from command execution.
-//   */
-//  private String getResult() {
-//    return result;
-//  }
 
   /**
    * The parts of the command entered by the user.
@@ -139,7 +49,9 @@ public class Controller implements ControllerFeatures{
    * @param command The command to parse and execute.
    * @throws IOException If an I/O error occurs while executing the command.
    */
-  public static void parseAndExecute(String command) throws IOException {
+  public void parseAndExecute(String command) throws IOException {
+    int[][][] rgb;
+    double[][] pixels;
     System.out.println("Executing command: " + command);
     PARTS = command.split(" ");
     if (PARTS.length < 2) {
@@ -150,31 +62,41 @@ public class Controller implements ControllerFeatures{
     String cmd = PARTS[0];
     String arg1 = PARTS[1];
     String arg2 = PARTS.length > 2 ? PARTS[2] : null;
-    String extension = identifyFileFormat(arg1);
+    extension = identifyFileFormat(arg1);
+    IOImageOperations ioImageOperations = new IOImageOperations();
+//    if (!Objects.equals(PARTS[0], "run")) {
 
-    if (!Objects.equals(PARTS[0], "run")) {
-
-      if (extension != null) {
-        if ((extension.equalsIgnoreCase("png"))) {
-          imageObj = new PNGImage();
-        } else if (extension.equalsIgnoreCase("ppm")) {
-          imageObj = new PPMImage();
-        } else if (extension.equalsIgnoreCase("jpg")
-                || (extension.equalsIgnoreCase("jpeg"))) {
-          imageObj = new JPGImage();
-        } else {
-          System.out.println("Unsupported image format");
-        }
-      }
-    }
+//      if (extension != null) {
+//        if ((extension.equalsIgnoreCase("png"))) {
+//          imageObj = new PNGImage();
+//        } else if (extension.equalsIgnoreCase("ppm")) {
+//          imageObj = new PPMImage();
+//        } else if (extension.equalsIgnoreCase("jpg")
+//                || (extension.equalsIgnoreCase("jpeg"))) {
+//          imageObj = new JPGImage();
+//        } else {
+//          System.out.println("Unsupported image format");
+//        }
+//      }
+//    }
 
     switch (cmd) {
       case "load":
-        imageObj.loadImage(arg1, arg2);
+        System.out.println("in load");
+        System.out.println("arg1" + arg1);
+        if(arg2 == null) {
+          System.out.println("Image not found");
+        }
+        rgb = ioImageOperations.load(arg1,extension);
+        imageObj.loadImageInMap(arg2, rgb);
         break;
       case "save":
-        imageObj.saveImage(arg1, arg2);
-        lastSavedImagePath = arg2 + "." + extension;
+        if(arg2 == null) {
+          System.out.println("Image not found");
+        }
+        rgb = imageObj.getRgbDataMap(arg2);
+        pixels = imageObj.getPixels(arg2);
+        ioImageOperations.save(arg1, arg2, extension, rgb, pixels);
         break;
       case "horizontal-flip":
         if (PARTS.length < 3) {
@@ -183,23 +105,41 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.horizontalFlipImage(sourceImageName, destImageName);
         }
         break;
       case "vertical-flip":
+        if(arg2 == null) {
+          System.out.println("Image not found");
+        }
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
+        if(arg2 == null){
+          System.out.println("Image not found");
+        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
+          if(splitPercentage<0 || splitPercentage>100){
+            System.out.println("Split percentage should be between 0 and 100");
+          }
           imageObj.sharpenImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.sharpenImage(arg1, arg2, 0);
         }
         break;
       case "blur":
+        if(arg2 == null){
+          System.out.println("Image not found");
+        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
+          if(splitPercentage<0 || splitPercentage>100){
+            System.out.println("Split percentage should be between 0 and 100");
+          }
           imageObj.blurImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.blurImage(arg1, arg2, 0);
@@ -213,12 +153,21 @@ public class Controller implements ControllerFeatures{
           int increment = Integer.parseInt(PARTS[1]);
           String sourceImageName = PARTS[2];
           String destImageName = PARTS[3];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.brightenImage(sourceImageName, destImageName, increment);
         }
         break;
       case "sepia":
+        if(arg2 == null){
+          System.out.println("Image not found");
+        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
+          if(splitPercentage<0 || splitPercentage>100){
+            System.out.println("Split percentage should be between 0 and 100");
+          }
           imageObj.sepiaImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.sepiaImage(arg1, arg2, 0);
@@ -233,6 +182,10 @@ public class Controller implements ControllerFeatures{
           String redImageName = PARTS[2];
           String greenImageName = PARTS[3];
           String blueImageName = PARTS[4];
+          if(combinedImageName == null  || redImageName == null || greenImageName == null
+                  || blueImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName, blueImageName);
         }
         break;
@@ -245,6 +198,10 @@ public class Controller implements ControllerFeatures{
           String destImageNameRed = PARTS[2];
           String destImageNameGreen = PARTS[3];
           String destImageNameBlue = PARTS[4];
+          if(sourceImageName == null  || destImageNameRed == null || destImageNameGreen == null
+                  || destImageNameBlue == null){
+            System.out.println("Image not found");
+          }
           imageObj.rgbSplitImage(sourceImageName, destImageNameRed, destImageNameGreen,
                   destImageNameBlue);
         }
@@ -257,6 +214,9 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "red");
         }
         break;
@@ -268,6 +228,9 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "green");
         }
         break;
@@ -278,6 +241,9 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "blue");
         }
         break;
@@ -289,6 +255,9 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "value");
         }
         break;
@@ -299,6 +268,9 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "intensity");
         }
         break;
@@ -306,15 +278,36 @@ public class Controller implements ControllerFeatures{
         if (PARTS.length < 3) {
           System.out.println("Invalid 'luma-component' command: Usage is 'luma-component "
                   + "source-image-name dest-image-name'");
-        } else {
-          String sourceImageName = PARTS[1];
-          String destImageName = PARTS[2];
+        } else if (PARTS.length > 3 && PARTS[3].equals("split")) {
+          int splitPercentage = Integer.parseInt(PARTS[4]);
+          String sourceImageName= PARTS[1];
+          String destImageName= PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
+          if(splitPercentage<0 || splitPercentage>100){
+            System.out.println("Split percentage should be between 0 and 100");
+          }
+          imageObj.extractComponent(sourceImageName, destImageName, "luma", splitPercentage);
+        }
+        else {
+          String sourceImageName= PARTS[1];
+          String destImageName= PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
       case "color-correct":
+        if(arg2 == null){
+          System.out.println("Image not found");
+        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
+          if(splitPercentage<0 || splitPercentage>100){
+            System.out.println("Split percentage should be between 0 and 100");
+          }
           imageObj.colorCorrectImage(arg1, arg2, splitPercentage);
         } else {
           imageObj.colorCorrectImage(arg1, arg2, 0);
@@ -327,22 +320,32 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           imageObj.createHistogram(sourceImageName, destImageName);
         }
         break;
 
       case "levels-adjust":
+
         if (PARTS.length < 6) {
           System.out.println("Invalid 'levels-adjust' command: Usage is 'levels-adjust "
                   + "b m w source-image-name dest-image-name'");
         } else {
           String sourceImageName = PARTS[4];
           String destImageName = PARTS[5];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           int b = Integer.parseInt(PARTS[1]);
           int m = Integer.parseInt(PARTS[2]);
           int w = Integer.parseInt(PARTS[3]);
           if (PARTS.length > 6 && PARTS[6].equals("split")) {
             int splitPercentage = Integer.parseInt(PARTS[7]);
+            if(splitPercentage<0 || splitPercentage>100){
+              System.out.println("Split percentage should be between 0 and 100");
+            }
             imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
                     splitPercentage);
           } else {
@@ -359,8 +362,14 @@ public class Controller implements ControllerFeatures{
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
+          if(sourceImageName == null || destImageName == null){
+            System.out.println("Image not found");
+          }
           if (PARTS.length > 3 && PARTS[3].equals("split")) {
             int splitPercentage = Integer.parseInt(PARTS[4]);
+            if(splitPercentage<0 || splitPercentage>100){
+              System.out.println("Split percentage should be between 0 and 100");
+            }
             imageObj.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
           } else {
             imageObj.convertToGrayscale(sourceImageName, destImageName, 0);
@@ -370,12 +379,21 @@ public class Controller implements ControllerFeatures{
 
       case "compress":
         double percentage = Double.parseDouble(PARTS[1]);
+        if(percentage<0 || percentage>100){
+          System.out.println("Compression percentage should be between 0 and 100");
+        }
         String sourceImageName = PARTS[2];
         String destImageName = PARTS[3];
+        if(sourceImageName == null || destImageName == null){
+          System.out.println("Image not found");
+        }
         imageObj.compress(sourceImageName, destImageName, percentage);
         break;
       case "-file":
         String scriptFilename = PARTS[1];
+        if(scriptFilename == null){
+          System.out.println("Script file not found");
+        }
         executeScriptFromFile(scriptFilename);
         exit(0);
         break;
@@ -390,7 +408,7 @@ public class Controller implements ControllerFeatures{
    *
    * @param scriptFilename The filename of the script to execute.
    */
-  public static void executeScriptFromFile(String scriptFilename) {
+  public void executeScriptFromFile(String scriptFilename) {
     try {
       File scriptFile = new File(scriptFilename);
       if (!scriptFile.exists()) {
@@ -402,7 +420,7 @@ public class Controller implements ControllerFeatures{
       while (sc.hasNextLine()) {
         String line = sc.nextLine().trim();
         if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
-          Controller.parseAndExecute(line);
+          parseAndExecute(line);
         }
       }
       sc.close();
@@ -419,7 +437,7 @@ public class Controller implements ControllerFeatures{
    * @param filePath The path to the image file.
    * @return The file format or null if the format is unsupported or not recognized.
    */
-  public static String identifyFileFormat(String filePath) {
+  public String identifyFileFormat(String filePath) {
     // Get the index of the last dot in the file path
     int lastDotIndex = filePath.lastIndexOf('.');
 
@@ -435,13 +453,10 @@ public class Controller implements ControllerFeatures{
     }
   }
 
-  public static String getLastSavedImagePath() {
-    return lastSavedImagePath;
-  }
-
   @Override
-  public void addFeaturesToView(ControllerFeatures features) {
-    view.addFeatures(features);
+  public void setView(ImageEditorView view) {
+    this.view = view;
+    view.addFeatures(this);
   }
 
   @Override
@@ -457,7 +472,6 @@ public class Controller implements ControllerFeatures{
       e.printStackTrace();
     }
     System.out.println("Loading image: " + command);
-//    parseAndExecute(command);
   }
 
   @Override
@@ -472,15 +486,11 @@ public class Controller implements ControllerFeatures{
   @Override
   public void applyFeatures(String command, String destImageName) {
     try {
-System.out.println("applyFeatures(String command"+command);
-      if(command!=null) {
+      System.out.println("applyFeatures(String command" + command);
+      if (command != null) {
         parseAndExecute(command);
-        /*int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
-        view.updateImageForIndex(destImageData, 1);*/
         System.out.println("*****Applying feature on destImageName: " + destImageName);
         parseAndExecute("histogram " + destImageName + " " + destImageName + "-histogram");
-       /* int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
-        view.updateImageForIndex(destHistogramData, 2);*/
       }
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
@@ -493,6 +503,21 @@ System.out.println("applyFeatures(String command"+command);
     }
   }
 
-
+  public void executeCommands() {
+    try {
+      Scanner sc = new Scanner(reader);
+      while (sc.hasNextLine()) {
+        String line = sc.nextLine().trim();
+        if (!line.startsWith("#") && !line.isEmpty()) { // Skip comments and empty lines
+          parseAndExecute(line);
+        }
+      }
+      sc.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("Error executing command: " + e.getMessage());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
 
