@@ -8,9 +8,6 @@
 //import java.io.PrintStream;
 //
 //import javax.imageio.ImageIO;
-////
-////import controller.PNGImage;
-////import controller.PPMImage;
 //import model.ImageModel;
 //
 //import static org.junit.Assert.assertEquals;
@@ -84,10 +81,10 @@
 //   * Tests the `loadImage` method by loading an image and printing the RGB data.
 //   */
 //  @Test
-//  public void testLoadImageAndPrintRGB() throws IOException {
+//  public void testLoadImageAndPrintRGB() {
 //
 //    // Load the image
-//    pngJpgImage.loadImage(imagePath, imageName);
+//    pngJpgImage.loadImageInMap(imagePath, imageName);
 //
 //    // Check if the image was loaded successfully
 //    assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
@@ -145,7 +142,7 @@
 //      File output = new File(filePath);
 //      ImageIO.write(image, "png", output);
 //      System.out.println("Image saved as " + filePath);
-//      pngJpgImage.loadImage(filePath, fileName);
+//      pngJpgImage.loadImageInMap(filePath, matrix);
 //    } catch (IOException e) {
 //      e.printStackTrace();
 //      System.out.println("Failed to save the image as " + filePath);
