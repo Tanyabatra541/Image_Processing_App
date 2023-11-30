@@ -109,7 +109,6 @@ public class SwingFeaturesFrame extends JFrame {
         sliderPanel.setVisible(false);
     }
 
-
     public void updateImageForIndex(int[][][] rgbValues, int index) {
         BufferedImage image = convertRGBtoBufferedImage(rgbValues);
 
