@@ -33,6 +33,7 @@ public class Controller implements ControllerFeatures {
   public static ImageModel imageObj = new ImageModel();
 
   private ImageEditorView view;
+
   public Controller(Reader reader) {
     this.reader = reader;
   }
@@ -62,38 +63,21 @@ public class Controller implements ControllerFeatures {
     String cmd = PARTS[0];
     String arg1 = PARTS[1];
     String arg2 = PARTS.length > 2 ? PARTS[2] : null;
+
+    if (arg2 == null) {
+      System.out.println("Image Name not found");
+    }
+
     extension = identifyFileFormat(arg1);
     IOImageOperations ioImageOperations = new IOImageOperations();
-//    if (!Objects.equals(PARTS[0], "run")) {
-
-//      if (extension != null) {
-//        if ((extension.equalsIgnoreCase("png"))) {
-//          imageObj = new PNGImage();
-//        } else if (extension.equalsIgnoreCase("ppm")) {
-//          imageObj = new PPMImage();
-//        } else if (extension.equalsIgnoreCase("jpg")
-//                || (extension.equalsIgnoreCase("jpeg"))) {
-//          imageObj = new JPGImage();
-//        } else {
-//          System.out.println("Unsupported image format");
-//        }
-//      }
-//    }
-
     switch (cmd) {
       case "load":
         System.out.println("in load");
         System.out.println("arg1" + arg1);
-        if(arg2 == null) {
-          System.out.println("Image not found");
-        }
-        rgb = ioImageOperations.load(arg1,extension);
+        rgb = ioImageOperations.load(arg1, extension);
         imageObj.loadImageInMap(arg2, rgb);
         break;
       case "save":
-        if(arg2 == null) {
-          System.out.println("Image not found");
-        }
         rgb = imageObj.getRgbDataMap(arg2);
         pixels = imageObj.getPixels(arg2);
         ioImageOperations.save(arg1, arg2, extension, rgb, pixels);
@@ -105,25 +89,22 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found"); //image name is null
+          }
+          if (imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found"); //image name is null
           }
           imageObj.horizontalFlipImage(sourceImageName, destImageName);
         }
         break;
       case "vertical-flip":
-        if(arg2 == null) {
-          System.out.println("Image not found");
-        }
         imageObj.verticalFlipImage(arg1, arg2);
         break;
       case "sharpen":
-        if(arg2 == null){
-          System.out.println("Image not found");
-        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          if(splitPercentage<0 || splitPercentage>100){
+          if (splitPercentage < 0 || splitPercentage > 100) {
             System.out.println("Split percentage should be between 0 and 100");
           }
           imageObj.sharpenImage(arg1, arg2, splitPercentage);
@@ -132,12 +113,9 @@ public class Controller implements ControllerFeatures {
         }
         break;
       case "blur":
-        if(arg2 == null){
-          System.out.println("Image not found");
-        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          if(splitPercentage<0 || splitPercentage>100){
+          if (splitPercentage < 0 || splitPercentage > 100) {
             System.out.println("Split percentage should be between 0 and 100");
           }
           imageObj.blurImage(arg1, arg2, splitPercentage);
@@ -153,19 +131,19 @@ public class Controller implements ControllerFeatures {
           int increment = Integer.parseInt(PARTS[1]);
           String sourceImageName = PARTS[2];
           String destImageName = PARTS[3];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.brightenImage(sourceImageName, destImageName, increment);
         }
         break;
       case "sepia":
-        if(arg2 == null){
-          System.out.println("Image not found");
-        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          if(splitPercentage<0 || splitPercentage>100){
+          if (splitPercentage < 0 || splitPercentage > 100) {
             System.out.println("Split percentage should be between 0 and 100");
           }
           imageObj.sepiaImage(arg1, arg2, splitPercentage);
@@ -182,9 +160,13 @@ public class Controller implements ControllerFeatures {
           String redImageName = PARTS[2];
           String greenImageName = PARTS[3];
           String blueImageName = PARTS[4];
-          if(combinedImageName == null  || redImageName == null || greenImageName == null
-                  || blueImageName == null){
-            System.out.println("Image not found");
+          if (redImageName == null || greenImageName == null || blueImageName == null) {
+            System.out.println("One or more Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(redImageName) ||
+                  !imageObj.getImageMap().containsKey(greenImageName) ||
+                  !imageObj.getImageMap().containsKey(blueImageName)) {
+            System.out.println("One or more Source Image not found");
           }
           imageObj.combineRGBImages(combinedImageName, redImageName, greenImageName, blueImageName);
         }
@@ -198,9 +180,12 @@ public class Controller implements ControllerFeatures {
           String destImageNameRed = PARTS[2];
           String destImageNameGreen = PARTS[3];
           String destImageNameBlue = PARTS[4];
-          if(sourceImageName == null  || destImageNameRed == null || destImageNameGreen == null
-                  || destImageNameBlue == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageNameRed == null || destImageNameGreen == null
+                  || destImageNameBlue == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.rgbSplitImage(sourceImageName, destImageNameRed, destImageNameGreen,
                   destImageNameBlue);
@@ -214,8 +199,11 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.extractComponent(sourceImageName, destImageName, "red");
         }
@@ -228,8 +216,11 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.extractComponent(sourceImageName, destImageName, "green");
         }
@@ -241,8 +232,11 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.extractComponent(sourceImageName, destImageName, "blue");
         }
@@ -255,8 +249,11 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.extractComponent(sourceImageName, destImageName, "value");
         }
@@ -268,8 +265,11 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.extractComponent(sourceImageName, destImageName, "intensity");
         }
@@ -280,32 +280,34 @@ public class Controller implements ControllerFeatures {
                   + "source-image-name dest-image-name'");
         } else if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          String sourceImageName= PARTS[1];
-          String destImageName= PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
           }
-          if(splitPercentage<0 || splitPercentage>100){
+          if (splitPercentage < 0 || splitPercentage > 100) {
             System.out.println("Split percentage should be between 0 and 100");
           }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
+          }
           imageObj.extractComponent(sourceImageName, destImageName, "luma", splitPercentage);
-        }
-        else {
-          String sourceImageName= PARTS[1];
-          String destImageName= PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+        } else {
+          String sourceImageName = PARTS[1];
+          String destImageName = PARTS[2];
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           imageObj.extractComponent(sourceImageName, destImageName, "luma");
         }
         break;
       case "color-correct":
-        if(arg2 == null){
-          System.out.println("Image not found");
-        }
         if (PARTS.length > 3 && PARTS[3].equals("split")) {
           int splitPercentage = Integer.parseInt(PARTS[4]);
-          if(splitPercentage<0 || splitPercentage>100){
+          if (splitPercentage < 0 || splitPercentage > 100) {
             System.out.println("Split percentage should be between 0 and 100");
           }
           imageObj.colorCorrectImage(arg1, arg2, splitPercentage);
@@ -320,8 +322,8 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
           }
           imageObj.createHistogram(sourceImageName, destImageName);
         }
@@ -335,15 +337,21 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[4];
           String destImageName = PARTS[5];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           int b = Integer.parseInt(PARTS[1]);
           int m = Integer.parseInt(PARTS[2]);
           int w = Integer.parseInt(PARTS[3]);
+          if (b < m && m < w && b >= 0 && b <= 255 && m <= 255 && w <= 255) {
+            System.out.println("Invalid shadow, mid, highlight points");
+          }
           if (PARTS.length > 6 && PARTS[6].equals("split")) {
             int splitPercentage = Integer.parseInt(PARTS[7]);
-            if(splitPercentage<0 || splitPercentage>100){
+            if (splitPercentage < 0 || splitPercentage > 100) {
               System.out.println("Split percentage should be between 0 and 100");
             }
             imageObj.applyLevelsAdjustment(b, m, w, sourceImageName, destImageName,
@@ -362,12 +370,15 @@ public class Controller implements ControllerFeatures {
         } else {
           String sourceImageName = PARTS[1];
           String destImageName = PARTS[2];
-          if(sourceImageName == null || destImageName == null){
-            System.out.println("Image not found");
+          if (sourceImageName == null || destImageName == null) {
+            System.out.println("Image Name not found");
+          }
+          if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+            System.out.println("Source Image not found");
           }
           if (PARTS.length > 3 && PARTS[3].equals("split")) {
             int splitPercentage = Integer.parseInt(PARTS[4]);
-            if(splitPercentage<0 || splitPercentage>100){
+            if (splitPercentage < 0 || splitPercentage > 100) {
               System.out.println("Split percentage should be between 0 and 100");
             }
             imageObj.convertToGrayscale(sourceImageName, destImageName, splitPercentage);
@@ -379,19 +390,22 @@ public class Controller implements ControllerFeatures {
 
       case "compress":
         double percentage = Double.parseDouble(PARTS[1]);
-        if(percentage<0 || percentage>100){
+        if (percentage < 0 || percentage > 100) {
           System.out.println("Compression percentage should be between 0 and 100");
         }
         String sourceImageName = PARTS[2];
         String destImageName = PARTS[3];
-        if(sourceImageName == null || destImageName == null){
-          System.out.println("Image not found");
+        if (sourceImageName == null || destImageName == null) {
+          System.out.println("Image Name not found");
+        }
+        if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+          System.out.println("Source Image not found");
         }
         imageObj.compress(sourceImageName, destImageName, percentage);
         break;
       case "-file":
         String scriptFilename = PARTS[1];
-        if(scriptFilename == null){
+        if (scriptFilename == null) {
           System.out.println("Script file not found");
         }
         executeScriptFromFile(scriptFilename);

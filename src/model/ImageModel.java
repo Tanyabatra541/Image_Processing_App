@@ -61,32 +61,27 @@ public class ImageModel implements ImageOperations {
    */
   @Override
   public void horizontalFlipImage(String sourceImageName, String destImageName) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
+//    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
+    int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
-    if (sourceImage != null) {
-      int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
+    if (sourceRGBData != null) {
+      int width = sourceRGBData[0].length;
+      int height = sourceRGBData.length;
 
-      if (sourceRGBData != null) {
-        int width = sourceRGBData[0].length;
-        int height = sourceRGBData.length;
+      int[][][] flippedRGBData = new int[height][width][3];
 
-        int[][][] flippedRGBData = new int[height][width][3];
-
-        for (int y = 0; y < height; y++) {
-          for (int x = 0; x < width; x++) {
-            flippedRGBData[y][x] = sourceRGBData[y][width - x - 1];
-          }
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          flippedRGBData[y][x] = sourceRGBData[y][width - x - 1];
         }
-        createPPMContent(width, height, flippedRGBData);
-        ImageContent flippedImage = new ImageContent(destImageName, flippedRGBData);
-        IMAGE_MAP.put(destImageName, flippedImage);
-        System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '"
-                + destImageName + "'.");
-      } else {
-        System.out.println("Flip failed: " + sourceImageName);
       }
+      createPPMContent(width, height, flippedRGBData);
+      ImageContent flippedImage = new ImageContent(destImageName, flippedRGBData);
+      IMAGE_MAP.put(destImageName, flippedImage);
+      System.out.println("Image '" + sourceImageName + "' flipped horizontally and saved as '"
+              + destImageName + "'.");
     } else {
-      System.out.println("Source image not found: " + sourceImageName);
+      System.out.println("Flip failed: " + sourceImageName);
     }
   }
 
@@ -99,11 +94,7 @@ public class ImageModel implements ImageOperations {
    */
   @Override
   public void verticalFlipImage(String sourceImageName, String destImageName) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
-    if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-    }
-
+//    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
     int height = sourceRGBData.length;
@@ -126,12 +117,7 @@ public class ImageModel implements ImageOperations {
 
   private void applyConvolutionHelper(String sourceImageName, String destImageName, int
           splitPercentage, float[] kernel) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
-    if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-      return;
-    }
-
+//    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
     int height = sourceRGBData.length;
@@ -251,11 +237,6 @@ public class ImageModel implements ImageOperations {
    */
   @Override
   public void brightenImage(String sourceImageName, String destImageName, int increment) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
-    if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceImageName);
-    }
-
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
     int height = sourceRGBData.length;
@@ -282,11 +263,6 @@ public class ImageModel implements ImageOperations {
   }
 
   private void sepiaImageHelper(String sourceName, String destName, int splitPercentage) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceName);
-    if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceName);
-      return;
-    }
     int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
     int height = sourceRGBData.length;
     int width = sourceRGBData[0].length;
@@ -369,47 +345,37 @@ public class ImageModel implements ImageOperations {
   @Override
   public void combineRGBImages(String combinedName, String redName, String greenName,
                                String blueName) {
-    ImageContent redImage = IMAGE_MAP.get(redName);
-    ImageContent greenImage = IMAGE_MAP.get(greenName);
-    ImageContent blueImage = IMAGE_MAP.get(blueName);
+    int[][][] redRGBData = IMAGE_MAP.get(redName).getRgbDataMap();
+    int[][][] greenRGBData = IMAGE_MAP.get(greenName).getRgbDataMap();
+    int[][][] blueRGBData = IMAGE_MAP.get(blueName).getRgbDataMap();
 
-    if (redImage == null || greenImage == null || blueImage == null) {
-      System.out.print("One or more source images not found.");
-
-    } else {
-
-      int[][][] redRGBData = IMAGE_MAP.get(redName).getRgbDataMap();
-      int[][][] greenRGBData = IMAGE_MAP.get(greenName).getRgbDataMap();
-      int[][][] blueRGBData = IMAGE_MAP.get(blueName).getRgbDataMap();
-
-      int height = redRGBData.length;
-      int width = redRGBData[0].length;
+    int height = redRGBData.length;
+    int width = redRGBData[0].length;
 
 
-      if (height != greenRGBData.length || height != blueRGBData.length
-              || width != greenRGBData[0].length || width != blueRGBData[0].length) {
-        System.out.print("Source images have different dimensions.");
+    if (height != greenRGBData.length || height != blueRGBData.length
+            || width != greenRGBData[0].length || width != blueRGBData[0].length) {
+      System.out.print("Source images have different dimensions.");
 
-      }
-
-      int[][][] combinedRGBData = new int[height][width][3];
-
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          combinedRGBData[y][x][0] = redRGBData[y][x][0];
-          combinedRGBData[y][x][1] = greenRGBData[y][x][1];
-          combinedRGBData[y][x][2] = blueRGBData[y][x][2];
-        }
-      }
-
-      createPPMContent(width, height, combinedRGBData);
-
-      ImageContent combinedImage = new ImageContent(combinedName, combinedRGBData);
-      IMAGE_MAP.put(combinedName, combinedImage);
-      //rgbDataMap.put(combinedName, combinedRGBData);
-
-      System.out.print("RGB channels combined. Combined image saved as " + combinedName);
     }
+
+    int[][][] combinedRGBData = new int[height][width][3];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        combinedRGBData[y][x][0] = redRGBData[y][x][0];
+        combinedRGBData[y][x][1] = greenRGBData[y][x][1];
+        combinedRGBData[y][x][2] = blueRGBData[y][x][2];
+      }
+    }
+
+    createPPMContent(width, height, combinedRGBData);
+
+    ImageContent combinedImage = new ImageContent(combinedName, combinedRGBData);
+    IMAGE_MAP.put(combinedName, combinedImage);
+    //rgbDataMap.put(combinedName, combinedRGBData);
+
+    System.out.print("RGB channels combined. Combined image saved as " + combinedName);
   }
 
 
@@ -426,56 +392,51 @@ public class ImageModel implements ImageOperations {
   @Override
   public void rgbSplitImage(String sourceName, String destNameRed, String destNameGreen,
                             String destNameBlue) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceName);
-    if (sourceImage == null) {
-      System.out.println("Source image not found: " + sourceName);
-    } else {
+    int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
 
-      int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
+    int[][][] redRGBData = new int[height][width][3];
+    int[][][] greenRGBData = new int[height][width][3];
+    int[][][] blueRGBData = new int[height][width][3];
 
-      int height = sourceRGBData.length;
-      int width = sourceRGBData[0].length;
-      int[][][] redRGBData = new int[height][width][3];
-      int[][][] greenRGBData = new int[height][width][3];
-      int[][][] blueRGBData = new int[height][width][3];
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int r = sourceRGBData[y][x][0];
+        int g = sourceRGBData[y][x][1];
+        int b = sourceRGBData[y][x][2];
 
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          int r = sourceRGBData[y][x][0];
-          int g = sourceRGBData[y][x][1];
-          int b = sourceRGBData[y][x][2];
+        redRGBData[y][x][0] = r;
+        redRGBData[y][x][1] = 0;
+        redRGBData[y][x][2] = 0;
 
-          redRGBData[y][x][0] = r;
-          redRGBData[y][x][1] = 0;
-          redRGBData[y][x][2] = 0;
+        greenRGBData[y][x][0] = 0;
+        greenRGBData[y][x][1] = g;
+        greenRGBData[y][x][2] = 0;
 
-          greenRGBData[y][x][0] = 0;
-          greenRGBData[y][x][1] = g;
-          greenRGBData[y][x][2] = 0;
-
-          blueRGBData[y][x][0] = 0;
-          blueRGBData[y][x][1] = 0;
-          blueRGBData[y][x][2] = b;
-        }
+        blueRGBData[y][x][0] = 0;
+        blueRGBData[y][x][1] = 0;
+        blueRGBData[y][x][2] = b;
       }
-
-      createPPMContent(width, height, redRGBData);
-      createPPMContent(width, height, greenRGBData);
-      createPPMContent(width, height, blueRGBData);
-
-      ImageContent redImage = new ImageContent(destNameRed, redRGBData);
-      ImageContent greenImage = new ImageContent(destNameGreen, greenRGBData);
-      ImageContent blueImage = new ImageContent(destNameBlue, blueRGBData);
-
-      IMAGE_MAP.put(destNameRed, redImage);
-      IMAGE_MAP.put(destNameGreen, greenImage);
-      IMAGE_MAP.put(destNameBlue, blueImage);
-
-
-      System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
-              + ", " + destNameBlue);
     }
+
+    createPPMContent(width, height, redRGBData);
+    createPPMContent(width, height, greenRGBData);
+    createPPMContent(width, height, blueRGBData);
+
+    ImageContent redImage = new ImageContent(destNameRed, redRGBData);
+    ImageContent greenImage = new ImageContent(destNameGreen, greenRGBData);
+    ImageContent blueImage = new ImageContent(destNameBlue, blueRGBData);
+
+    IMAGE_MAP.put(destNameRed, redImage);
+    IMAGE_MAP.put(destNameGreen, greenImage);
+    IMAGE_MAP.put(destNameBlue, blueImage);
+
+
+    System.out.println("RGB channels split and saved as " + destNameRed + ", " + destNameGreen
+            + ", " + destNameBlue);
   }
+
 
   private void createPPMContent(int width, int height, int[][][] rgbData) {
     StringBuilder content;
@@ -511,82 +472,77 @@ public class ImageModel implements ImageOperations {
    *                   - "value": Extract the value (brightness) component of an image.
    */
   private void extractComponentHelper(String sourceName, String destName, String component, int splitPercentage) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceName);
     boolean flag = true;
 
-    if (sourceImage != null) {
-      int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
+    int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
 
-      if (sourceRGBData != null) {
-        int height = sourceRGBData.length;
-        int width = sourceRGBData[0].length;
+    if (sourceRGBData != null) {
+      int height = sourceRGBData.length;
+      int width = sourceRGBData[0].length;
 
-        int[][][] extractedRGBData = new int[height][width][3];
+      int[][][] extractedRGBData = new int[height][width][3];
 
-        int splitPosition = width * splitPercentage / 100;
+      int splitPosition = width * splitPercentage / 100;
 
-        for (int y = 0; y < height; y++) {
-          for (int x = 0; x < width; x++) {
-            int r = sourceRGBData[y][x][0];
-            int g = sourceRGBData[y][x][1];
-            int b = sourceRGBData[y][x][2];
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          int r = sourceRGBData[y][x][0];
+          int g = sourceRGBData[y][x][1];
+          int b = sourceRGBData[y][x][2];
 
-            switch (component) {
-              case "red":
-                g = 0;
-                b = 0;
-                break;
-              case "green":
-                r = 0;
-                b = 0;
-                break;
-              case "blue":
-                r = 0;
-                g = 0;
-                break;
-              case "luma":
-                if (x <= splitPosition || splitPercentage == 0) {
-                  int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
-                  r = luma;
-                  g = luma;
-                  b = luma;
-                }
-                break;
-              case "intensity":
-                int intensity = (r + g + b) / 3;
-                r = intensity;
-                g = intensity;
-                b = intensity;
-                break;
-              case "value":
-                int value = Math.max(r, Math.max(g, b));
-                r = value;
-                g = value;
-                b = value;
-                break;
-              default:
-                flag = false;
-                System.out.print("Invalid component parameter.");
-            }
-            extractedRGBData[y][x][0] = r;
-            extractedRGBData[y][x][1] = g;
-            extractedRGBData[y][x][2] = b;
+          switch (component) {
+            case "red":
+              g = 0;
+              b = 0;
+              break;
+            case "green":
+              r = 0;
+              b = 0;
+              break;
+            case "blue":
+              r = 0;
+              g = 0;
+              break;
+            case "luma":
+              if (x <= splitPosition || splitPercentage == 0) {
+                int luma = (int) (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                r = luma;
+                g = luma;
+                b = luma;
+              }
+              break;
+            case "intensity":
+              int intensity = (r + g + b) / 3;
+              r = intensity;
+              g = intensity;
+              b = intensity;
+              break;
+            case "value":
+              int value = Math.max(r, Math.max(g, b));
+              r = value;
+              g = value;
+              b = value;
+              break;
+            default:
+              flag = false;
+              System.out.print("Invalid component parameter.");
           }
+          extractedRGBData[y][x][0] = r;
+          extractedRGBData[y][x][1] = g;
+          extractedRGBData[y][x][2] = b;
         }
-        if (flag) {
-          createPPMContent(width, height, extractedRGBData);
+      }
+      if (flag) {
+        createPPMContent(width, height, extractedRGBData);
 
-          ImageContent destImage = new ImageContent(destName, extractedRGBData);
-          IMAGE_MAP.put(destName, destImage);
-          System.out.print(component + " component image created from '" + sourceName
-                  + "' and saved as '" + destName + "'");
+        ImageContent destImage = new ImageContent(destName, extractedRGBData);
+        IMAGE_MAP.put(destName, destImage);
+        System.out.print(component + " component image created from '" + sourceName
+                + "' and saved as '" + destName + "'");
 
-        }
-      } else {
-        System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
       }
     } else {
-      System.out.println("Source image not found: " + sourceName);
+      System.out.println("Failed to extract the " + component + " component; invalid RGB data.");
     }
   }
 
@@ -601,6 +557,15 @@ public class ImageModel implements ImageOperations {
     extractComponentHelper(sourceName, destName, component, 0);
   }
 
+
+  /**
+   * Get a map of image names to their corresponding ImageContent objects.
+   *
+   * @return A map where keys are image names and values are the corresponding ImageContent objects.
+   */
+  public Map<String, ImageContent> getImageMap() {
+    return IMAGE_MAP;
+  }
 
   /**
    * Get a map of image names to their corresponding RGB data represented as a 3D integer array.
@@ -618,84 +583,78 @@ public class ImageModel implements ImageOperations {
   }
 
   private void colorCorrectImageHelper(String sourceName, String destName, int splitPercentage) {
-    ImageContent sourceImage = IMAGE_MAP.get(sourceName);
+    int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
 
-    if (sourceImage != null) {
-      int[][][] sourceRGBData = IMAGE_MAP.get(sourceName).getRgbDataMap();
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
 
-      int height = sourceRGBData.length;
-      int width = sourceRGBData[0].length;
+    int[][][] colorCorrectedImage = new int[height][width][3];
 
-      int[][][] colorCorrectedImage = new int[height][width][3];
+    Histogram histogram = new Histogram(10, 245);
 
-      Histogram histogram = new Histogram(10, 245);
-
-      // Populate the histogram with values from the image data.
-      for (int[][] sourceRGBDatum : sourceRGBData) {
-        for (int x = 0; x < width; x++) {
-          int redValue = sourceRGBDatum[x][0];
-          int greenValue = sourceRGBDatum[x][1];
-          int blueValue = sourceRGBDatum[x][2];
-          histogram.addValue(redValue, greenValue, blueValue);
-        }
+    // Populate the histogram with values from the image data.
+    for (int[][] sourceRGBDatum : sourceRGBData) {
+      for (int x = 0; x < width; x++) {
+        int redValue = sourceRGBDatum[x][0];
+        int greenValue = sourceRGBDatum[x][1];
+        int blueValue = sourceRGBDatum[x][2];
+        histogram.addValue(redValue, greenValue, blueValue);
       }
-
-      // Calculate the max count across all channels.
-      histogram.calculateMaxCount();
-
-      // Find the peak values for each channel.
-      int peakR = histogram.findPeakValue(histogram.histogramR);
-      int peakG = histogram.findPeakValue(histogram.histogramG);
-      int peakB = histogram.findPeakValue(histogram.histogramB);
-
-      // Calculate the average value across peaks.
-      int averagePeak = (peakR + peakG + peakB) / 3;
-
-      System.out.println("Average Peak: " + averagePeak);
-
-      int splitPosition = width * splitPercentage / 100;
-
-      // Offset each channel's values so that their histogram peak occurs at the average value.
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          int redValue = sourceRGBData[y][x][0];
-          int greenValue = sourceRGBData[y][x][1];
-          int blueValue = sourceRGBData[y][x][2];
-
-          if (splitPercentage == 0 || x <= splitPosition) {
-            // Offset the values
-            int offsetR = averagePeak - peakR;
-            int offsetG = averagePeak - peakG;
-            int offsetB = averagePeak - peakB;
-
-            // Apply offsets and ensure values stay within the valid range (10 to 245)
-            int correctedRed = Math.min(245, Math.max(10, redValue + offsetR));
-            int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
-            int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
-
-            colorCorrectedImage[y][x][0] = correctedRed;
-            colorCorrectedImage[y][x][1] = correctedGreen;
-            colorCorrectedImage[y][x][2] = correctedBlue;
-          } else {
-            colorCorrectedImage[y][x][0] = redValue;
-            colorCorrectedImage[y][x][1] = greenValue;
-            colorCorrectedImage[y][x][2] = blueValue;
-          }
-        }
-      }
-
-      // Create a StringBuilder for the corrected image content.
-      createPPMContent(width, height, colorCorrectedImage);
-
-      // Create and store the corrected image.
-      ImageContent correctedImage = new ImageContent(destName, colorCorrectedImage);
-      IMAGE_MAP.put(destName, correctedImage);
-      //rgbDataMap.put(destName, sourceRGBData);
-      System.out.println("Color correction completed with " + splitPercentage + "% split. "
-              + "Corrected " + "image saved as " + destName);
-    } else {
-      System.out.println("Source image not found: " + sourceName);
     }
+
+    // Calculate the max count across all channels.
+    histogram.calculateMaxCount();
+
+    // Find the peak values for each channel.
+    int peakR = histogram.findPeakValue(histogram.histogramR);
+    int peakG = histogram.findPeakValue(histogram.histogramG);
+    int peakB = histogram.findPeakValue(histogram.histogramB);
+
+    // Calculate the average value across peaks.
+    int averagePeak = (peakR + peakG + peakB) / 3;
+
+    System.out.println("Average Peak: " + averagePeak);
+
+    int splitPosition = width * splitPercentage / 100;
+
+    // Offset each channel's values so that their histogram peak occurs at the average value.
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int redValue = sourceRGBData[y][x][0];
+        int greenValue = sourceRGBData[y][x][1];
+        int blueValue = sourceRGBData[y][x][2];
+
+        if (splitPercentage == 0 || x <= splitPosition) {
+          // Offset the values
+          int offsetR = averagePeak - peakR;
+          int offsetG = averagePeak - peakG;
+          int offsetB = averagePeak - peakB;
+
+          // Apply offsets and ensure values stay within the valid range (10 to 245)
+          int correctedRed = Math.min(245, Math.max(10, redValue + offsetR));
+          int correctedGreen = Math.min(245, Math.max(10, greenValue + offsetG));
+          int correctedBlue = Math.min(245, Math.max(10, blueValue + offsetB));
+
+          colorCorrectedImage[y][x][0] = correctedRed;
+          colorCorrectedImage[y][x][1] = correctedGreen;
+          colorCorrectedImage[y][x][2] = correctedBlue;
+        } else {
+          colorCorrectedImage[y][x][0] = redValue;
+          colorCorrectedImage[y][x][1] = greenValue;
+          colorCorrectedImage[y][x][2] = blueValue;
+        }
+      }
+    }
+
+    // Create a StringBuilder for the corrected image content.
+    createPPMContent(width, height, colorCorrectedImage);
+
+    // Create and store the corrected image.
+    ImageContent correctedImage = new ImageContent(destName, colorCorrectedImage);
+    IMAGE_MAP.put(destName, correctedImage);
+    //rgbDataMap.put(destName, sourceRGBData);
+    System.out.println("Color correction completed with " + splitPercentage + "% split. "
+            + "Corrected " + "image saved as " + destName);
   }
 
 
@@ -760,62 +719,47 @@ public class ImageModel implements ImageOperations {
   private void applyLevelsAdjustmentHelper(int shadowPoint, int midPoint, int highlightPoint,
                                            String sourceImageName, String destImageName,
                                            int splitPercentage) {
+    int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
 
+    int width = sourceRGBData[0].length;
+    int height = sourceRGBData.length;
 
-    if (shadowPoint < midPoint && midPoint < highlightPoint && shadowPoint >= 0 && shadowPoint <=
-            255 && midPoint <= 255 && highlightPoint <= 255) {
+    int[][][] adjustedRGBData = new int[height][width][3];
 
+    int splitPosition = width * splitPercentage / 100;
 
-      ImageContent sourceImage = IMAGE_MAP.get(sourceImageName);
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int redValue = sourceRGBData[y][x][0];
+        int greenValue = sourceRGBData[y][x][1];
+        int blueValue = sourceRGBData[y][x][2];
 
-      if (sourceImage != null) {
-        int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
+        if (splitPercentage == 0 || x <= splitPosition) {
 
-        int width = sourceRGBData[0].length;
-        int height = sourceRGBData.length;
+          int adjustedRed = applyCurvesFunction(redValue, shadowPoint, midPoint, highlightPoint);
+          int adjustedGreen = applyCurvesFunction(greenValue, shadowPoint, midPoint,
+                  highlightPoint);
+          int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint,
+                  highlightPoint);
 
-        int[][][] adjustedRGBData = new int[height][width][3];
+          adjustedRGBData[y][x][0] = adjustedRed;
+          adjustedRGBData[y][x][1] = adjustedGreen;
+          adjustedRGBData[y][x][2] = adjustedBlue;
 
-        int splitPosition = width * splitPercentage / 100;
+        } else {
 
-        for (int y = 0; y < height; y++) {
-          for (int x = 0; x < width; x++) {
-            int redValue = sourceRGBData[y][x][0];
-            int greenValue = sourceRGBData[y][x][1];
-            int blueValue = sourceRGBData[y][x][2];
-
-            if (splitPercentage == 0 || x <= splitPosition) {
-
-              int adjustedRed = applyCurvesFunction(redValue, shadowPoint, midPoint, highlightPoint);
-              int adjustedGreen = applyCurvesFunction(greenValue, shadowPoint, midPoint,
-                      highlightPoint);
-              int adjustedBlue = applyCurvesFunction(blueValue, shadowPoint, midPoint,
-                      highlightPoint);
-
-              adjustedRGBData[y][x][0] = adjustedRed;
-              adjustedRGBData[y][x][1] = adjustedGreen;
-              adjustedRGBData[y][x][2] = adjustedBlue;
-
-            } else {
-
-              adjustedRGBData[y][x][0] = redValue;
-              adjustedRGBData[y][x][1] = greenValue;
-              adjustedRGBData[y][x][2] = blueValue;
-            }
-          }
+          adjustedRGBData[y][x][0] = redValue;
+          adjustedRGBData[y][x][1] = greenValue;
+          adjustedRGBData[y][x][2] = blueValue;
         }
-
-        ImageContent adjustedImage = new ImageContent(destImageName, adjustedRGBData);
-        IMAGE_MAP.put(destImageName, adjustedImage);
-
-        System.out.println("Adjusted image with " + splitPercentage + "% split. Image saved as "
-                + destImageName);
-      } else {
-        System.out.println("Source image not found: " + sourceImageName);
       }
-    } else {
-      System.out.println("Invalid shadow, mid, highlight points");
     }
+
+    ImageContent adjustedImage = new ImageContent(destImageName, adjustedRGBData);
+    IMAGE_MAP.put(destImageName, adjustedImage);
+
+    System.out.println("Adjusted image with " + splitPercentage + "% split. Image saved as "
+            + destImageName);
   }
 
   /**
@@ -885,58 +829,54 @@ public class ImageModel implements ImageOperations {
   public void convertToGrayscale(String sourceName, String destName, int splitPercentage) {
     ImageContent sourceImage = IMAGE_MAP.get(sourceName);
 
-    if (sourceImage != null) {
-      int[][][] sourceRGBData = sourceImage.getRgbDataMap();
-      int height = sourceRGBData.length;
-      int width = sourceRGBData[0].length;
+    int[][][] sourceRGBData = sourceImage.getRgbDataMap();
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
 
-      int[][][] grayscalePixels = new int[height][width][3];
+    int[][][] grayscalePixels = new int[height][width][3];
 
-      // Grayscale transformation matrix
-      double[][] grayscaleMatrix = {
-              {0.2126, 0.7152, 0.0722},
-              {0.2126, 0.7152, 0.0722},
-              {0.2126, 0.7152, 0.0722}
-      };
+    // Grayscale transformation matrix
+    double[][] grayscaleMatrix = {
+            {0.2126, 0.7152, 0.0722},
+            {0.2126, 0.7152, 0.0722},
+            {0.2126, 0.7152, 0.0722}
+    };
 
-      int splitPosition = width * splitPercentage / 100;
+    int splitPosition = width * splitPercentage / 100;
 
-      // Convert color to grayscale using the specified transformation with vertical split
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-          int red = sourceRGBData[y][x][0];
-          int green = sourceRGBData[y][x][1];
-          int blue = sourceRGBData[y][x][2];
+    // Convert color to grayscale using the specified transformation with vertical split
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int red = sourceRGBData[y][x][0];
+        int green = sourceRGBData[y][x][1];
+        int blue = sourceRGBData[y][x][2];
 
-          if (splitPercentage == 0 || x <= splitPosition) {
-            // Apply the specified transformation
-            int grayscaleValue = (int) (grayscaleMatrix[0][0] * red + grayscaleMatrix[0][1] * green
-                    + grayscaleMatrix[0][2] * blue);
+        if (splitPercentage == 0 || x <= splitPosition) {
+          // Apply the specified transformation
+          int grayscaleValue = (int) (grayscaleMatrix[0][0] * red + grayscaleMatrix[0][1] * green
+                  + grayscaleMatrix[0][2] * blue);
 
-            // Set the same grayscale value for all channels
-            grayscalePixels[y][x][0] = grayscaleValue;
-            grayscalePixels[y][x][1] = grayscaleValue;
-            grayscalePixels[y][x][2] = grayscaleValue;
+          // Set the same grayscale value for all channels
+          grayscalePixels[y][x][0] = grayscaleValue;
+          grayscalePixels[y][x][1] = grayscaleValue;
+          grayscalePixels[y][x][2] = grayscaleValue;
 
-          } else {
-            // Copy the original image data to the destination image for the other side
-            grayscalePixels[y][x][0] = red;
-            grayscalePixels[y][x][1] = green;
-            grayscalePixels[y][x][2] = blue;
-          }
+        } else {
+          // Copy the original image data to the destination image for the other side
+          grayscalePixels[y][x][0] = red;
+          grayscalePixels[y][x][1] = green;
+          grayscalePixels[y][x][2] = blue;
         }
       }
-
-      // Create a new ImageContent with the grayscale pixels
-      ImageContent grayscaleImage = new ImageContent(destName, grayscalePixels);
-      IMAGE_MAP.put(destName, grayscaleImage);
-
-      // Store the grayscale image
-      System.out.println("Grayscale image with " + splitPercentage + "% split saved as "
-              + destName);
-    } else {
-      System.out.println("Source image not found: " + sourceName);
     }
+
+    // Create a new ImageContent with the grayscale pixels
+    ImageContent grayscaleImage = new ImageContent(destName, grayscalePixels);
+    IMAGE_MAP.put(destName, grayscaleImage);
+
+    // Store the grayscale image
+    System.out.println("Grayscale image with " + splitPercentage + "% split saved as "
+            + destName);
   }
 
   /**

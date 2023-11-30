@@ -8,9 +8,10 @@
 //import java.io.PrintStream;
 //
 //import javax.imageio.ImageIO;
-//
-//import controller.PNGImage;
-//import controller.PPMImage;
+////
+////import controller.PNGImage;
+////import controller.PPMImage;
+//import model.ImageModel;
 //
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertTrue;
@@ -23,7 +24,7 @@
 //
 //  private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 //  private final PrintStream originalOut = System.out;
-//  private static PNGImage pngJpgImage;
+//  private static ImageModel pngJpgImage;
 //  private static String imageName = "output";
 //  private static String imagePath = "output.png";
 //
@@ -72,7 +73,7 @@
 //   */
 //  @Before
 //  public void setUp() {
-//    pngJpgImage = new PNGImage();
+//    pngJpgImage = new ImageModel();
 //    createAndSavePNG(rgbMatrix, imageName, imagePath);
 //    createAndSavePNG(rgbMatrix2, image2Name, image2Path);
 //    createAndSavePNG(rgbMatrix3, image3Name, image3Path);
@@ -702,7 +703,7 @@
 //  @Test
 //  public void testSaveImage() throws IOException {
 //    // Create a new image content to save
-//      PNGImage img = new PNGImage();
+//      ImageModel img = new ImageModel();
 //      img.saveImage(imagePath, imageName);
 //
 //   File savedFile = new File(imagePath);
@@ -779,7 +780,7 @@
 //  @Test
 //  public void testSaveImageWithInvalidFilename()  {
 //    String invalidFilename = "bac#";
-//    PPMImage img = new PPMImage();
+//    ImageModel img = new ImageModel();
 //    img.saveImage(imagePath, invalidFilename);
 //
 //    String expectedErrorMessage = "Image not found: bac#";
