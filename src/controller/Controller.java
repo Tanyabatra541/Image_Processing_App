@@ -380,6 +380,12 @@ public class Controller implements ControllerFeatures {
         } else {
           sourceImageName = PARTS[4];
           String destImageName = PARTS[5];
+          System.out.println("{{{source"+PARTS[1]);
+          System.out.println("{{{source"+PARTS[2]);
+          System.out.println("{{{source"+PARTS[3]);
+          System.out.println("{{{source"+PARTS[0]);
+          System.out.println("{{{source"+PARTS[4]);
+          System.out.println("{{{source"+PARTS[5]);
           if (!imageObj.getImageMap().containsKey(sourceImageName)) {
             message = "Source Image not found";
           } else {
