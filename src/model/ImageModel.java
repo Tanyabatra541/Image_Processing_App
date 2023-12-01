@@ -16,7 +16,7 @@ public class ImageModel implements ImageOperations {
    * The `imageMap` is a map that stores the name of the image as the key and the image content as
    * the value.
    */
-  public static final Map<String, ImageContent> IMAGE_MAP = new HashMap<>();
+  protected static final Map<String, ImageContent> IMAGE_MAP = new HashMap<>();
 
 
   protected float[] sharpeningKernel = {

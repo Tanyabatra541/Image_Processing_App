@@ -6,7 +6,7 @@ package model;
  */
 public class ImageContent {
 
-  double[][] pixels;
+  private double[][] pixels;
   private final String name;
   private final int[][][] rgbDataMap;
 

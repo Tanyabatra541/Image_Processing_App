@@ -7,22 +7,22 @@ processing application. Each command is detailed with examples and specific cond
 
 - *Load an Image for PNG*:
   - `load <image_path> <image_name>`
-  - Example: `load image.png testImage`
+  - Example: `load 'test-image.png' testImage`
 - *Load an Image for JPG*:
   - `load <image_path> <image_name>`
-  - Example: `load image.jpg testImage`
+  - Example: `load 'test-image.jpg' testImage`
 - *Load an Image for PPM*:
   - `load <image_path> <image_name>`
-  - Example: `load image.ppm testImage`
+  - Example: `load 'test-image.ppm' testImage`
 - *Save an Image for PNG*:
   - `save <image_path> <image_name>`
-  - Example: `save res/testImage.png testImage`
+  - Example: `save 'testImage.png' testImage`
 - *Save an Image for JPG*:
   - `save <image_path> <image_name>`
-  - Example: `save res/testImage.jpg testImage`
+  - Example: `save 'testImage.jpg' testImage`
 - *Save an Image for PPM*:
   - `save <image_path> <image_name>`
-  - Example: `save res/testImage.ppm testImage`
+  - Example: `save 'testImage.ppm' testImage`
 - *Brighten an Image*:
   - `brighten <increment> <source_image> <dest_image>`
   - Example: `brighten 50 testImage testImage-brighter`
@@ -31,7 +31,7 @@ processing application. Each command is detailed with examples and specific cond
   - Example: `brighten -50 testImage testImage-dark`
 - *Horizontal Flip*:
   - `horizontal-flip <source_image> <dest_image>`
-  - Example: `hhorizontal-flip testImage testImage-horizontal`
+  - Example: `horizontal-flip testImage testImage-horizontal`
 - *Vertical Flip*:
   - `vertical-flip <source_image> <dest_image>`
   - Example: `vertical-flip testImage testImage-vertical`
@@ -121,3 +121,4 @@ Conditions:
 7. Any percentages should lie between 0 and 100.
 8. The b, m and w values of level adjust should lie between 0 and 255.
 9. Open the terminal in the res folder.
+10. The image path should be enclosed within single quotes.

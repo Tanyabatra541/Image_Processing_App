@@ -89,6 +89,8 @@ The controller again calls the view to display the operated image and the output
 8. JAR file is created and working.
 9. res folder is prepared for the output reference.
 10. README and UseMe file also created.
+11. Put single quotes around the image path. For example, if the image path is "test-image.png", then
+    the command should be `load 'test-image.png' img` and not `load test-image.png img`.
 
 **Design changes and justifications**:
 
@@ -97,13 +99,18 @@ The controller again calls the view to display the operated image and the output
   and the controller. This was done to avoid coupling between the view and controller. Only methods that
   are required by the view are exposed to the view. Others are not included in the interface.
   This interface consists of 4 functions which are implemented in the controller. There functions are the only
-  functions accessed by view through this interface.
+  functions accessed by view through this interface. A new interface was needed in this case to not
+  expose all the controller methods to view and only expose the ones that are required by the view.
 - The `ImageEditorView` is the major implementation of this assignment which implements the GUI and
   interacts with the user taking input as well as displaying the output.
+- The `IOImageOperations` class is responsible for loading and saving images. It is used by the
+  controller to load and save images of any form, be it PNG, JPG or PPM. All the IO Operations take
+  place in the controller and not the model. This was done because all the IO operations are 
+  supposed to be done in the controller and not the model.
 
 **Citations**:
 
-test-image: "https://www.seekpng.com/png/full/259-2590886_medium-image-beautiful-scenery.png"
+test-image: https://images.unsplash.com/photo-1575270631421-f4c69e17b2ce?q=80&w=2969&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 (png image)
-Proof of the terms of usage of the image: "https://www.seekpng.com/ipng/u2w7y3q8t4e6r5e6_medium-image-beautiful-scenery/"
+Proof of the terms of usage of the image: https://unsplash.com/license
 

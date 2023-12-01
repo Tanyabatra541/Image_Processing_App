@@ -27,7 +27,7 @@ public class Controller implements ControllerFeatures {
   static String filePath = null;
   private static String extension = null;
 
-  public ImageModel imageObj = new ImageModel();
+  private final ImageModel imageObj = new ImageModel();
 
   private ImageEditorView view;
 
@@ -39,11 +39,6 @@ public class Controller implements ControllerFeatures {
   public Controller(Reader reader) {
     this.reader = reader;
   }
-
-  /**
-   * The parts of the command entered by the user.
-   */
-  public static String[] PARTS;
 
   /**
    * Parses the file and executes each line as a command and decides what operation is to be
@@ -58,7 +53,10 @@ public class Controller implements ControllerFeatures {
     String sourceImageName;
     String message = null;
     System.out.println("Executing command: " + command);
-    PARTS = command.split(" ");
+    /**
+     * The parts of the command entered by the user.
+     */
+    String[] PARTS = command.split(" ");
     if (PARTS.length < 2) {
       message = "Invalid command";
       return message;
@@ -380,12 +378,12 @@ public class Controller implements ControllerFeatures {
         } else {
           sourceImageName = PARTS[4];
           String destImageName = PARTS[5];
-          System.out.println("{{{source"+PARTS[1]);
-          System.out.println("{{{source"+PARTS[2]);
-          System.out.println("{{{source"+PARTS[3]);
-          System.out.println("{{{source"+PARTS[0]);
-          System.out.println("{{{source"+PARTS[4]);
-          System.out.println("{{{source"+PARTS[5]);
+          System.out.println("{{{source"+ PARTS[1]);
+          System.out.println("{{{source"+ PARTS[2]);
+          System.out.println("{{{source"+ PARTS[3]);
+          System.out.println("{{{source"+ PARTS[0]);
+          System.out.println("{{{source"+ PARTS[4]);
+          System.out.println("{{{source"+ PARTS[5]);
           if (!imageObj.getImageMap().containsKey(sourceImageName)) {
             message = "Source Image not found";
           } else {
