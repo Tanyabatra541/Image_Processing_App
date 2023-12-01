@@ -590,14 +590,14 @@ public class Controller implements ControllerFeatures {
         m = parseAndExecute(command);
         System.out.println("&*(&^"+m);
         System.out.println("*****Applying feature on destImageName: " + destImageName);
-        m = parseAndExecute("histogram " + destImageName + " " + destImageName
-                + "-histogram");
+
         System.out.println("&*(&^"+m);
       }
       int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
       view.updateImageForIndex(destImageData, 1);
       System.out.println("Applying feature on destImageName: " + destImageName);
-
+      m = parseAndExecute("histogram " + destImageName + " " + destImageName
+              + "-histogram");
       int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
       view.updateImageForIndex(destHistogramData, 2);
     } catch (IOException e) {

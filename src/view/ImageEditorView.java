@@ -380,6 +380,7 @@ public class ImageEditorView extends JFrame {
         String openCommand = openFile();
         if (openCommand != null && !openCommand.equals("error")) {
           features.loadImage(openCommand, "img");
+          //features.applyFeatures(null, "img");
           sourceName = "img";
           destName = "img";
           tempName = "img";
@@ -387,8 +388,8 @@ public class ImageEditorView extends JFrame {
           sliderPanel.setVisible(false);
           imageLabel[1].setText("Please select filter");
 
-          imageLabel[2].setIcon(new ImageIcon("path/to/placeholder-image.png"));
-          imageLabel[2].setText("Please upload image");
+          imageLabel[1].setIcon(new ImageIcon("path/to/placeholder-image.png"));
+          //imageLabel[1].setText("Please upload image");
           JOptionPane.showMessageDialog(ImageEditorView.this,
                   "Image loaded successfully!",
                   "Success", JOptionPane.INFORMATION_MESSAGE);
