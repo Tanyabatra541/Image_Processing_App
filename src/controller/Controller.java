@@ -380,18 +380,14 @@ public class Controller implements ControllerFeatures {
         } else {
           sourceImageName = PARTS[4];
           String destImageName = PARTS[5];
-          System.out.println("{{{source"+PARTS[1]);
-          System.out.println("{{{source"+PARTS[2]);
-          System.out.println("{{{source"+PARTS[3]);
-          System.out.println("{{{source"+PARTS[0]);
-          System.out.println("{{{source"+PARTS[4]);
-          System.out.println("{{{source"+PARTS[5]);
+
           if (!imageObj.getImageMap().containsKey(sourceImageName)) {
             message = "Source Image not found";
           } else {
             int b = Integer.parseInt(PARTS[1]);
             int m = Integer.parseInt(PARTS[2]);
             int w = Integer.parseInt(PARTS[3]);
+
             if (b < m && m < w && b >= 0 && b <= 255 && m <= 255 && w <= 255) {
               if (PARTS.length > 6 && PARTS[6].equals("split")) {
                 int splitPercentage = Integer.parseInt(PARTS[7]);
@@ -408,6 +404,7 @@ public class Controller implements ControllerFeatures {
                 message="Operation Successful";
               }
             } else {
+
               message = "Invalid shadow, mid, highlight points";
             }
           }
@@ -467,6 +464,7 @@ public class Controller implements ControllerFeatures {
         message = "Invalid command: " + command;
         break;
     }
+
     return message;
   }
 
@@ -588,18 +586,22 @@ public class Controller implements ControllerFeatures {
       System.out.println("applyFeatures(String command" + command);
       if (command != null) {
         m = parseAndExecute(command);
-        System.out.println("&*(&^"+m);
-        System.out.println("*****Applying feature on destImageName: " + destImageName);
 
-        System.out.println("&*(&^"+m);
+        System.out.println("*****Applying feature on destImageName: " + destImageName+" "+m);
+
+
       }
-      int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
-      view.updateImageForIndex(destImageData, 1);
-      System.out.println("Applying feature on destImageName: " + destImageName);
-      m = parseAndExecute("histogram " + destImageName + " " + destImageName
-              + "-histogram");
-      int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
-      view.updateImageForIndex(destHistogramData, 2);
+      if (imageObj.getImageMap().containsKey(destImageName)) {
+        int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
+        view.updateImageForIndex(destImageData, 1);
+        System.out.println("Applying feature on destImageName: " + destImageName);
+        parseAndExecute("histogram " + destImageName + " " + destImageName
+                + "-histogram");
+        int[][][] destHistogramData = imageObj.getRgbDataMap(destImageName + "-histogram");
+        view.updateImageForIndex(destHistogramData, 2);
+      }else {
+        m = "Source Image not found";
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -70,7 +70,7 @@ public class ControllerViewTest {
             File output = new File(filePath);
             ImageIO.write(image, "png", output);
             System.out.println("Image saved as " + filePath);
-            pngJpgImage.loadImageInMap(imageName,rgbMatrix);
+            pngJpgImage.loadImageInMap(imageName, rgbMatrix);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to save the image as " + filePath);
@@ -91,7 +91,7 @@ public class ControllerViewTest {
         // controller.loadImage("load '"+imagePath+"' "+imageName, imageName);
         assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 2);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
         //Single image update triggers this function twice: it updates the image and then the histogram of the image
     }
 
@@ -103,7 +103,7 @@ public class ControllerViewTest {
         for (ActionListener listener : loadButton.getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
         mockView.setFilePath("savedOutput.png");
         JButton saveButton = mockView.getButtonForSave();
         actionEvent = new ActionEvent(saveButton, ActionEvent.ACTION_PERFORMED, "Save");
@@ -131,7 +131,7 @@ public class ControllerViewTest {
         // controller.loadImage("load '"+imagePath+"' "+imageName, imageName);
         assertTrue(pngJpgImage.getImageMap().containsKey(imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 2);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
         //Single image update triggers this function twice: it updates the image and then the histogram of the image
 
         // Get the flipped image data
@@ -170,13 +170,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("vertical-flip-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("vertical-flip-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -201,13 +201,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("horizontal-flip-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("horizontal-flip-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -231,13 +231,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("sharpen-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("sharpen-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -261,18 +261,18 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("blur-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("blur-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
     @Test
-    public void testBrighten() {
+    public void testSepia() {
         mockView.setFilePath(imagePath);
         JButton loadButton = mockView.getButtonForLoad();
         ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
@@ -291,15 +291,16 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("sepia-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("sepia-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
+
     @Test
     public void testRedComponent() {
         mockView.setFilePath(imagePath);
@@ -320,13 +321,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("red-component-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("red-component-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -350,13 +351,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("green-component-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("green-component-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -380,13 +381,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("blue-component-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("blue-component-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -410,13 +411,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("value-component-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("value-component-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -440,13 +441,13 @@ public class ControllerViewTest {
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-        assertTrue(pngJpgImage.getImageMap().containsKey("color-correct-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("color-correct-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
+        assertEquals(mockView.getMessage(), "Operation Successful");
 
     }
 
@@ -470,18 +471,325 @@ public class ControllerViewTest {
         assertEquals("levels-adjust", mockView.getSelectedFilter());
 
         assertEquals(mockView.getUpdateImageCallCount(), 2);
-        mockView.setBMW(20,50,200);
+        mockView.setBMW(20, 50, 200);
 
-        actionEvent = new ActionEvent(mockView.getButtonForApply() , ActionEvent.ACTION_PERFORMED, "Apply filter");
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
         for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
             listener.actionPerformed(actionEvent);
         }
-       /* assertTrue(pngJpgImage.getImageMap().containsKey("levels-adjust-"+imageName));
+        assertTrue(pngJpgImage.getImageMap().containsKey("levels-adjust-" + imageName));
         assertEquals(mockView.getUpdateImageCallCount(), 4);
-        assertEquals(mockView.getMessage(),"Operation Successful");
-*/
+        assertEquals(mockView.getMessage(), "Operation Successful");
+
     }
 
+    @Test
+    public void testCompress() {
+        mockView.setFilePath(imagePath);
+
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "compress");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("compress", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        mockView.setCompressionPercentage(50);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        assertTrue(pngJpgImage.getImageMap().containsKey("compress-" + imageName));
+        assertEquals(mockView.getUpdateImageCallCount(), 4);
+        assertEquals(mockView.getMessage(), "Operation Successful");
+
+    }
+
+    @Test
+    public void testCompressError() {
+        mockView.setFilePath(imagePath);
+
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "compress");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("compress", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        mockView.setCompressionPercentage(500);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        assertEquals(mockView.getMessage(), "Compression percentage should be between 0 and 100");
+
+    }
+
+    @Test
+    public void testCompressError2() {
+        mockView.setFilePath(imagePath);
+
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "compress");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("compress", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        mockView.setCompressionPercentage(-50);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        assertEquals(mockView.getMessage(), "Compression percentage should be between 0 and 100");
+
+    }
+
+    @Test
+    public void testLevelsAdjustError() {
+        mockView.setFilePath(imagePath);
+
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "levels-adjust");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("levels-adjust", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        mockView.setBMW(20, 500, 200);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+
+        assertEquals(mockView.getMessage(), "Invalid shadow, mid, highlight points");
+
+    }
+
+    @Test
+    public void testLevelsAdjustError2() {
+        mockView.setFilePath(imagePath);
+
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "levels-adjust");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("levels-adjust", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        mockView.setBMW(-5, 100, 200);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+
+        assertEquals(mockView.getMessage(), "Invalid shadow, mid, highlight points");
+
+    }
+
+    @Test
+    public void testLevelsAdjustError3() {
+        mockView.setFilePath(imagePath);
+
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "levels-adjust");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("levels-adjust", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+        mockView.setBMW(20, 100, 10);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+
+        assertEquals(mockView.getMessage(), "Invalid shadow, mid, highlight points");
+
+    }
+
+    @Test
+    public void testSepiaWithSplit() {
+        mockView.setFilePath(imagePath);
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "sepia");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        mockView.setSlider(50);
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("sepia", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        assertTrue(pngJpgImage.getImageMap().containsKey("sepia-" + imageName + "-split"));
+        assertEquals(mockView.getUpdateImageCallCount(), 4);
+        assertEquals(mockView.getMessage(), "Operation Successful");
+
+    }
+
+    @Test
+    public void testSharpenWithSplitError() {
+        mockView.setFilePath(imagePath);
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "sharpen");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        mockView.setSlider(500);
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("sharpen", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        //assertTrue(pngJpgImage.getImageMap().containsKey("sharpen-"+imageName+"-split"));
+        //assertEquals(mockView.getUpdateImageCallCount(), 4);
+        assertEquals(mockView.getMessage(), "Split percentage should be between 0 and 100");
+
+    }
+
+    @Test
+    public void testMultipleFilters() {
+        mockView.setFilePath(imagePath);
+        JButton loadButton = mockView.getButtonForLoad();
+        ActionEvent actionEvent = new ActionEvent(loadButton, ActionEvent.ACTION_PERFORMED, "Load");
+        for (ActionListener listener : loadButton.getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        // controller.loadImage("load '/Users/snigdhabose/Documents/Hello World/Koala Img.jpg' img", "img");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "horizontal-flip");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("horizontal-flip", mockView.getSelectedFilter());
+
+        assertEquals(mockView.getUpdateImageCallCount(), 2);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "img");
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+        assertTrue(pngJpgImage.getImageMap().containsKey("horizontal-flip-" + imageName));
+        assertEquals(mockView.getUpdateImageCallCount(), 4);
+        assertEquals(mockView.getMessage(), "Operation Successful");
+
+        actionEvent = new ActionEvent(mockView.getEmptyComboBox(), ActionEvent.ACTION_PERFORMED, "vertical-flip");
+        for (ActionListener listener : mockView.getEmptyComboBox().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+//testing combo box, if loaded and filter selected correctly
+        assertEquals("vertical-flip", mockView.getSelectedFilter());
+        assertEquals(mockView.getUpdateImageCallCount(), 4);
+
+        actionEvent = new ActionEvent(mockView.getButtonForApply(), ActionEvent.ACTION_PERFORMED, "horizontal-flip-" + imageName);
+        for (ActionListener listener : mockView.getButtonForApply().getActionListeners()) {
+            listener.actionPerformed(actionEvent);
+        }
+
+        assertTrue(pngJpgImage.getImageMap().containsKey("horizontal-flip-" + imageName));
+        assertEquals(mockView.getUpdateImageCallCount(), 6);
+        assertEquals(mockView.getMessage(), "Operation Successful");
+
+
+    }
 
 
 }
@@ -496,11 +804,14 @@ class MockImageEditorView extends ImageEditorView {
     String selectedFilter = null;
     String filePath = null;
     JComboBox<String> emptyComboBox;
-    String message=null;
+    String message = null;
 
-    int b=0;
-    int m=0;
-    int w=0;
+    int b = 0;
+    int m = 0;
+    int w = 0;
+
+    int compressionPercentage = 0;
+    int slider = 0;
 
     public MockImageEditorView() {
         fileOpenButtonForLoad = new JButton("Open File");
@@ -514,10 +825,14 @@ class MockImageEditorView extends ImageEditorView {
         filePath = "'" + path + "'";
     }
 
-    public void setBMW(int bV,int mV,int wV){
-        b=bV;
-        m=mV;
-        w=wV;
+    public void setBMW(int bV, int mV, int wV) {
+        b = bV;
+        m = mV;
+        w = wV;
+    }
+
+    public void setCompressionPercentage(int c) {
+        compressionPercentage = c;
     }
 
     public void setFilterOptions(String filter) {
@@ -531,13 +846,19 @@ class MockImageEditorView extends ImageEditorView {
     public String getMessage() {
         return message;
     }
+
     // Inside the MockImageEditorView class
     public JComboBox<String> getEmptyComboBox() {
         return emptyComboBox;
     }
 
     JButton getButtonForLoad() {
-        updateImageCallCount=0;
+        updateImageCallCount = 0;
+        compressionPercentage = 0;
+        b = 0;
+        m = 0;
+        w = 0;
+        slider = 0;
         return fileOpenButtonForLoad;
     }
 
@@ -562,35 +883,47 @@ class MockImageEditorView extends ImageEditorView {
         return updateImageCallCount;
     }
 
+    public void setSlider(int s) {
+        slider = s;
+    }
+
     @Override
     public void addFeatures(ControllerFeatures features) {
 
         emptyComboBox.addActionListener(evt -> {
             System.out.println("ComboBox is triggered. Selected Filter:" + evt.getActionCommand());
-            selectedFilter= evt.getActionCommand();
+            selectedFilter = evt.getActionCommand();
         });
 
         buttonForApply.addActionListener(evt -> {
-            String msg=null;
-            if(Objects.equals(selectedFilter, "levels-adjust")){
-                 msg= features.applyFeatures(selectedFilter + " "+b+" "+m+" "+w+" "+" img "+selectedFilter+"-img", selectedFilter+"-img");
-            }else {
-                msg = features.applyFeatures(selectedFilter + " img " + selectedFilter + "-img", selectedFilter + "-img");
+            String source = evt.getActionCommand();
+            String msg = null;
+            if (slider != 0) {
+                msg = features.applyFeatures(selectedFilter + " " + source + " " + selectedFilter + "-img-split split " + slider, selectedFilter + "-img-split");
+            } else {
+                if (Objects.equals(selectedFilter, "levels-adjust")) {
+                    msg = features.applyFeatures(selectedFilter + " " + b + " " + m + " " + w + " " + source + " " + selectedFilter + "-img", selectedFilter + "-img");
+                } else if (Objects.equals(selectedFilter, "compress")) {
+                    msg = features.applyFeatures(selectedFilter + " " + compressionPercentage + " " + source + " " + selectedFilter + "-img", selectedFilter + "-img");
+                } else {
+                    msg = features.applyFeatures(selectedFilter + " " + source + " " + selectedFilter + "-img", selectedFilter + "-img");
+                }
             }
             System.out.println("Applying Filter from Mock View: " + selectedFilter);
-            message=msg;
+            slider = 0;
+            message = msg;
 
         });
         fileOpenButtonForLoad.addActionListener(evt -> {
-            String msg=features.applyFeatures("load " + filePath + " img", "img");
+            String msg = features.applyFeatures("load " + filePath + " img", "img");
             System.out.println("Loading from Mock View: " + selectedFilter);
-            message=msg;
+            message = msg;
 
         });
         buttonForSave.addActionListener(evt -> {
-            String msg=features.applyFeatures("save " + filePath + " img", "img");
+            String msg = features.applyFeatures("save " + filePath + " img", "img");
             System.out.println("Saving from Mock View: " + selectedFilter);
-            message=msg;
+            message = msg;
         });
     }
 }
