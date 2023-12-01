@@ -24,7 +24,7 @@ public class Controller implements ControllerFeatures {
 
   private final Reader reader;
 
-  static String filePath = null;
+  private static String filePath = null;
   private static String extension = null;
 
   private final ImageModel imageObj = new ImageModel();
@@ -88,8 +88,6 @@ public class Controller implements ControllerFeatures {
         } else {
           message = "Unable to load";
         }
-        System.out.println("in load");
-        System.out.println("arg1" + arg1);
         break;
       case "save":
         arg1 = filePath;
@@ -378,12 +376,7 @@ public class Controller implements ControllerFeatures {
         } else {
           sourceImageName = PARTS[4];
           String destImageName = PARTS[5];
-          System.out.println("{{{source"+ PARTS[1]);
-          System.out.println("{{{source"+ PARTS[2]);
-          System.out.println("{{{source"+ PARTS[3]);
-          System.out.println("{{{source"+ PARTS[0]);
-          System.out.println("{{{source"+ PARTS[4]);
-          System.out.println("{{{source"+ PARTS[5]);
+
           if (!imageObj.getImageMap().containsKey(sourceImageName)) {
             message = "Source Image not found";
           } else {
@@ -505,7 +498,7 @@ public class Controller implements ControllerFeatures {
    * @param filePath The path to the image file.
    * @return The file format or null if the format is unsupported or not recognized.
    */
-  public String identifyFileFormat(String filePath) {
+  private String identifyFileFormat(String filePath) {
     // Get the index of the last dot in the file path
     int lastDotIndex = filePath.lastIndexOf('.');
 
@@ -641,7 +634,7 @@ public class Controller implements ControllerFeatures {
    * @param command The command string from which the file path needs to be extracted.
    * @return The extracted file path if found; otherwise, returns null.
    */
-  public static String extractFilePath(String command) {
+  private static String extractFilePath(String command) {
     String filePath = null;
     // Check if the command starts with "load" or "save"
     if (command.trim().startsWith("load") || command.trim().startsWith("save")) {
@@ -668,7 +661,7 @@ public class Controller implements ControllerFeatures {
    * @param command The command string from which the name needs to be extracted.
    * @return The extracted name if found; otherwise, returns null.
    */
-  public static String extractName(String command) {
+  private static String extractName(String command) {
     String extractedName = null;
 
     // Check if the command starts with "load" or "save"
