@@ -23,7 +23,7 @@ public class IOImageOperations {
    * @param imagePath The file path of the PNG image.
    * @return The RGB data of the PNG image as a three-dimensional array.
    */
-  public int[][][] convertPNGToRGB(String imagePath) {
+  private int[][][] convertPNGToRGB(String imagePath) {
     System.out.println("convertPNGToRGB");
     int height;
     int width;
@@ -67,7 +67,7 @@ public class IOImageOperations {
    * @param filename The file path of the PPM image.
    * @return The RGB data of the PPM image as a three-dimensional array.
    */
-  public int[][][] readImageRGBData(String filename) {
+  private int[][][] readImageRGBData(String filename) {
     Scanner sc = null;
 
     try {
@@ -254,7 +254,7 @@ public class IOImageOperations {
    * @param rgbData The three-dimensional array representing the RGB image data.
    * @return A `BufferedImage` object containing the image data.
    */
-  protected BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
+  private BufferedImage convertRGBDataToBufferedImage(int[][][] rgbData) {
     int height = rgbData.length;
     int width = rgbData[0].length;
 
