@@ -883,6 +883,7 @@ public class ImageModel implements ImageOperations {
    * @param destName              The name to be assigned to the compressed image.
    * @param compressionPercentage The percentage of compression to be applied to the image.
    */
+  @Override
   public void compress(String imageName, String destName, double compressionPercentage) {
     int[][][] sourceRgb = IMAGE_MAP.get(imageName).getRgbDataMap();
     Compression compressedImage = new Compression();
@@ -898,4 +899,67 @@ public class ImageModel implements ImageOperations {
 
   }
 
+  /**
+   * Apply Floyd-Steinberg dithering to convert the source image to black and white and save it as
+   * a new image with the given name.
+   *
+   * @param sourceImageName The name of the source image.
+   * @param destImageName   The name of the destination dithered image.
+   */
+  @Override
+  public void dithering(String sourceImageName, String destImageName) {
+    int[][][] sourceRGBData = IMAGE_MAP.get(sourceImageName).getRgbDataMap();
+
+    int height = sourceRGBData.length;
+    int width = sourceRGBData[0].length;
+    int[][][] ditheredRGBData = new int[height][width][3];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int oldColor = sourceRGBData[y][x][0]; // Assuming greyscale, so only red-component is used
+        int newColor = (oldColor < 128) ? 0 : 255; // Convert to black or white
+        int error = oldColor - newColor;
+
+        ditheredRGBData[y][x][0] = newColor;
+        ditheredRGBData[y][x][1] = newColor;
+        ditheredRGBData[y][x][2] = newColor;
+
+        distributeError(sourceRGBData, width, height, x, y, error);
+      }
+    }
+
+    createPPMContent(width, height, ditheredRGBData);
+
+    ImageContent ditheredImage = new ImageContent(destImageName, ditheredRGBData);
+    IMAGE_MAP.put(destImageName, ditheredImage);
+
+    System.out.println("Dithering operation completed. Dithered image saved as " + destImageName);
+  }
+
+  private void distributeError(int[][][] sourceRGBData, int width, int height, int x, int y, int error) {
+    // Floyd-Steinberg error diffusion coefficients
+    double[] coefficients = {7.0 / 16.0, 3.0 / 16.0, 5.0 / 16.0, 1.0 / 16.0};
+
+    // Define the neighbors affected by the error diffusion
+    int[][] neighbors = {
+            {0, 1},   // Right
+            {1, -1},  // Next-row-left
+            {1, 0},   // Below
+            {1, 1}    // Next-row-right
+    };
+
+    // Distribute the error to neighboring pixels
+    for (int i = 0; i < 4; i++) {
+      int nx = x + neighbors[i][1];
+      int ny = y + neighbors[i][0];
+
+      if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+        int newError = (int) (coefficients[i] * error);
+        int updatedValue = sourceRGBData[ny][nx][0] + newError;
+        updatedValue = Math.min(255, Math.max(0, updatedValue));
+        sourceRGBData[ny][nx][0] = updatedValue;
+      }
+    }
+  }
 }
+

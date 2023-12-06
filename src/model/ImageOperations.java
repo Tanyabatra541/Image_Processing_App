@@ -242,5 +242,7 @@ public interface ImageOperations {
    */
   double[][] getPixels(String imageName);
 
+  void dithering(String sourceImageName, String destImageName);
+
 
 }

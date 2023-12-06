@@ -13,8 +13,8 @@ public class Histogram {
   public int[] histogramR;
   public int[] histogramG;
   public int[] histogramB;
-  private final int minValue;
-  private final int maxValue;
+  protected final int minValue;
+  protected final int maxValue;
   private int maxCount;
 
   /**

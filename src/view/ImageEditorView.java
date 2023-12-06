@@ -134,7 +134,7 @@ public class ImageEditorView extends JFrame {
     comboboxPanel.add(comboboxDisplay);
     String[] options = {"<None>", "horizontal-flip", "vertical-flip", "blur", "sharpen",
         "red-component", "blue-component", "green-component", "luma-component", "sepia",
-        "compress", "color-correct", "levels-adjust"};
+        "compress", "color-correct", "levels-adjust","dithering"};
     combobox = new JComboBox<String>();
     for (int i = 0; i < options.length; i++) {
       combobox.addItem(options[i]);
@@ -569,10 +569,15 @@ public class ImageEditorView extends JFrame {
       String wValue = wNumericField.getText();
 
       if (!bValue.isEmpty() && !mValue.isEmpty() && !wValue.isEmpty()) {
+        sliderValue = 0;
+        arrowSlider.setValue(0);
+        sliderPanel.setVisible(true);
         tempName = "tempName";
         splitImageName = selectedFilter + "Split";
         filterCommand = filterOptions(true);
         if (!Objects.equals(filterCommand, "error")) {
+       /*   tempName = "tempName";
+          splitImageName = selectedFilter + "Split";*/
           features.applyFeatures(filterCommand, splitImageName);
           JOptionPane.showMessageDialog(ImageEditorView.this,
                   "Slide Arrow to view the changes!",
@@ -602,7 +607,9 @@ public class ImageEditorView extends JFrame {
       if (!percentageTextValue.isEmpty()) {
         sliderValue = 0;
         arrowSlider.setValue(0);
-        sliderPanel.setVisible(false);
+        sliderPanel.setVisible(true);
+        tempName = "tempName";
+        splitImageName = selectedFilter + "Split";
         filterCommand = filterOptions(true);
         features.applyFeatures(filterCommand, filteredImgName);
 
@@ -642,6 +649,7 @@ public class ImageEditorView extends JFrame {
       }
     }
     imageLabel[1].setIcon(null);
+
     return command;
   }
 
@@ -818,6 +826,11 @@ public class ImageEditorView extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             command = "error";
           }
+          break;
+        case "dithering":
+          selectedFilter = "dithering";
+          filteredImgName = "filteredImg-" + action;
+          command = selectedFilter + " " + sourceName + " " + filteredImgName;
           break;
         default:
           selectedFilter = "None";

@@ -448,6 +448,15 @@ public class Controller implements ControllerFeatures {
           }
         }
         break;
+      case "dithering":
+        sourceImageName = PARTS[1];
+        if (!imageObj.getImageMap().containsKey(sourceImageName)) {
+          message = "Source Image not found";
+        } else {
+          imageObj.dithering(sourceImageName, arg2);
+          message="Operation Successful";
+        }
+        break;
       case "-file":
         String scriptFilename = PARTS[1];
         if (scriptFilename == null) {
@@ -587,6 +596,7 @@ public class Controller implements ControllerFeatures {
 
 
       }
+      System.out.println("dess"+destImageName);
       if (imageObj.getImageMap().containsKey(destImageName)) {
         int[][][] destImageData = imageObj.getRgbDataMap(destImageName);
         view.updateImageForIndex(destImageData, 1);
